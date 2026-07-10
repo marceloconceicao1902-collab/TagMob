@@ -102,6 +102,45 @@ enum FieldTipo {
 }
 
 // ==========================================
+// ENUMS DE WORKFLOW DA AGÊNCIA
+// ==========================================
+
+enum DepartamentoAgencia {
+  ATENDIMENTO
+  PLANEJAMENTO
+  DIRECAO_CRIACAO
+  REDACAO
+  DIRECAO_ARTE
+  DESIGN
+  AUDIOVISUAL
+  WEB
+  PRODUCAO_GRAFICA
+  ATENDIMENTO_FECHAMENTO
+  CLIENTE
+}
+
+enum StatusVersao {
+  ENVIADA
+  APROVADA
+  REJEITADA
+}
+
+enum TipoContrato {
+  PROJETO_FECHADO
+  FEE_MENSAL
+  BANCO_HORAS
+  PRODUCAO_DEMANDA
+}
+
+enum StatusEntregavel {
+  PENDENTE
+  EM_PRODUCAO
+  EM_APROVACAO
+  DISPONIVEL_NO_OS
+  APROVADO_FINAL
+}
+
+// ==========================================
 // ENTIDADES CORE (MÓDULOS DE USUÁRIOS E TENANTS)
 // ==========================================
 
@@ -489,29 +528,86 @@ model ExclusividadeRegra {
 // ==========================================
 
 model EntregavelItem {
-  id            String              @id @default(uuid())
-  nome          String
-  etapa         Int                 // 1 a 11
-  isObrigatorio Boolean             @default(false) // True apenas para os itens da Etapa 1
-  precoBase     Decimal             @db.Decimal(10, 2)
-  projetos      ProjetoEntregavel[]
+  id               String              @id @default(uuid())
+  nome             String
+  etapa            Int                 // 1 a 11
+  macroEtapaLabel  String              // Ex: "Estratégia e Branding", "Materiais Comerciais"
+  descricao        String?             @db.Text
+  isObrigatorio    Boolean             @default(false) // True apenas para os itens da Etapa 1
+  precoBase        Decimal             @db.Decimal(10, 2)
+  projetos         ProjetoEntregavel[]
 }
 
 model ProjetoEntregavel {
-  id               String         @id @default(uuid())
-  empreendimentoId String
-  empreendimento   Empreendimento @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
-  entregavelId     String
-  entregavel       EntregavelItem @relation(fields: [entregavelId], references: [id], onDelete: Cascade)
-  createdAt        DateTime       @default(now())
+  id                  String              @id @default(uuid())
+  empreendimentoId    String
+  empreendimento      Empreendimento      @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  entregavelId        String
+  entregavel          EntregavelItem      @relation(fields: [entregavelId], references: [id], onDelete: Cascade)
+
+  // Pipeline de Status
+  status              StatusEntregavel    @default(PENDENTE)
+  depAtual            DepartamentoAgencia @default(ATENDIMENTO)
+  responsavelAtualId  String?             // ID do usuário interno responsável
+
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  // Histórico e versionamento
+  versoes             VersaoArquivo[]
+  logsFluxo           LogFluxoInterno[]
+}
+
+model VersaoArquivo {
+  id                   String             @id @default(uuid())
+  projetoEntregavelId  String
+  projetoEntregavel    ProjetoEntregavel  @relation(fields: [projetoEntregavelId], references: [id], onDelete: Cascade)
+
+  numero               Int                // 1, 2, 3...
+  rotulo               String             // "V1", "V2", "Final"
+  url                  String             // URL do arquivo
+  status               StatusVersao       @default(ENVIADA)
+
+  solicitadoPorId      String?            // userId que pediu o ajuste (cliente)
+  comentario           String?            @db.Text
+
+  criadoEm             DateTime           @default(now())
+
+  @@index([projetoEntregavelId, numero])
+}
+
+model LogFluxoInterno {
+  id                   String              @id @default(uuid())
+  projetoEntregavelId  String
+  projetoEntregavel    ProjetoEntregavel   @relation(fields: [projetoEntregavelId], references: [id], onDelete: Cascade)
+
+  departamentoOrigem   DepartamentoAgencia
+  departamentoDestino  DepartamentoAgencia
+  responsavelId        String?             // userId interno que executou a ação
+  observacao           String?             @db.Text
+
+  criadoEm             DateTime            @default(now())
+
+  @@index([projetoEntregavelId, criadoEm])
 }
 
 model OrcamentoContratado {
   id               String         @id @default(uuid())
   empreendimentoId String
   empreendimento   Empreendimento @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+
+  // Financeiro
   valorEtapa1Fixo  Decimal        @db.Decimal(10, 2) // Valor imutável do combo inicial
   valorVariavel    Decimal        @db.Decimal(10, 2) // Soma das peças adicionadas pelo cliente
   valorTotal       Decimal        @db.Decimal(10, 2)
-  tipoContrato     String         // Projeto Fechado, Fee Mensal, Banco de Horas, Por Demanda
+
+  // Tipo de contratação
+  tipoContrato     TipoContrato   @default(PROJETO_FECHADO)
+
+  // Trava financeira — bloqueia acesso ao OS se false
+  etapa1Paga       Boolean        @default(false)
+  dataContrato     DateTime?
+
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }

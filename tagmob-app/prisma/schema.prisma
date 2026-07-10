@@ -1,0 +1,517 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// ENUMS DO SISTEMA
+// ==========================================
+
+enum ProfileType {
+  CORRETOR
+  IMOBILIARIA
+  ARQUITETO
+  MARCA
+  CONSTRUTORA
+}
+
+enum PropertyCategory {
+  RESIDENCIAL
+  COMERCIAL
+  LANCAMENTO
+}
+
+enum PropertyStandard {
+  ALTO
+  MEDIO
+  POPULAR
+}
+
+enum PropertyStatus {
+  RASCUNHO
+  PUBLICADO
+  ARQUIVADO
+}
+
+enum ExclusivityType {
+  EMPREENDIMENTO
+  BAIRRO
+  REGIAO
+}
+
+enum PlacementStatus {
+  SUGERIDO
+  APROVADO
+  PUBLICADO
+  REJEITADO
+}
+
+enum BrandCategory {
+  PISO
+  LOUCAS
+  MOBILIARIO
+  AUTOMACAO
+  ACABAMENTO
+}
+
+enum EmpreendimentoTipo {
+  RESIDENCIAL
+  COMERCIAL
+  MISTO
+}
+
+enum EmpreendimentoStatus {
+  EM_ANDAMENTO
+  APROVADO
+  PUBLICADO
+  PAUSADO
+}
+
+enum PlanoOS {
+  STARTER
+  PRO
+  ENTERPRISE
+}
+
+enum AssetTipo {
+  INSTAGRAM_POST
+  STORY
+  BANNER_DIGITAL
+  PDF_GRAFICA
+  VIDEO_REELS
+  ENCARTE
+}
+
+enum AssetStatus {
+  RASCUNHO
+  AGUARDANDO_AGENCIA
+  AGUARDANDO_CLIENTE
+  APROVADO
+  REPROVADO
+}
+
+enum FieldTipo {
+  TEXTO
+  PRECO
+  IMAGEM
+  CTA
+}
+
+// ==========================================
+// ENTIDADES CORE (MÓDULOS DE USUÁRIOS E TENANTS)
+// ==========================================
+
+model User {
+  id               String               @id @default(uuid())
+  email            String               @unique
+  fullName         String
+  profileType      ProfileType          @default(CORRETOR)
+  clerkUserId      String               @unique
+  tenantId         String?
+  tenant           Tenant?              @relation(fields: [tenantId], references: [id])
+  phaseAccess      Int                  @default(1)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  // Relacionamentos adicionais
+  comentarios      ComentarioAprovacao[]
+  corretorAccess   CorretorAccess[]
+  projetosArquiteto ProjetoArquiteto[]
+  placements       ProductPlacement[]
+}
+
+model Tenant {
+  id              String           @id @default(uuid())
+  name            String
+  slug            String           @unique
+  tenantType      String           @default("IMOBILIARIA")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Relações
+  users           User[]
+  properties      Property[]
+  brands          Brand[]
+  empreendimentos Empreendimento[]
+}
+
+// ==========================================
+// ENTIDADES PROPTECH (IMÓVEIS E BAIRROS)
+// ==========================================
+
+model Property {
+  id             String           @id @default(uuid())
+  addressJson    Json
+  neighborhoodId String?
+  neighborhood   Neighborhood?    @relation(fields: [neighborhoodId], references: [id])
+  tenantId       String?
+  tenant         Tenant?          @relation(fields: [tenantId], references: [id])
+  standard       PropertyStandard
+  category       PropertyCategory
+  metadataJson   Json?
+  ownerUserId    String
+  status         PropertyStatus   @default(RASCUNHO)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  // Relações
+  mediaAssets    MediaAsset[]
+  matchingScores MatchingScore[]
+}
+
+model Neighborhood {
+  id           String          @id @default(uuid())
+  name         String
+  city         String
+  trafficScore Int?
+  properties   Property[]
+  contracts    BrandContract[]
+}
+
+model MediaAsset {
+  id         String             @id @default(uuid())
+  propertyId String
+  property   Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  type       String
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  placements ProductPlacement[]
+}
+
+// ==========================================
+// ENTIDADES ADTECH (MARCAS E PLACEMENTS)
+// ==========================================
+
+model Brand {
+  id                  String             @id @default(uuid())
+  name                String
+  category            BrandCategory
+  logoUrl             String?
+  affiliateConfigJson Json?
+  tenantId            String?
+  tenant              Tenant?            @relation(fields: [tenantId], references: [id])
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  // Relações
+  contracts           BrandContract[]
+  placements          ProductPlacement[]
+  productSpecs        ProductSpec[]
+  matchingScores      MatchingScore[]
+  produtosIndustria   ProdutoIndustria[]
+  exclusividades      ExclusividadeRegra[]
+}
+
+model BrandContract {
+  id              String          @id @default(uuid())
+  brandId         String
+  brand           Brand           @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  isActive        Boolean         @default(true)
+  validUntil      DateTime
+  productCategory String
+  exclusivityType ExclusivityType
+  neighborhoodId  String?
+  neighborhood    Neighborhood?   @relation(fields: [neighborhoodId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model ProductSpec {
+  id         String             @id @default(uuid())
+  brandId    String
+  brand      Brand              @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  name       String
+  sku        String?
+  priceMin   Float?
+  priceMax   Float?
+  placements ProductPlacement[]
+}
+
+model ProductPlacement {
+  id              String          @id @default(uuid())
+  mediaAssetId    String
+  mediaAsset      MediaAsset      @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+  brandId         String
+  brand           Brand           @relation(fields: [brandId], references: [id])
+  productSpecId   String?
+  productSpec     ProductSpec?    @relation(fields: [productSpecId], references: [id])
+  placementRegion Json?
+  couponCode      String?
+  status          PlacementStatus @default(SUGERIDO)
+  architectUserId String?
+  architect       User?           @relation(fields: [architectUserId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model MatchingScore {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  brandId    String
+  brand      Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  score      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ==========================================
+// MÓDULO TAGMOB OS (CENTRAL DE SERVIÇOS INCORPORADORAS)
+// ==========================================
+
+model Empreendimento {
+  id                 String               @id @default(uuid())
+  nome               String
+  tipo               EmpreendimentoTipo
+  bairro             String
+  cidade             String
+  faseAtual          Int                  @default(1) // 1 a 5
+  status             EmpreendimentoStatus @default(EM_ANDAMENTO)
+  plano              PlanoOS              @default(PRO)
+  assinaturaAtiva    Boolean              @default(true)
+  corTema            String               @default("#FF0068")
+  thumbnailUrl       String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  // Relação com Tenant (Construtora/Incorporadora)
+  tenantId           String
+  tenant             Tenant               @relation(fields: [tenantId], references: [id])
+
+  // Submódulos OS
+  estrategia         EstrategiaOS?
+  designSystem       DesignSystemOS?
+  assets             AssetOS[]
+
+  // Ganchos de Escala
+  corretorAccess     CorretorAccess[]
+  projetosArquitetura ProjetoArquiteto[]
+
+  // Novas Relações de precificação e escopo
+  projetosEntregaveis ProjetoEntregavel[]
+  orcamentos          OrcamentoContratado[]
+}
+
+model EstrategiaOS {
+  id                String         @id @default(uuid())
+  empreendimentoId  String         @unique
+  empreendimento    Empreendimento @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  
+  pesquisaMercado   String         @db.Text
+  naming            String         @db.Text
+  conceitoCriativo  String         @db.Text
+  manifesto         String         @db.Text
+  tomDeVoz          String[]       // Array de características do tom
+  argumentosVenda   String[]       // Lista de bullet points de venda
+  publicoAlvo       String         @db.Text
+  posicionamento    String         @db.Text
+  completo          Boolean        @default(false)
+}
+
+model DesignSystemOS {
+  id                 String         @id @default(uuid())
+  empreendimentoId   String         @unique
+  empreendimento     Empreendimento @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  
+  keyVisualDescricao String         @db.Text
+  paletaCores        Json           // Formato: [{ nome: "Verde", hex: "#123456" }]
+  fontes             Json           // Formato: [{ nome: "Inter", uso: "Corpo de texto" }]
+  logoPrincipal      String         // URL da imagem
+  gridDescricao      String?        @db.Text
+  completo           Boolean        @default(false)
+}
+
+model AssetOS {
+  id                  String               @id @default(uuid())
+  empreendimentoId    String
+  empreendimento      Empreendimento       @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  
+  nome                String
+  tipo                AssetTipo
+  descricao           String               @db.Text
+  status              AssetStatus          @default(RASCUNHO)
+  bloqueado           Boolean              @default(false)
+  
+  // Arquivos
+  urlOriginal         String?              // Upload do designer da TAGMOB
+  urlEditada          String?              // Arquivo exportado/customizado pelo cliente
+  dimensoes           String               // Ex: "1080x1350"
+  
+  // Auditoria do Gatekeeper
+  aprovadoAgenciaEm   DateTime?
+  aprovadoAgenciaPor  String?
+  aprovadoClienteEm   DateTime?
+  aprovadoClientePor  String?
+
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  // Relações de suporte
+  camposEditaveis     CampoEditavel[]
+  comentarios         ComentarioAprovacao[]
+}
+
+model CampoEditavel {
+  id          String    @id @default(uuid())
+  assetId     String
+  asset       AssetOS   @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  label       String    // Ex: "Preço do Apartamento"
+  tipo        FieldTipo
+  valorAtual  String    @db.Text
+  placeholder String
+  maxChars    Int?
+}
+
+model ComentarioAprovacao {
+  id        String   @id @default(uuid())
+  assetId   String
+  asset     AssetOS  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  autorId   String
+  autor     User     @relation(fields: [autorId], references: [id])
+  
+  perfil    String   // "AGENCIA" ou "CLIENTE"
+  mensagem  String   @db.Text
+  criadoEm  DateTime @default(now())
+}
+
+// ==========================================
+// [GANCHOS DE ESCALA] CAMADA DE CORRETORES
+// ==========================================
+
+model CorretorAccess {
+  id                   String         @id @default(uuid())
+  userId               String         // Usuário com Role CORRETOR ou IMOBILIARIA
+  user                 User           @relation(fields: [userId], references: [id])
+  
+  empreendimentoId     String
+  empreendimento       Empreendimento @relation(fields: [empreendimentoId], references: [id])
+  
+  chaveAcesso          String         @unique // Token ou chave de convite para a ponta
+  permitePersonalizacao Boolean        @default(false) // Se pode editar os templates
+  
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+}
+
+// ==========================================
+// [GANCHOS DE ESCALA] CAMADA DE ARQUITETOS
+// ==========================================
+
+model ProjetoArquiteto {
+  id                 String                 @id @default(uuid())
+  nome               String
+  descricao          String                 @db.Text
+  arquitetoId        String
+  arquiteto          User                   @relation(fields: [arquitetoId], references: [id])
+  arquitetoCreci     String?
+  
+  empreendimentoId   String
+  empreendimento     Empreendimento         @relation(fields: [empreendimentoId], references: [id])
+  
+  status             String                 @default("RASCUNHO") // RASCUNHO, EM_ANDAMENTO, ENTREGUE
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  // Especificações de produtos de marcas parceiras neste projeto de design de interiores
+  especificacoes     EspecificacaoProduto[]
+}
+
+model EspecificacaoProduto {
+  id                 String           @id @default(uuid())
+  projetoId          String
+  projeto            ProjetoArquiteto @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  
+  produtoIndustriaId String
+  produtoIndustria   ProdutoIndustria @relation(fields: [produtoIndustriaId], references: [id])
+  
+  ambiente           String           // Ex: "Cozinha", "Varanda Gourmet"
+  quantidade         Int              @default(1)
+  observacao         String?          @db.Text
+  leadGerado         Boolean          @default(false) // Indica se gerou matching AdTech para faturamento
+  createdAt          DateTime         @default(now())
+}
+
+// ==========================================
+// [GANCHOS DE ESCALA] CAMADA DE MARCAS PARCEIRAS (ADTECH)
+// ==========================================
+
+model ProdutoIndustria {
+  id             String                 @id @default(uuid())
+  marcaId        String
+  marca          Brand                  @relation(fields: [marcaId], references: [id])
+  
+  nome           String
+  categoria      String
+  subcategoria   String
+  descricao      String                 @db.Text
+  imagemUrl      String
+  especificacoes Json                   // Especificações técnicas (tamanho, peso, voltagem, links)
+  
+  status         String                 @default("ATIVO") // ATIVO, PAUSADO, EXCLUSIVO
+  cpvBrl         Int                    @default(0) // Custo por Visualização em centavos de Real
+  cpaBrl         Int                    @default(0) // Custo por Afiliação/Especificação
+  
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  // Relações de uso
+  especificacoesUso EspecificacaoProduto[]
+  exclusividades    ExclusividadeRegra[]
+}
+
+model ExclusividadeRegra {
+  id             String           @id @default(uuid())
+  marcaId        String
+  marca          Brand            @relation(fields: [marcaId], references: [id])
+  
+  tipo           String           // BAIRRO, EMPREENDIMENTO, PADRAO, REGIAO
+  alvo           String           // Ex: "Jardins", "Alto Padrão", "emp-001"
+  
+  vigenciaInicio DateTime
+  vigenciaFim    DateTime?
+  ativa          Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+
+  // Relação com Produto
+  produtoId      String?
+  produto        ProdutoIndustria? @relation(fields: [produtoId], references: [id])
+}
+
+// ==========================================
+// NOVAS ENTIDADES DE PRECIFICAÇÃO E ESCOPO
+// ==========================================
+
+model EntregavelItem {
+  id            String              @id @default(uuid())
+  nome          String
+  etapa         Int                 // 1 a 11
+  isObrigatorio Boolean             @default(false) // True apenas para os itens da Etapa 1
+  precoBase     Decimal             @db.Decimal(10, 2)
+  projetos      ProjetoEntregavel[]
+}
+
+model ProjetoEntregavel {
+  id               String         @id @default(uuid())
+  empreendimentoId String
+  empreendimento   Empreendimento @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  entregavelId     String
+  entregavel       EntregavelItem @relation(fields: [entregavelId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+}
+
+model OrcamentoContratado {
+  id               String         @id @default(uuid())
+  empreendimentoId String
+  empreendimento   Empreendimento @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  valorEtapa1Fixo  Decimal        @db.Decimal(10, 2) // Valor imutável do combo inicial
+  valorVariavel    Decimal        @db.Decimal(10, 2) // Soma das peças adicionadas pelo cliente
+  valorTotal       Decimal        @db.Decimal(10, 2)
+  tipoContrato     String         // Projeto Fechado, Fee Mensal, Banco de Horas, Por Demanda
+}

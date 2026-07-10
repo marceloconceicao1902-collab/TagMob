@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, FolderKanban, Palette, Home,
-  Tag, LogOut, ChevronRight, Settings,
+  Tag, LogOut, ChevronRight, Settings, Building2,
 } from "lucide-react";
 
 type NavItem = {
@@ -15,6 +15,7 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { label: "Página Inicial",    href: "/",                  icon: Home,            color: "#00E5FF" },
+  { label: "Incorporadora",     href: "/construtora",       icon: Building2,       color: "#FF0068", badge: "OS" },
   { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068", badge: "NOVO" },
   { label: "Arquiteto",         href: "/arquiteto",         icon: Palette,         color: "#8B5CF6" },
   { label: "Visão Geral",       href: "/resumo",            icon: LayoutDashboard, color: "#FFB800" },

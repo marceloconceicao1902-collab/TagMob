@@ -14,7 +14,7 @@ type NavItem = {
 };
 
 const NAV: NavItem[] = [
-  { label: "Página Inicial",    href: "/",                  icon: Home,            color: "#00E5FF" },
+  { label: "Página Inicial",    href: "/hub",               icon: Home,            color: "#00E5FF" },
   { label: "Incorporadora",     href: "/construtora",       icon: Building2,       color: "#FF0068", badge: "OS" },
   { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068", badge: "NOVO" },
   { label: "Arquiteto",         href: "/arquiteto",         icon: Palette,         color: "#8B5CF6" },
@@ -25,7 +25,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   function isActive(href: string) {
-    if (href === "/")          return pathname === "/";
+    if (href === "/hub")       return pathname === "/hub";
     if (href === "/resumo")    return pathname === "/resumo";
     if (href === "/catalogo")  return pathname === "/catalogo"  || pathname.startsWith("/catalogo");
     if (href === "/arquiteto") return pathname === "/arquiteto" || pathname.startsWith("/arquiteto");

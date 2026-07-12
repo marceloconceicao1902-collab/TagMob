@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth, IS_FIREBASE_READY } from "@/lib/firebase";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -20,10 +20,10 @@ export default function SignInPage() {
     setLoading(true);
     setErrorMsg("");
     try {
-      if (!auth) {
+      if (!IS_FIREBASE_READY) {
         throw new Error("Serviço de autenticação indisponível. Verifique a configuração do Firebase.");
       }
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
       router.push("/hub");
     } catch (err: any) {
       console.error("Erro no login:", err);
@@ -36,6 +36,8 @@ export default function SignInPage() {
         cleanMsg = "Acesso bloqueado temporariamente por excesso de tentativas. Tente mais tarde.";
       } else if (err.code === "auth/unauthorized-domain") {
         cleanMsg = "Domínio não autorizado no Firebase. Adicione este domínio em Authentication → Authorized Domains.";
+      } else if (cleanMsg?.includes("reading 'app'")) {
+        cleanMsg = "Serviço de autenticação indisponível. Reinicie o servidor e verifique as variáveis do Firebase.";
       }
       setErrorMsg(cleanMsg);
     } finally {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth, IS_FIREBASE_READY } from "@/lib/firebase";
 import {
   LayoutDashboard, FolderKanban, Palette, Home,
   Tag, LogOut, ChevronRight, Settings, Building2,
@@ -30,7 +30,8 @@ export default function Sidebar() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (!IS_FIREBASE_READY) return;
+    const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (currentUser) => {
       setUser(currentUser);
     });
     return () => unsubscribe();
@@ -46,7 +47,7 @@ export default function Sidebar() {
 
   async function handleLogout() {
     try {
-      await signOut(auth);
+      await signOut(getFirebaseAuth());
       router.push("/");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);

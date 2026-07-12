@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth, IS_FIREBASE_READY } from "@/lib/firebase";
 import Sidebar from "@/components/layout/sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -12,13 +12,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Proteção: auth pode ser null quando vars do Firebase não estão configuradas
-    if (!auth) {
+    if (!IS_FIREBASE_READY) {
       router.push("/sign-in");
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (currentUser) => {
       if (!currentUser) {
         router.push("/sign-in");
       } else {

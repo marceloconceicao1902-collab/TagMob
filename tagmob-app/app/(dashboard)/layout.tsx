@@ -12,9 +12,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    // Proteção: auth pode ser null quando vars do Firebase não estão configuradas
+    if (!auth) {
+      router.push("/sign-in");
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
-        // Redireciona para o login se não estiver logado no Firebase Auth
         router.push("/sign-in");
       } else {
         setUser(currentUser);

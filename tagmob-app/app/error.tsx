@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { AlertOctagon, RotateCw, Home } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AlertOctagon, RotateCw, Home, Copy, Check } from "lucide-react";
 import Link from "next/link";
 
 export default function GlobalError({
@@ -11,10 +11,26 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
-    // Log do erro no console para fins de monitoramento
     console.error("Erro capturado pela rota global:", error);
   }, [error]);
+
+  function handleCopy() {
+    const text = [
+      `Mensagem: ${error.message || "Erro desconhecido"}`,
+      error.digest ? `Digest: ${error.digest}` : "",
+      error.stack ? `\nStack Trace:\n${error.stack}` : "",
+      `\nURL: ${typeof window !== "undefined" ? window.location.href : ""}`,
+      `Timestamp: ${new Date().toISOString()}`,
+    ].filter(Boolean).join("\n");
+
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
 
   return (
     <div style={{
@@ -117,11 +133,12 @@ export default function GlobalError({
         </div>
 
         {/* Controles de Ação */}
-        <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+        <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
           <button
             onClick={() => reset()}
             style={{
               flex: 1,
+              minWidth: 140,
               backgroundColor: "#FF0068",
               border: "none",
               color: "#fff",
@@ -140,6 +157,31 @@ export default function GlobalError({
             <RotateCw size={14} />
             Tentar novamente
           </button>
+
+          <button
+            onClick={handleCopy}
+            title="Copiar detalhes do erro para a área de transferência"
+            style={{
+              backgroundColor: copied ? "#00E5FF18" : "#1A1A30",
+              border: `1px solid ${copied ? "#00E5FF60" : "#2A2A44"}`,
+              color: copied ? "#00E5FF" : "#A0A0C0",
+              padding: "12px 16px",
+              borderRadius: 8,
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 7,
+              transition: "all 0.2s",
+              whiteSpace: "nowrap"
+            }}
+          >
+            {copied ? <Check size={14} /> : <Copy size={14} />}
+            {copied ? "Copiado!" : "Copiar erro"}
+          </button>
+
           <Link
             href="/"
             style={{
@@ -147,7 +189,7 @@ export default function GlobalError({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              padding: "12px 20px",
+              padding: "12px 16px",
               borderRadius: 8,
               border: "1px solid #1A1A30",
               color: "#7878A0",

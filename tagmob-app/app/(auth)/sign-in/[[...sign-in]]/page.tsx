@@ -20,11 +20,13 @@ export default function SignInPage() {
     setLoading(true);
     setErrorMsg("");
     try {
+      if (!auth) {
+        throw new Error("Serviço de autenticação indisponível. Verifique a configuração do Firebase.");
+      }
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/hub");
     } catch (err: any) {
       console.error("Erro no login:", err);
-      // Traduz ou detalha os principais erros do Firebase Auth
       let cleanMsg = err.message;
       if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
         cleanMsg = "E-mail ou senha incorretos. Por favor, verifique suas credenciais.";
@@ -32,6 +34,8 @@ export default function SignInPage() {
         cleanMsg = "O formato do e-mail inserido é inválido.";
       } else if (err.code === "auth/too-many-requests") {
         cleanMsg = "Acesso bloqueado temporariamente por excesso de tentativas. Tente mais tarde.";
+      } else if (err.code === "auth/unauthorized-domain") {
+        cleanMsg = "Domínio não autorizado no Firebase. Adicione este domínio em Authentication → Authorized Domains.";
       }
       setErrorMsg(cleanMsg);
     } finally {

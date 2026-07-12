@@ -1,9 +1,5 @@
-import NegociosKanban from "@/components/pipeline/NegociosKanban";
+import { redirect } from "next/navigation";
 
-export const metadata = {
-  title: "Pipeline de Negócios — TAGMOB CRM",
-};
-
-export default function NegociosPage() {
-  return <NegociosKanban />;
+export default function NegociosRedirect() {
+  redirect("/construtora");
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Building2, Layers, Palette, Tag, Users, ArrowRight,
   Zap, TrendingUp, BarChart2, Globe, Sparkles, Network,
-  ChevronRight, DollarSign, Kanban, Inbox, CheckSquare, LayoutGrid,
+  ChevronRight, DollarSign, Kanban,
 } from "lucide-react";
 import { HUB_METRICAS, MOCK_EMPREENDIMENTOS, MOCK_METRICAS_ADTECH } from "@/lib/mock-data";
 
@@ -127,7 +127,7 @@ export default function HubPage() {
       titulo: "Construtoras & Incorporadoras",
       subtitulo: "Donos dos empreendimentos",
       cor: "#FF0068",
-      href: "/tagmob-os",
+      href: "/construtora",
       icon: Building2,
       papel: "Contratam a inteligência estratégica da TAGMOB. Aprovam o ecossistema criativo e liberam o acesso para os demais atores da cadeia.",
       consome: "Estratégia, Manifesto, KV e identidade visual",
@@ -206,37 +206,30 @@ export default function HubPage() {
         <StatCard label="Empreendimentos"       value={HUB_METRICAS.empreendimentos_ativos} color="#FF0068" icon={Building2} />
       </div>
 
-      {/* ── CRM — Acesso rápido ─────────────────────────────────────────────── */}
+      {/* ── Negócios — Acesso rápido ─────────────────────────────────────────── */}
       <div style={{ marginBottom: 36 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>CRM Comercial</h2>
-          <Link href="/crm" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
-            Central CRM →
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>Pipeline de Negócios</h2>
+          <Link href="/construtora" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+            Abrir Kanban →
           </Link>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
-          {[
-            { label: "Pipeline Kanban", href: "/negocios",   icon: Kanban,       color: "#FF0068", desc: "Negócios por etapa OS" },
-            { label: "Inbox de Leads",  href: "/leads",      icon: Inbox,        color: "#FFB800", desc: "Qualificar e converter" },
-            { label: "Contatos",        href: "/contatos",   icon: Users,        color: "#39FF14", desc: "Stakeholders e decisores" },
-            { label: "Atividades",      href: "/atividades", icon: CheckSquare,  color: "#8B5CF6", desc: "Tarefas e follow-ups" },
-          ].map((item) => (
-            <Link key={item.href} href={item.href} style={{ textDecoration: "none" }}>
-              <div style={{ background: "#111120", border: `1px solid ${item.color}30`, borderRadius: 12, padding: 16, height: "100%" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: item.color + "18", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <item.icon size={16} color={item.color} />
-                  </div>
-                  <p style={{ fontSize: 14, fontWeight: 800, color: "#EEEEFF" }}>{item.label}</p>
-                </div>
-                <p style={{ fontSize: 12, color: "#7878A0", marginBottom: 8 }}>{item.desc}</p>
-                <span style={{ fontSize: 11, fontWeight: 700, color: item.color, display: "flex", alignItems: "center", gap: 4 }}>
-                  Acessar <ArrowRight size={11} />
-                </span>
+        <Link href="/construtora" style={{ textDecoration: "none" }}>
+          <div style={{ background: "#111120", border: "1px solid #FF006830", borderRadius: 12, padding: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: "#FF006818", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Kanban size={22} color="#FF0068" />
               </div>
-            </Link>
-          ))}
-        </div>
+              <div>
+                <p style={{ fontSize: 15, fontWeight: 800, color: "#EEEEFF", marginBottom: 4 }}>Leads → Estratégia → Autonomia</p>
+                <p style={{ fontSize: 12, color: "#7878A0" }}>Kanban unificado com leads na primeira coluna e as 5 fases TAGMOB OS</p>
+              </div>
+            </div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#FF0068", display: "flex", alignItems: "center", gap: 4 }}>
+              Ver pipeline <ArrowRight size={12} />
+            </span>
+          </div>
+        </Link>
       </div>
 
       {/* ── Fluxo do conteúdo ───────────────────────────────────────────────── */}
@@ -373,11 +366,8 @@ export default function HubPage() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>Empreendimentos no Ecossistema</h2>
           <div style={{ display: "flex", gap: 16 }}>
-            <Link href="/crm" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
-              CRM Central →
-            </Link>
-            <Link href="/negocios" style={{ fontSize: 13, color: "#00E5FF", textDecoration: "none", fontWeight: 600 }}>
-              Pipeline Kanban →
+            <Link href="/construtora" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+              Pipeline de Negócios →
             </Link>
             <Link href="/tagmob-os" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
               Ver todos →

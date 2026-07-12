@@ -7,8 +7,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
 import {
   LayoutDashboard, FolderKanban, Palette, Home,
-  Tag, LogOut, ChevronRight, Settings, Building2, Kanban,
-  Inbox, Users, CheckSquare, LayoutGrid,
+  Tag, LogOut, ChevronRight, Settings, Building2,
 } from "lucide-react";
 
 type NavItem = {
@@ -19,12 +18,7 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { label: "Página Inicial",    href: "/hub",               icon: Home,            color: "#00E5FF" },
-  { label: "CRM",               href: "/crm",               icon: LayoutGrid,      color: "#FF0068", badge: "CRM" },
-  { label: "Pipeline",          href: "/negocios",          icon: Kanban,          color: "#FF0068" },
-  { label: "Leads",             href: "/leads",             icon: Inbox,           color: "#FFB800" },
-  { label: "Contatos",          href: "/contatos",          icon: Users,           color: "#39FF14" },
-  { label: "Atividades",        href: "/atividades",        icon: CheckSquare,     color: "#8B5CF6" },
-  { label: "Incorporadora",     href: "/construtora",       icon: Building2,       color: "#FF0068", badge: "OS" },
+  { label: "Negócios",          href: "/construtora",       icon: Building2,       color: "#FF0068", badge: "OS" },
   { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068", badge: "NOVO" },
   { label: "Arquiteto",         href: "/arquiteto",         icon: Palette,         color: "#8B5CF6" },
   { label: "Visão Geral",       href: "/resumo",            icon: LayoutDashboard, color: "#FFB800" },
@@ -51,14 +45,13 @@ export default function Sidebar() {
 
   function isActive(href: string) {
     if (href === "/hub")       return pathname === "/hub";
-    if (href === "/crm")       return pathname === "/crm";
-    if (href === "/negocios")  return pathname === "/negocios";
-    if (href === "/leads")     return pathname === "/leads";
-    if (href === "/contatos")  return pathname === "/contatos";
-    if (href === "/atividades") return pathname === "/atividades";
     if (href === "/resumo")    return pathname === "/resumo";
     if (href === "/catalogo")  return pathname === "/catalogo"  || pathname.startsWith("/catalogo");
     if (href === "/arquiteto") return pathname === "/arquiteto" || pathname.startsWith("/arquiteto");
+    if (href === "/construtora") {
+      return pathname === "/construtora" || pathname.startsWith("/construtora")
+        || pathname === "/negocios" || pathname === "/leads" || pathname === "/crm";
+    }
     return pathname.startsWith(href);
   }
 

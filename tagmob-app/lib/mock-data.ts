@@ -378,6 +378,54 @@ export const MOCK_EMPREENDIMENTOS: Empreendimento[] = [
   },
 ];
 
+export const MOCK_LEADS = [
+  {
+    id: "lead-demo-001",
+    nome: "Fernanda Oliveira",
+    email: "fernanda@construtoraabc.com.br",
+    telefone: "(11) 98765-4321",
+    empresa: "Construtora ABC",
+    mensagem: "Interesse em TAGMOB OS para lançamento em Campinas. 3 torres, 180 unidades.",
+    orcamentoEstimado: 220_000,
+    status: "NOVO",
+    prioridade: 1,
+    score: 78,
+    createdAt: "2024-06-10",
+    updatedAt: "2024-06-10",
+    ownerUser: { id: "u1", fullName: "Ana Costa" },
+  },
+  {
+    id: "lead-demo-002",
+    nome: "Carlos Mendes",
+    email: "carlos@incorporadora.xyz",
+    telefone: "(21) 99876-5432",
+    empresa: "Incorporadora XYZ",
+    mensagem: "Queremos reposicionar marca de empreendimento de alto padrão no Leblon.",
+    orcamentoEstimado: 350_000,
+    status: "EM_ATENDIMENTO",
+    prioridade: 2,
+    score: 65,
+    createdAt: "2024-06-08",
+    updatedAt: "2024-06-11",
+    ownerUser: { id: "u2", fullName: "Rafael Mendes" },
+  },
+  {
+    id: "lead-demo-003",
+    nome: "Patrícia Souza",
+    email: "patricia@grupohorizonte.com",
+    telefone: null,
+    empresa: "Grupo Horizonte",
+    mensagem: "Fee mensal para 4 lançamentos simultâneos em 2024.",
+    orcamentoEstimado: 480_000,
+    status: "QUALIFICADO",
+    prioridade: 1,
+    score: 92,
+    createdAt: "2024-06-01",
+    updatedAt: "2024-06-12",
+    ownerUser: { id: "u1", fullName: "Ana Costa" },
+  },
+];
+
 export const MOCK_ESTRATEGIA: Record<string, EstrategiaOS> = {
   "emp-001": {
     empreendimento_id: "emp-001",

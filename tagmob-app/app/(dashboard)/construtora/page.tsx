@@ -6,9 +6,10 @@ import {
   Building2, Rocket, CheckCircle2, Clock, AlertCircle,
   ChevronRight, Plus, FileText, BarChart3, Layers,
   Sparkles, Lock, ArrowUpRight, Play, Zap, Trophy,
-  CircleDot, TrendingUp, Package, Settings2,
+  CircleDot, TrendingUp, Package, Settings2, Kanban,
 } from "lucide-react";
 import { ModelComparison } from "@/components/billing/ModelComparison";
+import NegociosKanban from "@/components/pipeline/NegociosKanban";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const EMPREENDIMENTOS = [
@@ -85,9 +86,10 @@ const PIPELINE_STEPS = [
 ];
 
 const TABS = [
+  { id: "kanban", label: "Pipeline", icon: Kanban },
   { id: "visao", label: "Visão Geral", icon: BarChart3 },
   { id: "empreendimentos", label: "Empreendimentos", icon: Building2 },
-  { id: "pipeline", label: "OS Pipeline", icon: Layers },
+  { id: "esteira", label: "Esteira OS", icon: Layers },
   { id: "modelo", label: "Modelo de Contratação", icon: FileText },
 ];
 
@@ -261,7 +263,7 @@ function EmpreendimentoCard({ emp, onSelect }: { emp: typeof EMPREENDIMENTOS[0];
 
 // ─── Página principal ─────────────────────────────────────────────────────────
 export default function IncorporadoraHub() {
-  const [activeTab, setActiveTab] = useState("visao");
+  const [activeTab, setActiveTab] = useState("kanban");
   const [selectedEmp, setSelectedEmp] = useState<string | null>(null);
 
   const totalOrc = EMPREENDIMENTOS.reduce((s, e) => s + e.orcamentoTotal, 0);
@@ -285,16 +287,15 @@ export default function IncorporadoraHub() {
               </div>
               <div>
                 <p style={{ fontSize: 10, color: "#7878A0", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                  TAGMOB OS
+                  TAGMOB OS · NEGÓCIOS
                 </p>
                 <h1 style={{ fontSize: 22, fontWeight: 900, color: "#EEEEFF", letterSpacing: "-0.04em", lineHeight: 1 }}>
-                  Painel da Incorporadora
+                  Pipeline de Negócios
                 </h1>
               </div>
             </div>
-            <p style={{ fontSize: 13, color: "#7878A0", maxWidth: 480, lineHeight: 1.6 }}>
-              Central operacional dos seus empreendimentos. Acompanhe a esteira de produção,
-              aprove peças e exporte materiais com autonomia total.
+            <p style={{ fontSize: 13, color: "#7878A0", maxWidth: 520, lineHeight: 1.6 }}>
+              Leads, contratos e empreendimentos em um único Kanban — da prospecção até a autonomia do cliente.
             </p>
           </div>
 
@@ -350,7 +351,10 @@ export default function IncorporadoraHub() {
       </div>
 
       {/* ── CONTEÚDO DAS TABS ─────────────────────────────────────────────── */}
-      <div style={{ padding: "28px 36px" }}>
+      <div style={{ padding: activeTab === "kanban" ? 0 : "28px 36px" }}>
+
+        {/* Tab: Pipeline Kanban (Leads + fases OS) */}
+        {activeTab === "kanban" && <NegociosKanban embedded />}
 
         {/* Tab: Visão Geral */}
         {activeTab === "visao" && (
@@ -445,8 +449,8 @@ export default function IncorporadoraHub() {
           </div>
         )}
 
-        {/* Tab: Pipeline */}
-        {activeTab === "pipeline" && (
+        {/* Tab: Esteira OS */}
+        {activeTab === "esteira" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <div>
               <h2 style={{ fontSize: 16, fontWeight: 800, color: "#EEEEFF", marginBottom: 6 }}>OS Pipeline — Esteira de Produção</h2>

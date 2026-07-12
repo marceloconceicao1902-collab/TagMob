@@ -1,12 +1,23 @@
 import { OS_FASES } from "@/lib/types";
 import type { Empreendimento, OSFase } from "@/lib/types";
+import type { LeadDTO } from "@/lib/crm";
+
+export type PipelineColumnId = "leads" | OSFase;
 
 export type KanbanColumn = {
-  id: OSFase;
+  id: PipelineColumnId;
   title: string;
   subtitle: string;
   color: string;
   deals: Empreendimento[];
+  leads: LeadDTO[];
+};
+
+export const LEADS_COLUMN_META = {
+  id: "leads" as const,
+  title: "Leads",
+  subtitle: "Prospects aguardando qualificação e conversão",
+  color: "#FFB800",
 };
 
 export function formatBRL(value: number): string {
@@ -24,10 +35,30 @@ export function groupDealsByFase(deals: Empreendimento[]): KanbanColumn[] {
     subtitle: fase.descricao,
     color: fase.cor,
     deals: deals.filter((d) => d.fase_atual === fase.num),
+    leads: [],
   }));
 }
 
-export function calcPipelineMetrics(deals: Empreendimento[]) {
+export function buildPipelineColumns(deals: Empreendimento[], leads: LeadDTO[]): KanbanColumn[] {
+  const activeLeads = leads.filter((l) => l.status !== "CONVERTIDO" && l.status !== "ARQUIVADO");
+  return [
+    { ...LEADS_COLUMN_META, deals: [], leads: activeLeads },
+    ...groupDealsByFase(deals),
+  ];
+}
+
+export function filterLeads(leads: LeadDTO[], query: string): LeadDTO[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return leads;
+  return leads.filter(
+    (l) =>
+      l.nome.toLowerCase().includes(q) ||
+      l.email.toLowerCase().includes(q) ||
+      (l.empresa?.toLowerCase().includes(q) ?? false)
+  );
+}
+
+export function calcPipelineMetrics(deals: Empreendimento[], leads: LeadDTO[] = []) {
   const valorTotal = deals.reduce((sum, d) => sum + (d.valor_contrato ?? 0), 0);
   const emAndamento = deals.filter((d) => d.status === "EM_ANDAMENTO").length;
   const publicados = deals.filter((d) => d.status === "PUBLICADO").length;
@@ -35,8 +66,9 @@ export function calcPipelineMetrics(deals: Empreendimento[]) {
   const diasMedio = deals.length
     ? Math.round(deals.reduce((sum, d) => sum + (d.dias_na_fase ?? 0), 0) / deals.length)
     : 0;
+  const leadsAtivos = leads.filter((l) => l.status !== "CONVERTIDO" && l.status !== "ARQUIVADO").length;
 
-  return { valorTotal, emAndamento, publicados, pendentes, diasMedio, total: deals.length };
+  return { valorTotal, emAndamento, publicados, pendentes, diasMedio, total: deals.length, leadsAtivos };
 }
 
 export function filterDeals(deals: Empreendimento[], query: string): Empreendimento[] {

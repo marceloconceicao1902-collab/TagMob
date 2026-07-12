@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { getFirebaseAuth, IS_FIREBASE_READY } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -20,10 +20,8 @@ export default function SignInPage() {
     setLoading(true);
     setErrorMsg("");
     try {
-      if (!IS_FIREBASE_READY) {
-        throw new Error("Serviço de autenticação indisponível. Verifique a configuração do Firebase.");
-      }
-      await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+      const auth = await getFirebaseAuth();
+      await signInWithEmailAndPassword(auth, email, password);
       router.push("/hub");
     } catch (err: any) {
       console.error("Erro no login:", err);

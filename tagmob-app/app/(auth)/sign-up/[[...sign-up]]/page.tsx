@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirebaseAuth, IS_FIREBASE_READY } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -30,10 +30,8 @@ export default function SignUpPage() {
     setLoading(true);
     setErrorMsg("");
     try {
-      if (!IS_FIREBASE_READY) {
-        throw new Error("Serviço de autenticação indisponível. Verifique a configuração do Firebase.");
-      }
-      await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
+      const auth = await getFirebaseAuth();
+      await createUserWithEmailAndPassword(auth, email, password);
       // Aqui pode ir para o onboarding após criar a conta
       router.push("/onboarding");
     } catch (err: any) {

@@ -3,26 +3,20 @@ import { getDatabase, Database } from "firebase/database";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getStorage, FirebaseStorage } from "firebase/storage";
 import { getAuth, Auth } from "firebase/auth";
+import {
+  FirebaseClientConfig,
+  getInlineFirebaseConfig,
+  getMissingFirebaseFields,
+  isFirebaseConfigReady,
+} from "@/lib/firebase-config";
 
-const firebaseConfig = {
-  apiKey:            (process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? "").trim(),
-  authDomain:        (process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? "").trim(),
-  databaseURL:       (process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ?? "").trim(),
-  projectId:         (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "").trim(),
-  storageBucket:     (process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ?? "").trim(),
-  messagingSenderId: (process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? "").trim(),
-  appId:             (process.env.NEXT_PUBLIC_FIREBASE_APP_ID ?? "").trim(),
-  measurementId:     (process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ?? "").trim(),
-};
+const inlineConfig = getInlineFirebaseConfig();
 
-/** Variáveis mínimas para Auth (não exige databaseURL). */
-export const IS_FIREBASE_READY = Boolean(
-  firebaseConfig.apiKey &&
-  firebaseConfig.authDomain &&
-  firebaseConfig.projectId &&
-  firebaseConfig.appId
-);
+/** Disponível no bundle do cliente (pode ser false em produção sem vars no build). */
+export const IS_FIREBASE_READY = isFirebaseConfigReady(inlineConfig);
 
+let _resolvedConfig: FirebaseClientConfig | null = null;
+let _configPromise: Promise<FirebaseClientConfig> | null = null;
 let _app: FirebaseApp | undefined;
 let _auth: Auth | undefined;
 let _db: Database | undefined;
@@ -35,52 +29,86 @@ function ensureBrowser() {
   }
 }
 
-function getFirebaseApp(): FirebaseApp {
-  if (!IS_FIREBASE_READY) {
-    throw new Error("Firebase não configurado. Verifique as variáveis NEXT_PUBLIC_FIREBASE_*.");
+async function resolveFirebaseConfig(): Promise<FirebaseClientConfig> {
+  if (_resolvedConfig) return _resolvedConfig;
+
+  if (!_configPromise) {
+    _configPromise = (async () => {
+      if (isFirebaseConfigReady(inlineConfig)) {
+        _resolvedConfig = inlineConfig;
+        return inlineConfig;
+      }
+
+      const res = await fetch("/api/firebase-config");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const missing: string[] = body.missing ?? [];
+        const missingText = missing.length > 0 ? ` Faltando: ${missing.join(", ")}.` : "";
+        throw new Error(
+          `Serviço de autenticação indisponível.${missingText} Configure as variáveis na Vercel (Settings → Environment Variables) e faça redeploy.`
+        );
+      }
+
+      const remote = (await res.json()) as FirebaseClientConfig;
+      if (!isFirebaseConfigReady(remote)) {
+        const missing = getMissingFirebaseFields(remote);
+        throw new Error(
+          `Serviço de autenticação indisponível. Faltando: ${missing.join(", ")}.`
+        );
+      }
+
+      _resolvedConfig = remote;
+      return remote;
+    })();
   }
+
+  return _configPromise;
+}
+
+function getFirebaseApp(config: FirebaseClientConfig): FirebaseApp {
   ensureBrowser();
   if (!_app) {
-    _app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    _app = getApps().length === 0 ? initializeApp(config) : getApp();
   }
   return _app;
 }
 
-/** Retorna a instância Auth — inicializa o Firebase sob demanda no cliente. */
-export function getFirebaseAuth(): Auth {
-  if (!IS_FIREBASE_READY) {
-    throw new Error("Serviço de autenticação indisponível. Verifique a configuração do Firebase.");
-  }
-  ensureBrowser();
+/** Retorna Auth — carrega config do bundle ou da API em runtime. */
+export async function getFirebaseAuth(): Promise<Auth> {
+  const config = await resolveFirebaseConfig();
   if (!_auth) {
-    _auth = getAuth(getFirebaseApp());
+    _auth = getAuth(getFirebaseApp(config));
   }
   return _auth;
 }
 
-export function getFirebaseDb(): Database {
-  return _db ??= getDatabase(getFirebaseApp());
+export async function getFirebaseDb(): Promise<Database> {
+  const config = await resolveFirebaseConfig();
+  return _db ??= getDatabase(getFirebaseApp(config));
 }
 
-export function getFirebaseFirestore(): Firestore {
-  return _firestore ??= getFirestore(getFirebaseApp());
+export async function getFirebaseFirestore(): Promise<Firestore> {
+  const config = await resolveFirebaseConfig();
+  return _firestore ??= getFirestore(getFirebaseApp(config));
 }
 
-export function getFirebaseStorage(): FirebaseStorage {
-  return _storage ??= getStorage(getFirebaseApp());
+export async function getFirebaseStorage(): Promise<FirebaseStorage> {
+  const config = await resolveFirebaseConfig();
+  return _storage ??= getStorage(getFirebaseApp(config));
 }
 
 let analytics: ReturnType<typeof import("firebase/analytics").getAnalytics> | null = null;
 
-export function initFirebaseAnalytics(): void {
+export async function initFirebaseAnalytics(): Promise<void> {
   if (typeof window === "undefined" || analytics) return;
-  import("firebase/analytics")
-    .then(({ getAnalytics, isSupported }) =>
-      isSupported().then((ok) => {
-        if (ok) analytics = getAnalytics(getFirebaseApp());
-      })
-    )
-    .catch(() => {});
+  try {
+    const config = await resolveFirebaseConfig();
+    const { getAnalytics, isSupported } = await import("firebase/analytics");
+    const ok = await isSupported();
+    if (ok) analytics = getAnalytics(getFirebaseApp(config));
+  } catch {
+    /* analytics opcional */
+  }
 }
 
 export { analytics };

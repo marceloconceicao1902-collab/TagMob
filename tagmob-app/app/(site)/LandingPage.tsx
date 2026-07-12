@@ -10,8 +10,6 @@ import {
   Send, Phone, MessageSquare
 } from "lucide-react";
 
-const platformUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || "http://localhost:3000";
-
 const DELIVERABLES = [
   // Etapa 1 - Combo Fixo Obrigatório
   { id: "campanha", nome: "Estratégia e Campanha de Lançamento", categoria: "Estratégia & Branding", preco: 6000, desc: "Apresentação do conceito criativo principal", isObrigatorio: true },
@@ -63,7 +61,6 @@ const COMPARATIVE_ROWS = [
   },
 ];
 
-/* ─── Bloco decorativo ────────────────────────────────────────────────────── */
 function Bloco({ color, w, h, top, left, right, bottom, rotate, opacity = 0.08 }: {
   color: string; w: number; h: number; top?: string; left?: string; right?: string;
   bottom?: string; rotate?: number; opacity?: number;
@@ -77,107 +74,6 @@ function Bloco({ color, w, h, top, left, right, bottom, rotate, opacity = 0.08 }
   );
 }
 
-/* ─── Nav ─────────────────────────────────────────────────────────────────── */
-function Nav() {
-  return (
-    <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: "1px solid #111120", backgroundColor: "rgba(9,9,15,0.94)", backdropFilter: "blur(20px)", padding: "0 32px" }}>
-      <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", alignItems: "center", height: 62, gap: 24 }}>
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
-          <div style={{ width: 30, height: 30, backgroundColor: "#FF0068", borderRadius: 7, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, padding: 5 }}>
-            {[0,1,2,3].map((i) => (
-              <div key={i} style={{ backgroundColor: i === 3 ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.92)", borderRadius: 1 }} />
-            ))}
-          </div>
-          <span style={{ fontWeight: 900, fontSize: 17, letterSpacing: "-0.05em", color: "#EEEEFF" }}>TAGMOB</span>
-        </div>
-        {/* Links */}
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          {[["#funcionalidades", "Funcionalidades"], ["#simulador", "Simulador Anti-VGV"], ["#atores", "Parceiros"], ["#como-funciona", "Como funciona"]].map(([h, l]) => (
-            <Link key={l} href={h} style={{ color: "#7878A0", fontSize: 13, textDecoration: "none", fontWeight: 500 }}>{l}</Link>
-          ))}
-        </div>
-        <NavAuthArea />
-      </div>
-    </nav>
-  );
-}
-
-function NavAuthArea() {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <Link
-        href={`${platformUrl}/corretor`}
-        prefetch={false}
-        style={{
-          background: "none",
-          border: "1px solid #1A1A30",
-          color: "#EEEEFF",
-          padding: "8px 18px",
-          borderRadius: 8,
-          fontSize: 14,
-          cursor: "pointer",
-          fontWeight: 500,
-          textDecoration: "none",
-          display: "inline-flex",
-          alignItems: "center",
-        }}
-      >
-        Ver Demo
-      </Link>
-      <Link
-        href={`${platformUrl}/corretor`}
-        prefetch={false}
-        style={{
-          backgroundColor: "#FF0068",
-          border: "none",
-          color: "#fff",
-          padding: "8px 18px",
-          borderRadius: 8,
-          fontSize: 14,
-          cursor: "pointer",
-          fontWeight: 600,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          textDecoration: "none",
-        }}
-      >
-        Começar grátis
-        <ArrowRight size={14} />
-      </Link>
-    </div>
-  );
-}
-
-function CtaFinalButton() {
-  return (
-    <Link
-      href={`${platformUrl}/corretor`}
-      prefetch={false}
-      style={{
-        backgroundColor: "#FF0068",
-        border: "none",
-        color: "#fff",
-        padding: "16px 36px",
-        borderRadius: 12,
-        fontSize: 16,
-        cursor: "pointer",
-        fontWeight: 700,
-        letterSpacing: "-0.01em",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 10,
-        textDecoration: "none",
-      }}
-    >
-      Explorar o Demo
-      <ArrowRight size={18} />
-    </Link>
-  );
-}
-
-/* ─── PAGE ────────────────────────────────────────────────────────────────── */
 export default function LandingPage() {
   const [selectedItems, setSelectedItems] = useState<string[]>(
     DELIVERABLES.filter((d) => d.isObrigatorio).map((d) => d.id)
@@ -227,7 +123,7 @@ export default function LandingPage() {
     };
 
     try {
-      const res = await fetch(`${platformUrl}/api/leads`, {
+      const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leadData),
@@ -249,7 +145,6 @@ export default function LandingPage() {
     } catch (err) {
       console.error(err);
       setLoading(false);
-      // Fallback in case backend is offline
       setSuccessProposal({
         id: "PROP-" + Math.random().toString(36).substring(2, 7).toUpperCase(),
         total: valorTotal,
@@ -260,7 +155,66 @@ export default function LandingPage() {
 
   return (
     <div style={{ backgroundColor: "#09090F", color: "#EEEEFF", minHeight: "100vh", overflowX: "hidden" }}>
-      <Nav />
+      {/* Nav */}
+      <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: "1px solid #111120", backgroundColor: "rgba(9,9,15,0.94)", backdropFilter: "blur(20px)", padding: "0 32px" }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", alignItems: "center", height: 62, gap: 24 }}>
+          {/* Logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
+            <div style={{ width: 30, height: 30, backgroundColor: "#FF0068", borderRadius: 7, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, padding: 5 }}>
+              {[0,1,2,3].map((i) => (
+                <div key={i} style={{ backgroundColor: i === 3 ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.92)", borderRadius: 1 }} />
+              ))}
+            </div>
+            <span style={{ fontWeight: 900, fontSize: 17, letterSpacing: "-0.05em", color: "#EEEEFF" }}>TAGMOB</span>
+          </div>
+          {/* Links */}
+          <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+            {[["#funcionalidades", "Funcionalidades"], ["#simulador", "Simulador Anti-VGV"], ["#atores", "Parceiros"], ["#como-funciona", "Como funciona"]].map(([h, l]) => (
+              <Link key={l} href={h} style={{ color: "#7878A0", fontSize: 13, textDecoration: "none", fontWeight: 500 }}>{l}</Link>
+            ))}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Link
+              href="/corretor"
+              style={{
+                background: "none",
+                border: "1px solid #1A1A30",
+                color: "#EEEEFF",
+                padding: "8px 18px",
+                borderRadius: 8,
+                fontSize: 14,
+                cursor: "pointer",
+                fontWeight: 500,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              Ver Demo
+            </Link>
+            <Link
+              href="/corretor"
+              style={{
+                backgroundColor: "#FF0068",
+                border: "none",
+                color: "#fff",
+                padding: "8px 18px",
+                borderRadius: 8,
+                fontSize: 14,
+                cursor: "pointer",
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                textDecoration: "none",
+              }}
+            >
+              Começar grátis
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </nav>
 
       {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
       <section style={{ position: "relative", minHeight: "92vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px 60px", overflow: "hidden" }}>
@@ -288,7 +242,7 @@ export default function LandingPage() {
           </p>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href={`${platformUrl}/resumo`} style={{ display: "inline-flex", alignItems: "center", gap: 9, padding: "14px 28px", backgroundColor: "#FF0068", color: "#fff", borderRadius: 12, fontSize: 15, fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/corretor" style={{ display: "inline-flex", alignItems: "center", gap: 9, padding: "14px 28px", backgroundColor: "#FF0068", color: "#fff", borderRadius: 12, fontSize: 15, fontWeight: 700, textDecoration: "none" }}>
               Ver a plataforma <ArrowRight size={16} />
             </Link>
             <Link href="#simulador" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, border: "1px solid #1A1A30", color: "#7878A0", fontSize: 15, fontWeight: 600, textDecoration: "none" }}>
@@ -296,7 +250,6 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Mini stats */}
           <div style={{ marginTop: 56, display: "flex", gap: 36, justifyContent: "center", opacity: 0.65 }}>
             {[
               { v: "5",    l: "etapas de workflow", c: "#FF0068" },
@@ -335,7 +288,7 @@ export default function LandingPage() {
               { titulo: "Verdant Moema", sub: "Residencial Sustentável", cor: "#39FF14", desc: "Identidade focada no bem-estar e design biofílico. Integração de RAG para redação autônoma de posts ecológicos para corretores.", tags: ["Branding", "Estratégia", "Editor Canvas"] },
               { titulo: "Nexus Corporate", sub: "Comercial de Alta Tecnologia", cor: "#00E5FF", desc: "Lançamento corporativo de lajes integradas com automação. Campanhas inteligentes de Adtech com exclusividade regional de marcas.", tags: ["AdTech", "Plantas Tecnológicas", "Mídia"] }
             ].map((c) => (
-              <div key={c.titulo} style={{ background: "#111120", border: "1px solid #1A1A30", borderRadius: 16, overflow: "hidden", display: "flex", flexDirection: "column", transition: "border-color 0.2s" }} className="hover:border-[#1A1A30]/80">
+              <div key={c.titulo} style={{ background: "#111120", border: "1px solid #1A1A30", borderRadius: 16, overflow: "hidden", display: "flex", flexDirection: "column", transition: "border-color 0.2s" }}>
                 <div style={{ height: 180, background: `linear-gradient(135deg, ${c.cor}10, #111120)`, borderBottom: "1px solid #1A1A30", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
                   <div style={{ fontSize: 24, fontWeight: 900, color: c.cor + "40", letterSpacing: "-0.05em" }}>{c.titulo.toUpperCase()}</div>
                   <div style={{ position: "absolute", top: 12, right: 12, fontSize: 10, color: c.cor, backgroundColor: c.cor + "15", padding: "3px 8px", borderRadius: 20, fontWeight: 700 }}>{c.sub}</div>
@@ -379,42 +332,42 @@ export default function LandingPage() {
                 titulo: "Workspace do Empreendimento",
                 desc: "Ambiente exclusivo por campanha com estratégia, design system, aprovação e organização em 5 etapas sequenciais. Tudo rastreável.",
                 items: ["Manifesto e naming da campanha", "Key Visual e paleta aprovados", "Templates dinâmicos vinculados", "Progressão de fase bloqueada"],
-                link: `${platformUrl}/tagmob-os/emp-001`, cta: "Abrir workspace →",
+                link: `/tagmob-os/emp-001`, cta: "Abrir workspace →",
               },
               {
                 icon: ShieldCheck, cor: "#FFB800",
                 titulo: "Gatekeeper de Aprovação",
                 desc: "Nenhuma peça chega ao cliente sem dupla aprovação digital: primeiro a agência, depois o cliente. Log de auditoria completo.",
                 items: ["Fila de ativos por status", "Preview + edição contextual", "Timeline de aprovação", "Auditoria com histórico completo"],
-                link: `${platformUrl}/tagmob-os/emp-001/aprovacao`, cta: "Ver gatekeeper →",
+                link: `/tagmob-os/emp-001/aprovacao`, cta: "Ver gatekeeper →",
               },
               {
                 icon: Unlock, cor: "#39FF14",
                 titulo: "Editor Autônomo do Cliente",
                 desc: "Canvas restrito onde o cliente edita com liberdade o que foi liberado pela agência. Grid, tipografia e paleta são sempre protegidos.",
                 items: ["Campos editáveis vs bloqueados", "Preview ao vivo das alterações", "Exportação JPG / PDF / Link", "IA contextual para sugestões"],
-                link: `${platformUrl}/tagmob-os/emp-004/autonomia`, cta: "Abrir editor →",
+                link: `/tagmob-os/emp-004/autonomia`, cta: "Abrir editor →",
               },
               {
                 icon: Sparkles, cor: "#8B5CF6",
                 titulo: "IA Contextual por Campanha",
                 desc: "Engine RAG treinada com o manifesto, tom de voz e imagens aprovadas do empreendimento. Nunca gera conteúdo genérico.",
                 items: ["Contexto isolado por empreendimento", "Copy alinhado ao posicionamento", "Sugestões de layout aprovadas", "Revisão antes de exportar"],
-                link: `${platformUrl}/tagmob-os/emp-001`, cta: "Testar IA →",
+                link: `/tagmob-os/emp-001`, cta: "Testar IA →",
               },
               {
                 icon: Tag, cor: "#FFB800",
                 titulo: "AdTech & Product Placement",
                 desc: "Marcas aparecem no catálogo do arquiteto no momento de maior intenção. CPM por exibição, CPA por lead gerado.",
                 items: ["Catálogo por categoria de produto", "Exclusividade por bairro/padrão", "Métricas de impressão e CTR", "Relatório de leads qualificados"],
-                link: `${platformUrl}/marcas`, cta: "Painel de marcas →",
+                link: `/marcas`, cta: "Painel de marcas →",
               },
               {
                 icon: Palette, cor: "#00E5FF",
                 titulo: "Portal do Arquiteto",
                 desc: "Arquitetos especificam produtos reais do catálogo integrado. A marca recebe lead qualificado com projeto e empreendimento.",
                 items: ["Catálogo com produtos reais", "Especificação técnica por ambiente", "Lead enviado à marca automaticamente", "Comissão sobre especificação"],
-                link: `${platformUrl}/arquiteto`, cta: "Portal do arquiteto →",
+                link: `/arquiteto`, cta: "Portal do arquiteto →",
               },
             ].map((f) => (
               <div key={f.titulo} style={{ background: "#111120", border: `1px solid ${f.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column" }}>
@@ -682,7 +635,7 @@ export default function LandingPage() {
             <p style={{ fontSize: 15, color: "#7878A0", lineHeight: 1.75, marginBottom: 32 }}>
               O workflow é sequencial e controlado. Nenhuma etapa avança sem a anterior ser concluída. Nenhum material chega ao cliente sem aprovação digital.
             </p>
-            <Link href={`${platformUrl}/tagmob-os`} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 22px", backgroundColor: "#39FF14", color: "#000", borderRadius: 11, fontSize: 14, fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/tagmob-os" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 22px", backgroundColor: "#39FF14", color: "#000", borderRadius: 11, fontSize: 14, fontWeight: 700, textDecoration: "none" }}>
               Ver TAGMOB OS ao vivo <ArrowRight size={15} />
             </Link>
           </div>
@@ -734,22 +687,22 @@ export default function LandingPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12, marginBottom: 28 }}>
             {[
               {
-                camada: "C1", titulo: "Construtoras",    cor: "#FF0068", icon: Building2, href: `${platformUrl}/tagmob-os`,
+                camada: "C1", titulo: "Construtoras",    cor: "#FF0068", icon: Building2, href: `/tagmob-os`,
                 desc: "Ambiente exclusivo por empreendimento. Aprovam o ecossistema e liberam a cadeia.",
                 recursos: ["Workspace completo por campanha", "Aprovação digital de todos os ativos", "Visão completa do pipeline"],
               },
               {
-                camada: "C4", titulo: "Arquitetos",      cor: "#8B5CF6", icon: Palette,   href: `${platformUrl}/arquiteto`,
+                camada: "C4", titulo: "Arquitetos",      cor: "#8B5CF6", icon: Palette,   href: `/arquiteto`,
                 desc: "Especificam produtos reais no catálogo. Cada especificação gera um lead qualificado para a marca.",
                 recursos: ["Catálogo técnico de marcas", "Especificação por ambiente", "Comissão sobre leads gerados"],
               },
               {
-                camada: "C3", titulo: "Marcas",          cor: "#FFB800", icon: Tag,       href: `${platformUrl}/marcas`,
+                camada: "C3", titulo: "Marcas",          cor: "#FFB800", icon: Tag,       href: `/marcas`,
                 desc: "Aparecem no momento de maior intenção — a especificação do arquiteto. CPM + CPA.",
                 recursos: ["Product placement no catálogo", "Exclusividade por região/padrão", "Relatório de leads e conversão"],
               },
               {
-                camada: "C2", titulo: "Corretores",      cor: "#00E5FF", icon: Users,     href: `${platformUrl}/corretor`,
+                camada: "C2", titulo: "Corretores",      cor: "#00E5FF", icon: Users,     href: `/corretor`,
                 desc: "Recebem peças turbinadas prontas, personalizam com seus dados e vendem com mais qualidade.",
                 recursos: ["Templates com identidade da campanha", "Edição de contato no canvas", "Exportação e compartilhamento"],
               },
@@ -847,8 +800,28 @@ export default function LandingPage() {
             No fim, como no Tetris, tudo se resume a encaixar as peças certas no momento certo. Isso é TAGMOB.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <CtaFinalButton />
-            <Link href={`${platformUrl}/resumo`} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, border: "1px solid #1A1A30", color: "#7878A0", fontSize: 15, fontWeight: 600, textDecoration: "none" }}>
+            <Link
+              href="/corretor"
+              style={{
+                backgroundColor: "#FF0068",
+                border: "none",
+                color: "#fff",
+                padding: "16px 36px",
+                borderRadius: 12,
+                fontSize: 16,
+                cursor: "pointer",
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                textDecoration: "none",
+              }}
+            >
+              Explorar o Demo
+              <ArrowRight size={18} />
+            </Link>
+            <Link href="/resumo" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, border: "1px solid #1A1A30", color: "#7878A0", fontSize: 15, fontWeight: 600, textDecoration: "none" }}>
               Ver resumo da plataforma <ArrowRight size={15} />
             </Link>
           </div>
@@ -871,7 +844,7 @@ export default function LandingPage() {
             <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
               <div>
                 <p style={{ fontSize: 10, fontWeight: 800, color: "#2E2E4A", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>Plataforma</p>
-                {[["Empreendimentos", `${platformUrl}/tagmob-os`], ["Corretores", `${platformUrl}/corretor`], ["Arquitetos", `${platformUrl}/arquiteto`], ["Marcas & AdTech", `${platformUrl}/marcas`]].map(([l, h]) => (
+                {[["Empreendimentos", `/tagmob-os`], ["Corretores", `/corretor`], ["Arquitetos", `/arquiteto`], ["Marcas & AdTech", `/marcas`]].map(([l, h]) => (
                   <div key={l} style={{ marginBottom: 7 }}>
                     <Link href={h} style={{ fontSize: 13, color: "#7878A0", textDecoration: "none" }}>{l}</Link>
                   </div>

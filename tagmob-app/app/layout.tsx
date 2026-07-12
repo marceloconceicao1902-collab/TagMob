@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ClerkWrapper } from "@/components/auth/clerk-wrapper";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,20 +16,16 @@ export const metadata: Metadata = {
   keywords: ["imobiliária", "proptech", "adtech", "ambientalização", "product placement"],
 };
 
-/**
- * Para habilitar o Clerk:
- * 1. Configure as chaves no .env.local
- * 2. Envolver com <ClerkProvider> do @clerk/nextjs
- * 3. Restaurar o middleware.ts com clerkMiddleware
- */
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={inter.variable}>
-      <body className="font-sans antialiased">{children}</body>
-    </html>
+    <ClerkWrapper>
+      <html lang="pt-BR" className={inter.variable}>
+        <body className="font-sans antialiased">{children}</body>
+      </html>
+    </ClerkWrapper>
   );
 }

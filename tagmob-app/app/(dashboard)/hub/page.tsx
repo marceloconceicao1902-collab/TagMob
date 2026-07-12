@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Building2, Layers, Palette, Tag, Users, ArrowRight,
   Zap, TrendingUp, BarChart2, Globe, Sparkles, Network,
-  ChevronRight, DollarSign,
+  ChevronRight, DollarSign, Kanban, Inbox, CheckSquare, LayoutGrid,
 } from "lucide-react";
 import { HUB_METRICAS, MOCK_EMPREENDIMENTOS, MOCK_METRICAS_ADTECH } from "@/lib/mock-data";
 
@@ -204,6 +204,39 @@ export default function HubPage() {
         <StatCard label="Specs de arquitetos"   value={HUB_METRICAS.specs_mes}            color="#8B5CF6"  icon={Sparkles}   sub="neste mês" />
         <StatCard label="Corretores ativos"     value={HUB_METRICAS.corretores_ativos}    color="#00E5FF"  icon={Users}      />
         <StatCard label="Empreendimentos"       value={HUB_METRICAS.empreendimentos_ativos} color="#FF0068" icon={Building2} />
+      </div>
+
+      {/* ── CRM — Acesso rápido ─────────────────────────────────────────────── */}
+      <div style={{ marginBottom: 36 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>CRM Comercial</h2>
+          <Link href="/crm" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+            Central CRM →
+          </Link>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
+          {[
+            { label: "Pipeline Kanban", href: "/negocios",   icon: Kanban,       color: "#FF0068", desc: "Negócios por etapa OS" },
+            { label: "Inbox de Leads",  href: "/leads",      icon: Inbox,        color: "#FFB800", desc: "Qualificar e converter" },
+            { label: "Contatos",        href: "/contatos",   icon: Users,        color: "#39FF14", desc: "Stakeholders e decisores" },
+            { label: "Atividades",      href: "/atividades", icon: CheckSquare,  color: "#8B5CF6", desc: "Tarefas e follow-ups" },
+          ].map((item) => (
+            <Link key={item.href} href={item.href} style={{ textDecoration: "none" }}>
+              <div style={{ background: "#111120", border: `1px solid ${item.color}30`, borderRadius: 12, padding: 16, height: "100%" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: item.color + "18", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <item.icon size={16} color={item.color} />
+                  </div>
+                  <p style={{ fontSize: 14, fontWeight: 800, color: "#EEEEFF" }}>{item.label}</p>
+                </div>
+                <p style={{ fontSize: 12, color: "#7878A0", marginBottom: 8 }}>{item.desc}</p>
+                <span style={{ fontSize: 11, fontWeight: 700, color: item.color, display: "flex", alignItems: "center", gap: 4 }}>
+                  Acessar <ArrowRight size={11} />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* ── Fluxo do conteúdo ───────────────────────────────────────────────── */}

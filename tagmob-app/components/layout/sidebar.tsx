@@ -93,7 +93,7 @@ export default function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
+      <nav style={{ flex: 1, padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2, overflowY: "auto" }}>
         {NAV.map((item) => {
           const active = isActive(item.href);
           return (

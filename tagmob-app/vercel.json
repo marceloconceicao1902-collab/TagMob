@@ -2,5 +2,28 @@
   "framework": "nextjs",
   "installCommand": "npm install",
   "buildCommand": "npm run build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "redirects": [
+    { "source": "/crm", "destination": "/negocios", "permanent": true },
+    { "source": "/leads", "destination": "/negocios", "permanent": true },
+    { "source": "/contatos", "destination": "/negocios", "permanent": true },
+    { "source": "/atividades", "destination": "/negocios", "permanent": true },
+    { "source": "/construtora", "destination": "/negocios", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/negocios",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, must-revalidate" },
+        { "key": "CDN-Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
+      "source": "/hub",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, must-revalidate" },
+        { "key": "CDN-Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
 }

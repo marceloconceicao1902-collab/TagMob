@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "img.clerk.com" },
     ],
   },
+  async redirects() {
+    return [
+      { source: "/crm", destination: "/negocios", permanent: true },
+      { source: "/leads", destination: "/negocios", permanent: true },
+      { source: "/contatos", destination: "/negocios", permanent: true },
+      { source: "/atividades", destination: "/negocios", permanent: true },
+      { source: "/construtora", destination: "/negocios", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

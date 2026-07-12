@@ -127,7 +127,7 @@ export default function HubPage() {
       titulo: "Construtoras & Incorporadoras",
       subtitulo: "Donos dos empreendimentos",
       cor: "#FF0068",
-      href: "/construtora",
+      href: "/negocios",
       icon: Building2,
       papel: "Contratam a inteligência estratégica da TAGMOB. Aprovam o ecossistema criativo e liberam o acesso para os demais atores da cadeia.",
       consome: "Estratégia, Manifesto, KV e identidade visual",
@@ -210,11 +210,11 @@ export default function HubPage() {
       <div style={{ marginBottom: 36 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>Pipeline de Negócios</h2>
-          <Link href="/construtora" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+          <Link href="/negocios" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
             Abrir Kanban →
           </Link>
         </div>
-        <Link href="/construtora" style={{ textDecoration: "none" }}>
+        <Link href="/negocios" style={{ textDecoration: "none" }}>
           <div style={{ background: "#111120", border: "1px solid #FF006830", borderRadius: 12, padding: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: "#FF006818", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -366,7 +366,7 @@ export default function HubPage() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>Empreendimentos no Ecossistema</h2>
           <div style={{ display: "flex", gap: 16 }}>
-            <Link href="/construtora" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/negocios" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
               Pipeline de Negócios →
             </Link>
             <Link href="/tagmob-os" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>

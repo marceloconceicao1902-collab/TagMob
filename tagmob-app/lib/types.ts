@@ -42,6 +42,14 @@ export interface Empreendimento {
   total_assets: number;
   assets_aprovados: number;
   assets_pendentes: number;
+  /** CRM — valor do contrato OS (R$) */
+  valor_contrato?: number;
+  /** CRM — responsável comercial */
+  responsavel?: string;
+  /** CRM — próxima ação agendada */
+  proxima_acao?: string;
+  /** CRM — dias na fase atual */
+  dias_na_fase?: number;
 }
 
 export type AssetTipo   = "INSTAGRAM_POST" | "STORY" | "BANNER_DIGITAL" | "PDF_GRAFICA" | "VIDEO_REELS" | "ENCARTE";

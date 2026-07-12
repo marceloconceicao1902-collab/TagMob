@@ -339,9 +339,17 @@ export default function HubPage() {
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "#EEEEFF", letterSpacing: "-0.02em" }}>Empreendimentos no Ecossistema</h2>
-          <Link href="/tagmob-os" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
-            Ver todos →
-          </Link>
+          <div style={{ display: "flex", gap: 16 }}>
+            <Link href="/crm" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+              CRM Central →
+            </Link>
+            <Link href="/negocios" style={{ fontSize: 13, color: "#00E5FF", textDecoration: "none", fontWeight: 600 }}>
+              Pipeline Kanban →
+            </Link>
+            <Link href="/tagmob-os" style={{ fontSize: 13, color: "#FF0068", textDecoration: "none", fontWeight: 600 }}>
+              Ver todos →
+            </Link>
+          </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
           {MOCK_EMPREENDIMENTOS.map((emp) => (

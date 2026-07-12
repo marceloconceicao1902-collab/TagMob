@@ -275,6 +275,10 @@ export const MOCK_EMPREENDIMENTOS: Empreendimento[] = [
     total_assets: 24,
     assets_aprovados: 18,
     assets_pendentes: 6,
+    valor_contrato: 285_000,
+    responsavel: "Ana Costa",
+    proxima_acao: "Revisar assets pendentes",
+    dias_na_fase: 12,
   },
   {
     id: "emp-002",
@@ -295,6 +299,10 @@ export const MOCK_EMPREENDIMENTOS: Empreendimento[] = [
     total_assets: 16,
     assets_aprovados: 7,
     assets_pendentes: 9,
+    valor_contrato: 198_000,
+    responsavel: "Rafael Mendes",
+    proxima_acao: "Gatekeeper — 9 peças pendentes",
+    dias_na_fase: 5,
   },
   {
     id: "emp-003",
@@ -315,6 +323,10 @@ export const MOCK_EMPREENDIMENTOS: Empreendimento[] = [
     total_assets: 0,
     assets_aprovados: 0,
     assets_pendentes: 0,
+    valor_contrato: 142_000,
+    responsavel: "Camila Rocha",
+    proxima_acao: "Entregar Key Visual v2",
+    dias_na_fase: 8,
   },
   {
     id: "emp-004",
@@ -335,6 +347,10 @@ export const MOCK_EMPREENDIMENTOS: Empreendimento[] = [
     total_assets: 42,
     assets_aprovados: 42,
     assets_pendentes: 0,
+    valor_contrato: 420_000,
+    responsavel: "Ana Costa",
+    proxima_acao: "Monitorar autonomia do cliente",
+    dias_na_fase: 45,
   },
   {
     id: "emp-005",
@@ -355,6 +371,10 @@ export const MOCK_EMPREENDIMENTOS: Empreendimento[] = [
     total_assets: 0,
     assets_aprovados: 0,
     assets_pendentes: 0,
+    valor_contrato: 68_000,
+    responsavel: "Rafael Mendes",
+    proxima_acao: "Workshop de naming com cliente",
+    dias_na_fase: 3,
   },
 ];
 

@@ -1,4 +1,4 @@
-import { PrismaClient, ProfileType, PropertyCategory, PropertyStandard, PropertyStatus, ExclusivityType, PlacementStatus, BrandCategory, EmpreendimentoTipo, EmpreendimentoStatus, PlanoOS, AssetTipo, AssetStatus, FieldTipo } from "@prisma/client";
+import { PrismaClient, ProfileType, PropertyCategory, PropertyStandard, PropertyStatus, ExclusivityType, PlacementStatus, BrandCategory, EmpreendimentoTipo, EmpreendimentoStatus, PlanoOS, AssetTipo, AssetStatus, FieldTipo, LeadStatus, LeadSource } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -507,6 +507,281 @@ async function main() {
   });
 
   console.log("✓ Ganchos de escala (arquitetos, corretores, exclusividades) semeados");
+
+  // ─── 8. CRM — Usuários internos TAGMOB ───────────────────────────────────
+  const userAna = await prisma.user.upsert({
+    where: { clerkUserId: "user_ana_crm" },
+    update: {},
+    create: {
+      id: "usr-crm-001",
+      email: "ana.costa@tagmob.com.br",
+      fullName: "Ana Costa",
+      profileType: ProfileType.CONSTRUTORA,
+      clerkUserId: "user_ana_crm",
+      phaseAccess: 5,
+    },
+  });
+
+  const userRafael = await prisma.user.upsert({
+    where: { clerkUserId: "user_rafael_crm" },
+    update: {},
+    create: {
+      id: "usr-crm-002",
+      email: "rafael.mendes@tagmob.com.br",
+      fullName: "Rafael Mendes",
+      profileType: ProfileType.CONSTRUTORA,
+      clerkUserId: "user_rafael_crm",
+      phaseAccess: 5,
+    },
+  });
+
+  await prisma.usuarioCrmPerfil.upsert({
+    where: { userId: userAna.id },
+    update: {},
+    create: { userId: userAna.id, funcao: "ATENDIMENTO", ativo: true },
+  });
+
+  // Atualizar empreendimentos com campos CRM
+  await prisma.empreendimento.update({
+    where: { id: empReservaJardins.id },
+    data: {
+      construtoraNome: "Tegra Incorporadora",
+      responsavelUserId: userAna.id,
+      valorContrato: 285000,
+      proximaAcao: "Revisar 6 assets pendentes",
+      probabilidade: 85,
+      faseEntradaEm: new Date("2024-06-01"),
+    },
+  });
+
+  await prisma.empreendimento.update({
+    where: { id: empFariaLima.id },
+    data: {
+      construtoraNome: "Brookfield Incorporações",
+      responsavelUserId: userRafael.id,
+      valorContrato: 198000,
+      proximaAcao: "Gatekeeper — 9 peças pendentes",
+      probabilidade: 70,
+      faseEntradaEm: new Date("2024-06-20"),
+    },
+  });
+
+  // Empreendimentos adicionais para pipeline completo
+  const empMoema = await prisma.empreendimento.upsert({
+    where: { id: "emp-003" },
+    update: {},
+    create: {
+      id: "emp-003",
+      nome: "Vista Verde Moema",
+      tipo: EmpreendimentoTipo.RESIDENCIAL,
+      bairro: "Moema",
+      cidade: "São Paulo",
+      faseAtual: 2,
+      status: EmpreendimentoStatus.EM_ANDAMENTO,
+      plano: PlanoOS.PRO,
+      assinaturaAtiva: true,
+      corTema: "#00E5FF",
+      tenantId: tenantTegra.id,
+      construtoraNome: "Even Construtora",
+      responsavelUserId: userAna.id,
+      valorContrato: 142000,
+      proximaAcao: "Entregar Key Visual v2",
+      probabilidade: 55,
+    },
+  });
+
+  const empAlphaville = await prisma.empreendimento.upsert({
+    where: { id: "emp-004" },
+    update: {},
+    create: {
+      id: "emp-004",
+      nome: "Alphaville Signature",
+      tipo: EmpreendimentoTipo.RESIDENCIAL,
+      bairro: "Alphaville",
+      cidade: "Barueri",
+      faseAtual: 5,
+      status: EmpreendimentoStatus.PUBLICADO,
+      plano: PlanoOS.ENTERPRISE,
+      assinaturaAtiva: true,
+      corTema: "#39FF14",
+      tenantId: tenantTegra.id,
+      construtoraNome: "Alphaville Urbanismo",
+      responsavelUserId: userAna.id,
+      valorContrato: 420000,
+      proximaAcao: "Monitorar autonomia do cliente",
+      probabilidade: 100,
+    },
+  });
+
+  const empPinheiros = await prisma.empreendimento.upsert({
+    where: { id: "emp-005" },
+    update: {},
+    create: {
+      id: "emp-005",
+      nome: "Pinheiros Lofts",
+      tipo: EmpreendimentoTipo.MISTO,
+      bairro: "Pinheiros",
+      cidade: "São Paulo",
+      faseAtual: 1,
+      status: EmpreendimentoStatus.EM_ANDAMENTO,
+      plano: PlanoOS.STARTER,
+      assinaturaAtiva: true,
+      corTema: "#FFB800",
+      tenantId: tenantBrookfield.id,
+      construtoraNome: "Cyrela Commercial Properties",
+      responsavelUserId: userRafael.id,
+      valorContrato: 68000,
+      proximaAcao: "Workshop de naming com cliente",
+      probabilidade: 30,
+    },
+  });
+
+  console.log("✓ Empreendimentos CRM atualizados");
+
+  // ─── 9. CRM — Empresas e Contatos ────────────────────────────────────────
+  const companyEven = await prisma.crmCompany.upsert({
+    where: { id: "cmp-001" },
+    update: {},
+    create: {
+      id: "cmp-001",
+      nome: "Even Construtora",
+      segmento: "Incorporadora",
+      cidade: "São Paulo",
+      ownerUserId: userAna.id,
+    },
+  });
+
+  const companyCyrela = await prisma.crmCompany.upsert({
+    where: { id: "cmp-002" },
+    update: {},
+    create: {
+      id: "cmp-002",
+      nome: "Cyrela Commercial Properties",
+      segmento: "Incorporadora",
+      cidade: "São Paulo",
+      ownerUserId: userRafael.id,
+    },
+  });
+
+  await prisma.crmContact.createMany({
+    data: [
+      { id: "ctc-001", nome: "Ricardo Souza", email: "ricardo.souza@tegra.com.br", cargo: "Diretor Comercial", empresaNome: "Tegra Incorporadora", ownerUserId: userAna.id },
+      { id: "ctc-002", nome: "Patricia Lima", email: "patricia.lima@even.com.br", cargo: "Gerente de Marketing", empresaNome: "Even Construtora", companyId: companyEven.id, ownerUserId: userAna.id },
+      { id: "ctc-003", nome: "Marcos Alves", email: "marcos.alves@cyrela.com.br", cargo: "Head de Lançamentos", empresaNome: "Cyrela", companyId: companyCyrela.id, ownerUserId: userRafael.id },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log("✓ Empresas e contatos CRM semeados");
+
+  // ─── 10. CRM — Leads ───────────────────────────────────────────────────────
+  await prisma.leadsContato.createMany({
+    data: [
+      {
+        id: "lead-001",
+        nome: "Fernanda Oliveira",
+        email: "fernanda@construtoraabc.com.br",
+        telefone: "(11) 98765-4321",
+        empresa: "Construtora ABC",
+        mensagem: "Interesse em TAGMOB OS para lançamento em Campinas. 3 torres, 180 unidades.",
+        orcamentoEstimado: 220000,
+        status: "NOVO" as LeadStatus,
+        source: "LANDING" as LeadSource,
+        prioridade: 1,
+        score: 78,
+        ownerUserId: userAna.id,
+      },
+      {
+        id: "lead-002",
+        nome: "Carlos Mendonça",
+        email: "carlos@incorporadora.xyz",
+        telefone: "(21) 99876-5432",
+        empresa: "Incorporadora XYZ",
+        mensagem: "Precisamos de estratégia + criação para empreendimento comercial no Rio.",
+        orcamentoEstimado: 350000,
+        status: "EM_ATENDIMENTO" as LeadStatus,
+        source: "INDICACAO" as LeadSource,
+        prioridade: 1,
+        score: 85,
+        ownerUserId: userRafael.id,
+      },
+      {
+        id: "lead-003",
+        nome: "Juliana Prado",
+        email: "juliana@startupimob.com",
+        empresa: "Startup Imob",
+        mensagem: "Queremos entender o modelo STARTER para um loft em Pinheiros.",
+        orcamentoEstimado: 68000,
+        status: "QUALIFICADO" as LeadStatus,
+        source: "EVENTO" as LeadSource,
+        prioridade: 2,
+        score: 62,
+        ownerUserId: userRafael.id,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log("✓ Leads CRM semeados");
+
+  // ─── 11. CRM — Atividades ──────────────────────────────────────────────────
+  await prisma.crmActivity.createMany({
+    data: [
+      {
+        id: "act-001",
+        tipo: "REUNIAO",
+        titulo: "Kick-off Reserva Jardins",
+        descricao: "Alinhamento de cronograma fase 4 — organização de assets.",
+        status: "CONCLUIDA",
+        completedAt: new Date("2024-06-10"),
+        empreendimentoId: empReservaJardins.id,
+        ownerUserId: userAna.id,
+      },
+      {
+        id: "act-002",
+        tipo: "TAREFA",
+        titulo: "Revisar gatekeeper Faria Lima",
+        descricao: "9 peças aguardando aprovação do cliente Brookfield.",
+        status: "PENDENTE",
+        dueAt: new Date(Date.now() + 2 * 86_400_000),
+        empreendimentoId: empFariaLima.id,
+        ownerUserId: userRafael.id,
+      },
+      {
+        id: "act-003",
+        tipo: "LIGACAO",
+        titulo: "Follow-up lead Construtora ABC",
+        descricao: "Retornar proposta comercial personalizada.",
+        status: "PENDENTE",
+        dueAt: new Date(Date.now() + 1 * 86_400_000),
+        leadId: "lead-001",
+        ownerUserId: userAna.id,
+      },
+      {
+        id: "act-004",
+        tipo: "FOLLOW_UP",
+        titulo: "Enviar case Alphaville Signature",
+        descricao: "Material de referência para prospect Cyrela.",
+        status: "PENDENTE",
+        dueAt: new Date(Date.now() + 3 * 86_400_000),
+        empreendimentoId: empAlphaville.id,
+        ownerUserId: userRafael.id,
+      },
+      {
+        id: "act-005",
+        tipo: "NOTA",
+        titulo: "Workshop naming Pinheiros Lofts",
+        descricao: "Cliente aprovou data para sessão de naming e conceito.",
+        status: "PENDENTE",
+        dueAt: new Date(Date.now() + 5 * 86_400_000),
+        empreendimentoId: empPinheiros.id,
+        ownerUserId: userRafael.id,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log("✓ Atividades CRM semeadas");
   console.log("==========================================");
   console.log("Seeding concluído com sucesso!");
 }

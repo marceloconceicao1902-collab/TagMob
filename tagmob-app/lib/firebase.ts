@@ -1,39 +1,63 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getDatabase } from "firebase/database";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
-import { getAuth } from "firebase/auth";
-import { getAnalytics, isSupported } from "firebase/analytics";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
+import { getDatabase, Database } from "firebase/database";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
+import { getAuth, Auth } from "firebase/auth";
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
+const apiKey     = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? "";
+const projectId  = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "";
+const databaseURL = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ?? "";
 
-// Initialize Firebase (Prevents duplicate initialization during Next.js hot reloads)
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+/**
+ * Verifica se as variáveis mínimas estão presentes.
+ * Evita crash durante o pre-rendering estático na Vercel (build time SSG).
+ */
+const IS_FIREBASE_READY = Boolean(apiKey && projectId && databaseURL);
 
-const db = getDatabase(app);
-const firestore = getFirestore(app);
-const storage = getStorage(app);
-const auth = getAuth(app);
-
-// Initialize Analytics client-side only
+let app: FirebaseApp;
+let db: Database;
+let firestore: Firestore;
+let storage: FirebaseStorage;
+let auth: Auth;
 let analytics: any = null;
-if (typeof window !== "undefined") {
-  isSupported().then((supported) => {
-    if (supported) {
-      analytics = getAnalytics(app);
-    }
-  }).catch((err) => {
-    console.warn("Firebase Analytics is not supported in this environment:", err);
-  });
+
+if (IS_FIREBASE_READY) {
+  const firebaseConfig = {
+    apiKey,
+    authDomain:        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    databaseURL,
+    projectId,
+    storageBucket:     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  };
+
+  // Evita re-inicialização durante hot reload do Next.js
+  app      = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+  db       = getDatabase(app);
+  firestore = getFirestore(app);
+  storage  = getStorage(app);
+  auth     = getAuth(app);
+
+  // Analytics: somente no browser
+  if (typeof window !== "undefined") {
+    import("firebase/analytics")
+      .then(({ getAnalytics, isSupported }) =>
+        isSupported().then((ok) => {
+          if (ok) analytics = getAnalytics(app);
+        })
+      )
+      .catch(() => {});
+  }
+} else {
+  // Stubs seguros para o build SSG — nunca são chamados em runtime real
+  // (as páginas que usam Firebase são "use client" e rodam só no browser)
+  app       = null as any;
+  db        = null as any;
+  firestore = null as any;
+  storage   = null as any;
+  auth      = null as any;
 }
 
-export { app, db, firestore, storage, auth, analytics };
+export { app, db, firestore, storage, auth, analytics, IS_FIREBASE_READY };

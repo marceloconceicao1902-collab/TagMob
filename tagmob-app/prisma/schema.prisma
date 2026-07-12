@@ -161,6 +161,7 @@ model User {
   corretorAccess   CorretorAccess[]
   projetosArquiteto ProjetoArquiteto[]
   placements       ProductPlacement[]
+  crmPerfil        UsuarioCrmPerfil?
 }
 
 model Tenant {
@@ -610,4 +611,27 @@ model OrcamentoContratado {
 
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+}
+
+model UsuarioCrmPerfil {
+  id        String              @id @default(uuid())
+  userId    String              @unique
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  funcao    DepartamentoAgencia @default(ATENDIMENTO)
+  ativo     Boolean             @default(true)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+}
+
+model LeadsContato {
+  id                String   @id @default(uuid())
+  nome              String
+  email             String
+  telefone          String?
+  empresa           String?
+  mensagem          String?  @db.Text
+  orcamentoEstimado Decimal? @db.Decimal(10, 2)
+  status            String   @default("NOVO") // NOVO, EM_ATENDIMENTO, CONVERTIDO, ARQUIVADO
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }

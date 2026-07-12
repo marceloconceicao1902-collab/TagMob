@@ -303,6 +303,10 @@ export default async function EmpreendimentoWorkspace({
                 {pendentes.length} pendente{pendentes.length > 1 ? "s" : ""} de aprovação
               </Link>
             )}
+            <Link href={`/tagmob-os/${id}/pipeline`} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(0,229,255,0.1)", border: "1px solid rgba(0,229,255,0.3)", color: "#00E5FF", padding: "9px 16px", borderRadius: 9, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
+              <Cpu size={14} />
+              Pipeline de Peças
+            </Link>
             <Link href={`/tagmob-os/${id}/autonomia`} style={{ display: "flex", alignItems: "center", gap: 7, backgroundColor: "#39FF14", color: "#000", padding: "9px 16px", borderRadius: 9, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
               <Unlock size={14} />
               Editor do Cliente

@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -11,12 +13,30 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
-    router.push("/corretor");
+    setErrorMsg("");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/hub");
+    } catch (err: any) {
+      console.error("Erro no login:", err);
+      // Traduz ou detalha os principais erros do Firebase Auth
+      let cleanMsg = err.message;
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+        cleanMsg = "E-mail ou senha incorretos. Por favor, verifique suas credenciais.";
+      } else if (err.code === "auth/invalid-email") {
+        cleanMsg = "O formato do e-mail inserido é inválido.";
+      } else if (err.code === "auth/too-many-requests") {
+        cleanMsg = "Acesso bloqueado temporariamente por excesso de tentativas. Tente mais tarde.";
+      }
+      setErrorMsg(cleanMsg);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -36,7 +56,23 @@ export default function SignInPage() {
         style={{ width: "100%", maxWidth: 400, background: "#111120", border: "1px solid #1A1A30", borderRadius: 14, padding: 28, position: "relative", zIndex: 1 }}
       >
         <h1 style={{ fontSize: 20, fontWeight: 800, color: "#EEEEFF", marginBottom: 6, letterSpacing: "-0.03em" }}>Entrar na plataforma</h1>
-        <p style={{ fontSize: 14, color: "#7878A0", marginBottom: 24 }}>Bem-vindo de volta ao TAGMOB.</p>
+        <p style={{ fontSize: 14, color: "#7878A0", marginBottom: 20 }}>Bem-vindo de volta ao TAGMOB.</p>
+
+        {errorMsg && (
+          <div style={{
+            background: "rgba(255,0,104,0.1)",
+            border: "1px solid rgba(255,0,104,0.3)",
+            borderRadius: 8,
+            padding: "10px 14px",
+            fontSize: 13,
+            color: "#FF0068",
+            marginBottom: 20,
+            lineHeight: 1.5,
+            wordBreak: "break-word"
+          }}>
+            {errorMsg}
+          </div>
+        )}
 
         <div style={{ marginBottom: 16 }}>
           <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#7878A0", marginBottom: 6, letterSpacing: "0.04em", textTransform: "uppercase" }}>E-mail</label>

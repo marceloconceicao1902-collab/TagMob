@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const ctx = await getCurrentUserContext();
+  const ctx = await getCurrentUserContext(req);
   if (!ctx) return unauthorizedResponse();
 
   if (ctx.profileType !== "MARCA" && ctx.profileType !== "CONSTRUTORA") {

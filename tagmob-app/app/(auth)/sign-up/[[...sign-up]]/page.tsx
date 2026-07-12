@@ -4,20 +4,49 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function SignUpPage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const inputStyle = { width: "100%", padding: "10px 12px", borderRadius: 8, background: "#0D0D1A", border: "1px solid #1A1A30", color: "#EEEEFF", fontSize: 14, outline: "none", fontFamily: "inherit" };
   const labelStyle = { display: "block" as const, fontSize: 12, fontWeight: 600, color: "#7878A0", marginBottom: 6, letterSpacing: "0.04em", textTransform: "uppercase" as const };
 
   async function handleStep2(e: React.FormEvent) {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setErrorMsg("As senhas não coincidem.");
+      return;
+    }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
-    router.push("/onboarding");
+    setErrorMsg("");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      // Aqui pode ir para o onboarding após criar a conta
+      router.push("/onboarding");
+    } catch (err: any) {
+      console.error("Erro no cadastro:", err);
+      let cleanMsg = err.message;
+      if (err.code === "auth/email-already-in-use") {
+        cleanMsg = "Este e-mail já está cadastrado em nossa plataforma.";
+      } else if (err.code === "auth/weak-password") {
+        cleanMsg = "A senha é muito fraca. Digite pelo menos 6 caracteres.";
+      } else if (err.code === "auth/invalid-email") {
+        cleanMsg = "O formato do e-mail inserido é inválido.";
+      }
+      setErrorMsg(cleanMsg);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -37,19 +66,35 @@ export default function SignUpPage() {
         <h1 style={{ fontSize: 20, fontWeight: 800, color: "#EEEEFF", marginBottom: 6, letterSpacing: "-0.03em" }}>
           {step === 1 ? "Criar sua conta" : "Configure sua senha"}
         </h1>
-        <p style={{ fontSize: 14, color: "#7878A0", marginBottom: 24 }}>
+        <p style={{ fontSize: 14, color: "#7878A0", marginBottom: 20 }}>
           {step === 1 ? "Comece gratuitamente. Sem cartão de crédito." : "Quase lá!"}
         </p>
+
+        {errorMsg && (
+          <div style={{
+            background: "rgba(255,0,104,0.1)",
+            border: "1px solid rgba(255,0,104,0.3)",
+            borderRadius: 8,
+            padding: "10px 14px",
+            fontSize: 13,
+            color: "#FF0068",
+            marginBottom: 20,
+            lineHeight: 1.5,
+            wordBreak: "break-word"
+          }}>
+            {errorMsg}
+          </div>
+        )}
 
         {step === 1 && (
           <form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-              <div><label style={labelStyle}>Nome</label><input type="text" placeholder="João" required style={inputStyle} /></div>
-              <div><label style={labelStyle}>Sobrenome</label><input type="text" placeholder="Silva" required style={inputStyle} /></div>
+              <div><label style={labelStyle}>Nome</label><input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="João" required style={inputStyle} /></div>
+              <div><label style={labelStyle}>Sobrenome</label><input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Silva" required style={inputStyle} /></div>
             </div>
             <div style={{ marginBottom: 24 }}>
               <label style={labelStyle}>E-mail</label>
-              <input type="email" placeholder="joao@email.com" required style={inputStyle} />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="joao@email.com" required style={inputStyle} />
             </div>
             <button type="submit" style={{ width: "100%", padding: "12px", borderRadius: 9, backgroundColor: "#FF0068", border: "none", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               Continuar <ArrowRight size={15} />
@@ -61,11 +106,11 @@ export default function SignUpPage() {
           <form onSubmit={handleStep2}>
             <div style={{ marginBottom: 16 }}>
               <label style={labelStyle}>Senha</label>
-              <input type="password" placeholder="Mínimo 8 caracteres" minLength={8} required style={inputStyle} />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo 8 caracteres" minLength={8} required style={inputStyle} />
             </div>
             <div style={{ marginBottom: 24 }}>
               <label style={labelStyle}>Confirmar Senha</label>
-              <input type="password" placeholder="Repita a senha" required style={inputStyle} />
+              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repita a senha" required style={inputStyle} />
             </div>
             <button type="submit" disabled={loading} style={{ width: "100%", padding: "12px", borderRadius: 9, backgroundColor: "#FF0068", border: "none", color: "#fff", fontSize: 14, fontWeight: 700, cursor: loading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               {loading ? "Criando..." : <><span>Criar conta</span><ArrowRight size={15} /></>}

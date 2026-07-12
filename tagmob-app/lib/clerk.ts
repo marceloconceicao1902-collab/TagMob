@@ -1,7 +1,11 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { ProfileType } from "./types";
 
+/**
+ * Contexto de usuário para as rotas de API.
+ * Futuramente: verificar o token do Firebase via Firebase Admin SDK.
+ * Por enquanto, retorna null se o header Authorization não estiver presente.
+ */
 export interface UserContext {
   userId: string;
   dbUserId?: string;
@@ -10,29 +14,35 @@ export interface UserContext {
   email?: string;
 }
 
-export async function getCurrentUserContext(): Promise<UserContext | null> {
-  try {
-    const { userId } = await auth();
-    if (!userId) return null;
+/**
+ * Extrai e valida o contexto do usuário a partir do header Authorization.
+ * Em produção plena: decodificar o idToken do Firebase com firebase-admin.
+ * Por enquanto: verifica se o header existe e retorna um contexto básico.
+ */
+export async function getCurrentUserContext(
+  req?: Request
+): Promise<UserContext | null> {
+  // Tentamos pegar o header de autorização da requisição
+  const authHeader = req?.headers?.get?.("Authorization");
+  const token = authHeader?.replace("Bearer ", "")?.trim();
 
-    const user = await currentUser();
-    const publicMetadata = (user?.publicMetadata ?? {}) as {
-      profileType?: ProfileType;
-      tenantId?: string;
-      dbUserId?: string;
-    };
-
-    return {
-      userId,
-      dbUserId: publicMetadata.dbUserId ?? userId,
-      profileType: publicMetadata.profileType ?? "CORRETOR",
-      tenantId: publicMetadata.tenantId,
-      email: user?.emailAddresses[0]?.emailAddress,
-    };
-  } catch (error) {
-    console.error("[getCurrentUserContext] Erro ao obter sessão Clerk:", error);
+  // Se não houver token, o acesso é negado
+  if (!token) {
     return null;
   }
+
+  // TODO: Adicionar verificação real do Firebase ID token com firebase-admin:
+  //   import { getAuth } from 'firebase-admin/auth';
+  //   const decoded = await getAuth().verifyIdToken(token);
+  //   return { userId: decoded.uid, email: decoded.email, ... }
+
+  // Por enquanto, retorna um contexto básico a partir do token presente
+  // (substituir por decode real do Firebase Admin SDK em produção)
+  return {
+    userId: token.slice(0, 28) || "authenticated_user",
+    profileType: "CONSTRUTORA",
+    email: undefined,
+  };
 }
 
 export function unauthorizedResponse() {

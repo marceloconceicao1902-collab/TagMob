@@ -31,7 +31,7 @@ const CreatePropertySchema = z.object({
 });
 
 export async function GET(req: NextRequest) {
-  const ctx = await getCurrentUserContext();
+  const ctx = await getCurrentUserContext(req);
   if (!ctx) return unauthorizedResponse();
 
   const { searchParams } = new URL(req.url);
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const ctx = await getCurrentUserContext();
+  const ctx = await getCurrentUserContext(req);
   if (!ctx) return unauthorizedResponse();
 
   if (!["CORRETOR", "IMOBILIARIA", "CONSTRUTORA"].includes(ctx.profileType)) {

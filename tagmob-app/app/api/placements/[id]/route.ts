@@ -9,7 +9,7 @@ const UpdateSchema = z.object({
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const ctx = await getCurrentUserContext();
+  const ctx = await getCurrentUserContext(req);
   if (!ctx) return unauthorizedResponse();
 
   const { id } = await params;

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ClerkWrapper } from "@/components/auth/clerk-wrapper";
 import "./globals.css";
 
 const inter = Inter({
@@ -22,10 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkWrapper>
-      <html lang="pt-BR" className={inter.variable}>
-        <body className="font-sans antialiased">{children}</body>
-      </html>
-    </ClerkWrapper>
+    <html lang="pt-BR" className={inter.variable}>
+      <body className="font-sans antialiased">{children}</body>
+    </html>
   );
 }

@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useUser, SignOutButton } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import {
   LayoutDashboard, FolderKanban, Palette, Home,
   Tag, LogOut, ChevronRight, Settings, Building2,
@@ -22,61 +24,17 @@ const NAV: NavItem[] = [
   { label: "Visão Geral",       href: "/resumo",            icon: LayoutDashboard, color: "#FFB800" },
 ];
 
-const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
-const IS_CLERK_READY =
-  (key.startsWith("pk_live_") || key.startsWith("pk_test_")) &&
-  !key.includes("SUBSTITUA") &&
-  !key.includes("XXXXXXX") &&
-  key.length > 30;
-
-// Sub-component to safely use Clerk hooks only when Clerk is active
-function ClerkUserProfile() {
-  const { user } = useUser();
-  
-  return (
-    <div style={{ padding: "10px 14px", borderTop: "1px solid #1A1A30", display: "flex", alignItems: "center", gap: 9 }}>
-      {user?.imageUrl ? (
-        <img src={user.imageUrl} style={{ width: 28, height: 28, borderRadius: "50%" }} alt="Avatar" />
-      ) : (
-        <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#FF006815", border: "1px solid #FF006830", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#FF0068", flexShrink: 0 }}>
-          {user?.firstName?.[0] || "U"}
-        </div>
-      )}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF", lineHeight: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {user?.fullName || "Usuário"}
-        </p>
-        <p style={{ fontSize: 10, color: "#2E2E4A", marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {user?.primaryEmailAddress?.emailAddress || ""}
-        </p>
-      </div>
-      <SignOutButton redirectUrl="/">
-        <button style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0 }}>
-          <LogOut size={13} color="#2E2E4A" />
-        </button>
-      </SignOutButton>
-    </div>
-  );
-}
-
-// Fallback user when Clerk is not configured
-function DemoUserProfile() {
-  return (
-    <div style={{ padding: "10px 14px", borderTop: "1px solid #1A1A30", display: "flex", alignItems: "center", gap: 9 }}>
-      <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#FF006815", border: "1px solid #FF006830", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#FF0068", flexShrink: 0 }}>
-        D
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF", lineHeight: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Demo User</p>
-        <p style={{ fontSize: 10, color: "#2E2E4A", marginTop: 1 }}>demo@tagmob.com.br</p>
-      </div>
-      <Link href="/"><LogOut size={13} color="#2E2E4A" /></Link>
-    </div>
-  );
-}
-
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   function isActive(href: string) {
     if (href === "/hub")       return pathname === "/hub";
@@ -84,6 +42,15 @@ export default function Sidebar() {
     if (href === "/catalogo")  return pathname === "/catalogo"  || pathname.startsWith("/catalogo");
     if (href === "/arquiteto") return pathname === "/arquiteto" || pathname.startsWith("/arquiteto");
     return pathname.startsWith(href);
+  }
+
+  async function handleLogout() {
+    try {
+      await signOut(auth);
+      router.push("/");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   }
 
   return (
@@ -143,7 +110,26 @@ export default function Sidebar() {
         <Link href="/corretor/configuracoes" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", color: "#3A3A5C", fontSize: 12, textDecoration: "none" }}>
           <Settings size={13} color="#3A3A5C" /> Configurações
         </Link>
-        {IS_CLERK_READY ? <ClerkUserProfile /> : <DemoUserProfile />}
+        <div style={{ padding: "10px 14px", borderTop: "1px solid #1A1A30", display: "flex", alignItems: "center", gap: 9 }}>
+          {user?.photoURL ? (
+            <img src={user.photoURL} style={{ width: 28, height: 28, borderRadius: "50%" }} alt="Avatar" />
+          ) : (
+            <div style={{ width: 28, height: 28, borderRadius: "50%", backgroundColor: "#FF006815", border: "1px solid #FF006830", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#FF0068", flexShrink: 0 }}>
+              {user?.email?.[0]?.toUpperCase() || "U"}
+            </div>
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF", lineHeight: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {user?.displayName || user?.email?.split("@")[0] || "Usuário"}
+            </p>
+            <p style={{ fontSize: 10, color: "#2E2E4A", marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {user?.email || ""}
+            </p>
+          </div>
+          <button onClick={handleLogout} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0 }}>
+            <LogOut size={13} color="#2E2E4A" />
+          </button>
+        </div>
       </div>
     </aside>
   );

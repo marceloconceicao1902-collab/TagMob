@@ -174,44 +174,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link
-              href="/corretor"
-              style={{
-                background: "none",
-                border: "1px solid #1A1A30",
-                color: "#EEEEFF",
-                padding: "8px 18px",
-                borderRadius: 8,
-                fontSize: 14,
-                cursor: "pointer",
-                fontWeight: 500,
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              Ver Demo
-            </Link>
-            <Link
-              href="/corretor"
-              style={{
-                backgroundColor: "#FF0068",
-                border: "none",
-                color: "#fff",
-                padding: "8px 18px",
-                borderRadius: 8,
-                fontSize: 14,
-                cursor: "pointer",
-                fontWeight: 600,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                textDecoration: "none",
-              }}
-            >
-              Começar grátis
-              <ArrowRight size={14} />
-            </Link>
+            {/* Acesso ao Hub restrito via rota /hub */}
           </div>
         </div>
       </nav>
@@ -242,12 +205,12 @@ export default function LandingPage() {
           </p>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/corretor" style={{ display: "inline-flex", alignItems: "center", gap: 9, padding: "14px 28px", backgroundColor: "#FF0068", color: "#fff", borderRadius: 12, fontSize: 15, fontWeight: 700, textDecoration: "none" }}>
-              Ver a plataforma <ArrowRight size={16} />
-            </Link>
-            <Link href="#simulador" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, border: "1px solid #1A1A30", color: "#7878A0", fontSize: 15, fontWeight: 600, textDecoration: "none" }}>
-              Simular Orçamento <ChevronRight size={15} />
-            </Link>
+            <a href="#simulador" style={{ display: "inline-flex", alignItems: "center", gap: 9, padding: "14px 28px", backgroundColor: "#FF0068", color: "#fff", borderRadius: 12, fontSize: 15, fontWeight: 700, textDecoration: "none" }}>
+              Simular Orçamento <ArrowRight size={16} />
+            </a>
+            <a href="#funcionalidades" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, border: "1px solid #1A1A30", color: "#7878A0", fontSize: 15, fontWeight: 600, textDecoration: "none" }}>
+              Funcionalidades <ChevronRight size={15} />
+            </a>
           </div>
 
           <div style={{ marginTop: 56, display: "flex", gap: 36, justifyContent: "center", opacity: 0.65 }}>
@@ -370,7 +333,7 @@ export default function LandingPage() {
                 link: `/arquiteto`, cta: "Portal do arquiteto →",
               },
             ].map((f) => (
-              <div key={f.titulo} style={{ background: "#111120", border: `1px solid ${f.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              <div key={f.titulo} style={{ background: "#111120", border: `1px solid ${f.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column", paddingBottom: 22 }}>
                 <div style={{ height: 3, backgroundColor: f.cor, opacity: 0.55 }} />
                 <div style={{ padding: "22px 22px 0", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
@@ -388,11 +351,6 @@ export default function LandingPage() {
                       </div>
                     ))}
                   </div>
-                </div>
-                <div style={{ padding: "14px 22px", borderTop: "1px solid #1A1A30", marginTop: 14 }}>
-                  <Link href={f.link} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: f.cor, textDecoration: "none", fontWeight: 700 }}>
-                    {f.cta} <ArrowRight size={12} />
-                  </Link>
                 </div>
               </div>
             ))}
@@ -707,7 +665,7 @@ export default function LandingPage() {
                 recursos: ["Templates com identidade da campanha", "Edição de contato no canvas", "Exportação e compartilhamento"],
               },
             ].map((a) => (
-              <Link key={a.titulo} href={a.href} style={{ textDecoration: "none", background: "#111120", border: `1px solid ${a.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              <div key={a.titulo} style={{ background: "#111120", border: `1px solid ${a.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column", paddingBottom: 20 }}>
                 <div style={{ height: 3, backgroundColor: a.cor, opacity: 0.55 }} />
                 <div style={{ padding: "20px 18px", flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -729,11 +687,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                 </div>
-                <div style={{ padding: "11px 18px", borderTop: "1px solid #1A1A30", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 12, color: a.cor, fontWeight: 700 }}>Acessar portal</span>
-                  <ArrowRight size={12} color={a.cor} />
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
 
@@ -800,8 +754,8 @@ export default function LandingPage() {
             No fim, como no Tetris, tudo se resume a encaixar as peças certas no momento certo. Isso é TAGMOB.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link
-              href="/corretor"
+            <a
+              href="#simulador"
               style={{
                 backgroundColor: "#FF0068",
                 border: "none",
@@ -818,12 +772,9 @@ export default function LandingPage() {
                 textDecoration: "none",
               }}
             >
-              Explorar o Demo
+              Simular Lançamento
               <ArrowRight size={18} />
-            </Link>
-            <Link href="/resumo" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 24px", borderRadius: 12, border: "1px solid #1A1A30", color: "#7878A0", fontSize: 15, fontWeight: 600, textDecoration: "none" }}>
-              Ver resumo da plataforma <ArrowRight size={15} />
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -842,14 +793,6 @@ export default function LandingPage() {
               <p style={{ fontSize: 12, color: "#7878A0", lineHeight: 1.65 }}>O Sistema Operacional da Comunicação Imobiliária.</p>
             </div>
             <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
-              <div>
-                <p style={{ fontSize: 10, fontWeight: 800, color: "#2E2E4A", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>Plataforma</p>
-                {[["Empreendimentos", `/tagmob-os`], ["Corretores", `/corretor`], ["Arquitetos", `/arquiteto`], ["Marcas & AdTech", `/marcas`]].map(([l, h]) => (
-                  <div key={l} style={{ marginBottom: 7 }}>
-                    <Link href={h} style={{ fontSize: 13, color: "#7878A0", textDecoration: "none" }}>{l}</Link>
-                  </div>
-                ))}
-              </div>
               <div>
                 <p style={{ fontSize: 10, fontWeight: 800, color: "#2E2E4A", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>Contato</p>
                 <div style={{ marginBottom: 7 }}>

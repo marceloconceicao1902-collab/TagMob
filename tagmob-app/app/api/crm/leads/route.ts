@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { jsonError } from "@/lib/crm";
 
@@ -86,7 +87,7 @@ export async function POST(req: Request) {
     const defaultTenant = tenantId ?? (await prisma.tenant.findFirst({ select: { id: true } }))?.id;
     if (!defaultTenant) return jsonError("Nenhum tenant configurado", 500);
 
-    const deal = await prisma.$transaction(async (tx) => {
+    const deal = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const emp = await tx.empreendimento.create({
         data: {
           nome,

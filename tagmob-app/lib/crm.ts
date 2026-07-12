@@ -46,7 +46,21 @@ export function mapEmpreendimentoToDeal(emp: EmpreendimentoWithRelations): Empre
   };
 }
 
-export type LeadDTO = LeadsContato & {
+export type LeadDTO = {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string | null;
+  empresa: string | null;
+  mensagem: string | null;
+  orcamentoEstimado: { toString(): string } | number | null;
+  status: string;
+  source?: string;
+  prioridade?: number;
+  score?: number;
+  ownerUserId?: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
   ownerUser?: Pick<User, "id" | "fullName"> | null;
   convertedEmpreendimento?: { id: string; nome: string } | null;
 };

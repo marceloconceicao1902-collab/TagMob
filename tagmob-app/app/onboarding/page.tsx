@@ -68,92 +68,191 @@ interface DeliverableOption {
   preco: number;
   descricao: string;
   isObrigatorio?: boolean;
+  detalhes?: string[];
 }
 
 const DELIVERABLES: DeliverableOption[] = [
-  // 1. Estratégia, Branding e Conceito
-  { id: "e1-1", nome: "Campanha (Conceito, Estratégia e Identidade Visual)", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 6000, descricao: "Apresentação da estratégia de marca, posicionamento mestre e marca mestre", isObrigatorio: true },
-  { id: "e1-2", nome: "Filme Conceito", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 4500, descricao: "Vídeo manifesto de posicionamento conceitual", isObrigatorio: true },
-  { id: "e1-3", nome: "KV (Key Visual)", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 3000, descricao: "Identidade visual diretora de desdobramento", isObrigatorio: true },
-  { id: "e1-4", nome: "Manual da Marca", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 1500, descricao: "Guia de uso de fontes, paletas e grids do OS", isObrigatorio: true },
-  
-  // 2. Materiais Comerciais
-  { id: "e2-1", nome: "Book do Cliente – Folhetão (Digital e Impresso)", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 3500, descricao: "Brochura física e digital AAA em curvas" },
-  { id: "e2-2", nome: "Book do Cliente – Mini (Digital e Impresso)", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 2000, descricao: "Versão compacta e rápida para abordagem preliminar" },
-  { id: "e2-3", nome: "Book de Mesa do Corretor (Digital e Impresso)", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 2800, descricao: "Catálogo técnico com plantas de vendas" },
-  { id: "e2-4", nome: "Caderno de Plantas", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1500, descricao: "Compilado técnico de todas as tipologias" },
-  { id: "e2-5", nome: "Folder Prospecto", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1000, descricao: "Panfleto comercial de distribuição de rua e PDV" },
-  { id: "e2-6", nome: "Folheto Intermediário", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1200, descricao: "Material para meio de funil com mais detalhes técnicos" },
-  { id: "e2-7", nome: "Folheto de Combate", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 800, descricao: "Material direto e agressivo focado em preço/condições" },
-  { id: "e2-8", nome: "Implantação Ilustrada", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1100, descricao: "Desenho ilustrado da inserção do prédio no terreno" },
-  { id: "e2-9", nome: "Ficha Técnica Geral", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 700, descricao: "Memorial descritivo resumido de acabamentos e metragens" },
-
-  // 3. Comunicação Digital
-  { id: "e3-1", nome: "E-mail Marketing Lançamento", etapa: 3, etapaLabel: "03. Comunicação Digital", preco: 900, descricao: "Código HTML e criativos prontos p/ disparo" },
-  { id: "e3-2", nome: "WhatsApp Card Promocional", etapa: 3, etapaLabel: "03. Comunicação Digital", preco: 600, descricao: "Cards visuais otimizados para compartilhamento rápido" },
-  { id: "e3-3", nome: "Convite Digital (Corretores e Clientes)", etapa: 3, etapaLabel: "03. Comunicação Digital", preco: 500, descricao: "Convite com links para meeting de corretores e clientes" },
-
-  // 4. Eventos de Lançamento
-  { id: "e4-1", nome: "Convite Impresso Lançamento", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 700, descricao: "Design de convite impresso com acabamento premium" },
-  { id: "e4-2", nome: "Convite para Meeting", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 500, descricao: "Convite digital/físico para o meeting de corretores" },
-  { id: "e4-3", nome: "Template de Apresentação para Meeting", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 1800, descricao: "Apresentação comercial dinâmica editável em PPTX" },
-  { id: "e4-4", nome: "Backdrop para Eventos", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 1200, descricao: "Painel fotográfico para recepção e fotos do evento" },
-  { id: "e4-5", nome: "Banner Impresso Sinalizador", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 800, descricao: "Banners sinalizadores de recepção de convenção" },
-
-  // 5. Materiais de Campo
-  { id: "e5-1", nome: "Sinalização para Promotores", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 1100, descricao: "Coletes, credenciais e bolsas personalizadas" },
-  { id: "e5-2", nome: "Folhetos Promocionais", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 800, descricao: "Folhetos simplificados de distribuição em massa" },
-  { id: "e5-3", nome: "Balcão de Degustação Adesivado", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 1200, descricao: "Programação visual para ações em praças e PDV externo" },
-  { id: "e5-4", nome: "Garrafa de Água Personalizada", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 900, descricao: "Rótulo e embalagem customizados para distribuição" },
-  { id: "e5-5", nome: "Lixo Car Personalizado", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 700, descricao: "Design de lixeiras de câmbio para automóveis" },
-  { id: "e5-6", nome: "Brindes Especiais", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 1400, descricao: "Design de sacolas, chaveiros e brindes promocionais" },
-
-  // 6. Comunicação Visual
-  { id: "e6-1", nome: "Comunicação Visual do Estande", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 5500, descricao: "Sinalização interna, tótens de maquete e ambientação" },
-  { id: "e6-2", nome: "Placas de Comunicação Visual", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 2500, descricao: "Placas internas e indicativas do estande de vendas" },
-  { id: "e6-3", nome: "Placa de Produto", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1800, descricao: "Placa frontal indicadora do lançamento e metragens" },
-  { id: "e6-4", nome: "Placa Seta de Trânsito", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1200, descricao: "Setas direcionais externas de trânsito" },
-  { id: "e6-5", nome: "Tapume de Fechamento", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 4500, descricao: "Projeto gráfico de fechamento de lote com apelo visual" },
-  { id: "e6-6", nome: "Cavalete Promocional", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 800, descricao: "Cavaletes promocionais móveis para calçada" },
-  { id: "e6-7", nome: "Adesivo Microperfurado para Carros", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1000, descricao: "Adesivos microperfurados de vidro traseiro" },
-  { id: "e6-8", nome: "Faixas de Poste", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1200, descricao: "Faixas de poste e fachadas promocionais" },
-  { id: "e6-9", nome: "Wind Banners Promocionais", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1500, descricao: "Sinalização aérea promocional externa para atração" },
-  { id: "e6-10", nome: "Totens Internos e Externos", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 3500, descricao: "Totens sinalizadores com iluminação e mapas" },
-
-  // 7. Mídia Impressa
-  { id: "e7-1", nome: "Anúncio para Jornal", etapa: 7, etapaLabel: "07. Mídia Impressa", preco: 1600, descricao: "Páginas inteiras e meia página com especificações" },
-  { id: "e7-2", nome: "Anúncio para Revista", etapa: 7, etapaLabel: "07. Mídia Impressa", preco: 1400, descricao: "Layout premium de alta fidelidade para revistas do setor" },
-
-  // Plataformas Digitais
-  { id: "e8-1", nome: "Site ou Landing Page do Empreendimento", etapa: 8, etapaLabel: "08. Plataformas Digitais", preco: 4500, descricao: "Site completo com galeria, mapa e integração de leads" },
-  { id: "e8-2", nome: "Catálogo Digital Interativo", etapa: 8, etapaLabel: "08. Plataformas Digitais", preco: 2500, descricao: "Visualizador PDF/Web com links clicáveis e navegação" },
-  { id: "e8-3", nome: "Materiais para Portais Imobiliários", etapa: 8, etapaLabel: "08. Plataformas Digitais", preco: 1500, descricao: "Banners e fotos redimensionadas nos padrões Zap/VivaReal" },
-
-  // Conteúdo Audiovisual
-  { id: "e9-1", nome: "Vídeo Institucional do Empreendimento", etapa: 9, etapaLabel: "09. Audiovisual", preco: 5000, descricao: "Vídeo com entrevistas, detalhes de obra e depoimentos" },
-  { id: "e9-2", nome: "Vídeo da Região", etapa: 9, etapaLabel: "09. Audiovisual", preco: 3000, descricao: "Gravações aéreas e highlights da vizinhança" },
-  { id: "e9-3", nome: "Vídeo do Decorado", etapa: 9, etapaLabel: "09. Audiovisual", preco: 3500, descricao: "Apresentação guiada do apartamento decorado" },
-  { id: "e9-4", nome: "Tour Virtual 360°", etapa: 9, etapaLabel: "09. Audiovisual", preco: 4000, descricao: "Ambiente imersivo para navegação online pelo cliente" },
-
-  // Imagens
-  { id: "e10-1", nome: "Maquete Eletrônica (Imagens 3D)", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 6500, descricao: "Perspectivas externas, áreas comuns e fachadas realistas" },
-  { id: "e10-2", nome: "Perspectivas Ilustradas", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 3500, descricao: "Tratamento artístico e conceitual de perspectivas do prédio" },
-  { id: "e10-3", nome: "Plantas Humanizadas Coloridas", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 2200, descricao: "Esquemas coloridos e decorados de todas as tipologias" },
-  { id: "e10-4", nome: "Fotos Renderizadas Premium", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 2800, descricao: "Renders estáticos adicionais com detalhes de decoração" },
-
-  // Kits Comerciais
-  { id: "e11-1", nome: "Kit do Corretor de Vendas", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 1200, descricao: "Crachá, bloco de notas, caneta e pasta de apresentação" },
-  { id: "e11-2", nome: "Kit do Cliente Comprador", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 1500, descricao: "Sacola institucional, memorial descritivo impresso e folder" },
-  { id: "e11-3", nome: "Credenciais e Crachás Oficiais", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 600, descricao: "Acreditação oficial para o time de plantão e promotores" },
-  { id: "e11-4", nome: "Design de Assinatura de E-mail", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 400, descricao: "Arte e assinatura em HTML com a marca do lançamento" },
-
-  // Marketing Digital
-  { id: "e12-1", nome: "Posts para Redes Sociais", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1500, descricao: "Templates de feed de postagens institucionais" },
-  { id: "e12-2", nome: "Stories Instagram", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1200, descricao: "Templates de engajamento diário para Instagram" },
-  { id: "e12-3", nome: "Reels / TikTok", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 2000, descricao: "Criativos em vídeo vertical editáveis pelo time de marketing" },
-  { id: "e12-4", nome: "Banners Google Display e Portais", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1800, descricao: "Desdobramentos de anúncios em todas as resoluções da web" },
-  { id: "e12-5", nome: "Peças para Meta Ads (Anúncios)", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 2500, descricao: "Criativos em vídeo e carrossel focados em conversão de leads" },
-  { id: "e12-6", nome: "Peças para Google Ads (Display)", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1500, descricao: "Anúncios gráficos para rede de display do Google" },
+  {
+    id: "pkg-estrategia",
+    nome: "Campanha (Conceito, Estratégia e Identidade Visual)",
+    etapa: 1,
+    etapaLabel: "Estratégia & Branding",
+    preco: 15000,
+    descricao: "Apresentação da estratégia de marca, posicionamento mestre e marca mestre",
+    isObrigatorio: true,
+    detalhes: [
+      "Campanha (Apresentação do Conceito, Estratégia e Identidade Visual)",
+      "Filme Conceito",
+      "KV (Key Visual)",
+      "Manual da Marca"
+    ]
+  },
+  {
+    id: "pkg-comerciais",
+    nome: "Materiais Comerciais de Venda",
+    etapa: 2,
+    etapaLabel: "Materiais Comerciais",
+    preco: 18000,
+    descricao: "Principais ferramentas utilizadas pela equipe comercial durante todo o processo de vendas",
+    detalhes: [
+      "Book do Cliente – Folhetão (Digital e Impresso)",
+      "Book do Cliente – Mini (Digital e Impresso)",
+      "Book de Mesa do Corretor (Digital e Impresso)",
+      "Caderno de Plantas",
+      "Folder Prospecto",
+      "Folheto Intermediário",
+      "Folheto de Combate",
+      "Implantação",
+      "Ficha Técnica"
+    ]
+  },
+  {
+    id: "pkg-digital",
+    nome: "Comunicação Digital",
+    etapa: 3,
+    etapaLabel: "Comunicação Digital",
+    preco: 8000,
+    descricao: "Materiais destinados à divulgação e ao relacionamento com clientes e corretores",
+    detalhes: [
+      "E-mail Marketing",
+      "WhatsApp Card",
+      "Convite Digital (Corretores e Clientes)"
+    ]
+  },
+  {
+    id: "pkg-eventos",
+    nome: "Eventos de Lançamento",
+    etapa: 4,
+    etapaLabel: "Eventos Lançamento",
+    preco: 12000,
+    descricao: "Materiais de suporte para convenções, treinamentos e eventos de lançamento",
+    detalhes: [
+      "Convite Impresso (Corretores e Clientes)",
+      "Convite para Meeting",
+      "Template de Apresentação para Meeting",
+      "Backdrop para Eventos",
+      "Banner Impresso Sinalizador"
+    ]
+  },
+  {
+    id: "pkg-campo",
+    nome: "Materiais de Campo",
+    etapa: 5,
+    etapaLabel: "Materiais de Campo",
+    preco: 9500,
+    descricao: "Materiais promocionais físicos e sinalização para ações externas de rua",
+    detalhes: [
+      "Sinalização para Promotores (Colete, Credencial e Pasta)",
+      "Folhetos Promocionais",
+      "Balcão de Degustação Adesivado",
+      "Garrafa de Água Personalizada",
+      "Lixo Car Personalizado",
+      "Brindes Especiais"
+    ]
+  },
+  {
+    id: "pkg-visual",
+    nome: "Comunicação Visual",
+    etapa: 6,
+    etapaLabel: "Comunicação Visual",
+    preco: 16000,
+    descricao: "Sinalização e ambientação para o estande de vendas e pontos estratégicos",
+    detalhes: [
+      "Comunicação Visual do Estande",
+      "Placas de Comunicação Visual",
+      "Placa de Produto",
+      "Placa Seta de Trânsito",
+      "Tapume de Fechamento",
+      "Cavalete Promocional",
+      "Adesivo Microperfurado para Carros",
+      "Faixas de Poste",
+      "Wind Banners Promocionais",
+      "Totens Internos e Externos"
+    ]
+  },
+  {
+    id: "pkg-midia-impressa",
+    nome: "Mídia Impressa",
+    etapa: 7,
+    etapaLabel: "Mídia Impressa",
+    preco: 5000,
+    descricao: "Anúncios estruturados para veiculação em jornais e revistas físicas",
+    detalhes: [
+      "Anúncio para Jornal",
+      "Anúncio para Revista"
+    ]
+  },
+  {
+    id: "pkg-plataformas",
+    nome: "Plataformas Digitais",
+    etapa: 8,
+    etapaLabel: "Plataformas Digitais",
+    preco: 11000,
+    descricao: "Desenvolvimento de site oficial, catálogo digital interativo e portais imobiliários",
+    detalhes: [
+      "Site ou Landing Page do Empreendimento",
+      "Catálogo Digital Interativo",
+      "Materiais para Portais Imobiliários"
+    ]
+  },
+  {
+    id: "pkg-audiovisual",
+    nome: "Conteúdo Audiovisual",
+    etapa: 9,
+    etapaLabel: "Audiovisual",
+    preco: 14000,
+    descricao: "Vídeos do decorado, institucionais e tour virtual 360 graus",
+    detalhes: [
+      "Vídeo Institucional do Empreendimento",
+      "Vídeo da Região",
+      "Vídeo do Decorado",
+      "Tour Virtual 360°"
+    ]
+  },
+  {
+    id: "pkg-imagens",
+    nome: "Imagens & Renders 3D",
+    etapa: 10,
+    etapaLabel: "Imagens & Renders",
+    preco: 15000,
+    descricao: "Perspectivas externas, internas, de lazer e plantas humanizadas coloridas",
+    detalhes: [
+      "Maquete Eletrônica (Imagens 3D)",
+      "Perspectivas Ilustradas",
+      "Plantas Humanizadas Coloridas",
+      "Fotos Renderizadas Premium"
+    ]
+  },
+  {
+    id: "pkg-kits",
+    nome: "Kits Comerciais de Venda",
+    etapa: 11,
+    etapaLabel: "Kits Comerciais",
+    preco: 4500,
+    descricao: "Kits de apresentação para corretores e sacola institucional para clientes",
+    detalhes: [
+      "Kit do Corretor de Vendas",
+      "Kit do Cliente Comprador",
+      "Credenciais e Crachás Oficiais",
+      "Design de Assinatura de E-mail"
+    ]
+  },
+  {
+    id: "pkg-marketing",
+    nome: "Marketing Digital",
+    etapa: 12,
+    etapaLabel: "Marketing Digital",
+    preco: 10000,
+    descricao: "Templates de redes sociais, stories, reels e criativos para campanhas patrocinadas",
+    detalhes: [
+      "Posts para Redes Sociais",
+      "Stories Instagram",
+      "Reels / TikTok",
+      "Banners Google Display e Portais",
+      "Peças para Meta Ads (Anúncios)",
+      "Peças para Google Ads (Display)"
+    ]
+  }
 ];
 
 export default function OnboardingPage() {
@@ -171,6 +270,14 @@ export default function OnboardingPage() {
 
   const [loading, setLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [expandedPackages, setExpandedPackages] = useState<string[]>([]);
+
+  const togglePackageExpanded = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedPackages((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
   
   const [clienteNome, setClienteNome] = useState("");
   const [clienteEmail, setClienteEmail] = useState("");
@@ -503,6 +610,7 @@ export default function OnboardingPage() {
 
               {DELIVERABLES.map(d => {
                 const isSelected = selectedItems.includes(d.id);
+                const isExpanded = expandedPackages.includes(d.id);
                 
                 return (
                   <div 
@@ -512,42 +620,61 @@ export default function OnboardingPage() {
                       background: d.isObrigatorio ? "rgba(255,0,104,0.02)" : isSelected ? "rgba(57,255,20,0.02)" : "#111120",
                       border: `1.5px solid ${d.isObrigatorio ? "#FF006840" : isSelected ? "#39FF1440" : "#1A1A30"}`,
                       borderRadius: 12, padding: "14px 18px", cursor: d.isObrigatorio ? "default" : "pointer",
-                      display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14,
+                      display: "flex", flexDirection: "column", gap: 10,
                       transition: "all 0.1s"
                     }}
                   >
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                        <p style={{ fontSize: 13, fontWeight: 700, color: "#EEEEFF" }}>{d.nome}</p>
-                        <span style={{ 
-                          fontSize: 9, fontWeight: 700, color: d.isObrigatorio ? "#FF0068" : "#7878A0", 
-                          backgroundColor: (d.isObrigatorio ? "#FF0068" : "#7878A0") + "12", 
-                          padding: "1px 6px", borderRadius: 3, border: "1px solid currentcolor"
-                        }}>
-                          {d.etapaLabel}
-                        </span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14 }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          <p style={{ fontSize: 13, fontWeight: 700, color: "#EEEEFF" }}>{d.nome}</p>
+                          <span style={{ 
+                            fontSize: 9, fontWeight: 700, color: d.isObrigatorio ? "#FF0068" : "#7878A0", 
+                            backgroundColor: (d.isObrigatorio ? "#FF0068" : "#7878A0") + "12", 
+                            padding: "1px 6px", borderRadius: 3, border: "1px solid currentcolor"
+                          }}>
+                            {d.etapaLabel}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: 11, color: "#7878A0", marginTop: 4 }}>{d.descricao}</p>
                       </div>
-                      <p style={{ fontSize: 11, color: "#7878A0", marginTop: 4 }}>{d.descricao}</p>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+                        <span style={{ fontSize: 13, fontWeight: 800, color: d.isObrigatorio ? "#FF0068" : "#EDE8DF" }}>
+                          R$ {d.preco.toLocaleString("pt-BR")}
+                        </span>
+                        
+                        {d.isObrigatorio ? (
+                          <div style={{ width: 20, height: 20, borderRadius: 5, backgroundColor: "#FF006815", border: "1px solid #FF006840", display: "flex", alignItems: "center", justifyContent: "center" }} title="Setup Fixo Obrigatório">
+                            <Lock size={10} color="#FF0068" style={{ margin: "auto" }} />
+                          </div>
+                        ) : (
+                          <div style={{ 
+                            width: 20, height: 20, borderRadius: 5, 
+                            backgroundColor: isSelected ? "#39FF1415" : "transparent", 
+                            border: `1.5px solid ${isSelected ? "#39FF1440" : "#282840"}`,
+                            display: "flex", alignItems: "center", justifyContent: "center"
+                          }}>
+                            {isSelected && <Check size={12} color="#39FF14" strokeWidth={3} />}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: d.isObrigatorio ? "#FF0068" : "#EDE8DF" }}>
-                        R$ {d.preco.toLocaleString("pt-BR")}
-                      </span>
-                      
-                      {d.isObrigatorio ? (
-                        <div style={{ width: 20, height: 20, borderRadius: 5, backgroundColor: "#FF006815", border: "1px solid #FF006840", display: "flex", alignItems: "center", justifyContent: "center" }} title="Setup Fixo Obrigatório">
-                          <Lock size={10} color="#FF0068" style={{ margin: "auto" }} />
-                        </div>
-                      ) : (
-                        <div style={{ 
-                          width: 20, height: 20, borderRadius: 5, 
-                          backgroundColor: isSelected ? "#39FF1415" : "transparent", 
-                          border: `1.5px solid ${isSelected ? "#39FF1440" : "#282840"}`,
-                          display: "flex", alignItems: "center", justifyContent: "center"
-                        }}>
-                          {isSelected && <Check size={12} color="#39FF14" strokeWidth={3} />}
-                        </div>
+                    <div style={{ borderTop: `1px solid ${d.isObrigatorio ? 'rgba(255,0,104,0.15)' : '#1A1A30'}`, paddingTop: 8, marginTop: 2 }} onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        onClick={(e) => togglePackageExpanded(d.id, e)}
+                        style={{ background: "none", border: "none", color: d.isObrigatorio ? "#FF0068" : "#00E5FF", fontSize: 11, fontWeight: 700, cursor: "pointer", padding: 0, outline: "none", display: "flex", alignItems: "center", gap: 3 }}
+                      >
+                        {isExpanded ? "Ocultar peças incluídas ▲" : "Ver peças incluídas ▼"}
+                      </button>
+                      {isExpanded && d.detalhes && (
+                        <ul style={{ marginTop: 8, paddingLeft: 16, display: "flex", flexDirection: "column", gap: 4, listStyleType: "disc" }}>
+                          {d.detalhes.map((p, idx) => (
+                            <li key={idx} style={{ fontSize: 11, color: "#7878A0" }}>{p}</li>
+                          ))}
+                        </ul>
                       )}
                     </div>
                   </div>

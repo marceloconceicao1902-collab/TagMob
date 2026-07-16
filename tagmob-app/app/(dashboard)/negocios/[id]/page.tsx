@@ -6,31 +6,44 @@ import DealDetailDrawer from "@/components/pipeline/DealDetailDrawer";
 import type { Empreendimento } from "@/lib/types";
 import { MOCK_EMPREENDIMENTOS } from "@/lib/mock-data";
 
+function findLocalDeal(id: string): Empreendimento | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const local = JSON.parse(localStorage.getItem("tagmob_local_deals") || "[]") as Empreendimento[];
+    return local.find((d) => d.id === id) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default function NegocioDetalhePage() {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = String(params?.id ?? "");
+  const rawId = params?.id;
+  const id = decodeURIComponent(Array.isArray(rawId) ? rawId[0] : String(rawId ?? ""));
   const [deal, setDeal] = useState<Empreendimento | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const loadDeal = useCallback(async () => {
-    if (!id) return;
+    if (!id) {
+      setError("Negócio não encontrado.");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
-    try {
-      if (typeof window !== "undefined") {
-        const local = JSON.parse(localStorage.getItem("tagmob_local_deals") || "[]") as Empreendimento[];
-        const localHit = local.find((d) => d.id === id);
-        if (localHit) {
-          setDeal(localHit);
-          setLoading(false);
-          return;
-        }
-      }
+    const localHit = findLocalDeal(id);
+    if (localHit) {
+      setDeal(localHit);
+      setLoading(false);
+      return;
+    }
 
-      const res = await fetch("/api/crm/deals");
+    try {
+      const res = await fetch("/api/crm/deals", { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         const found = (json.data as Empreendimento[] | undefined)?.find((d) => d.id === id);
@@ -41,15 +54,18 @@ export default function NegocioDetalhePage() {
         }
       }
     } catch {
-      /* fallback below */
+      /* fallback */
     }
 
     const mock = MOCK_EMPREENDIMENTOS.find((d) => d.id === id);
     if (mock) {
       setDeal(mock);
-    } else {
-      setError("Negócio não encontrado.");
+      setLoading(false);
+      return;
     }
+
+    setDeal(null);
+    setError("Negócio não encontrado.");
     setLoading(false);
   }, [id]);
 

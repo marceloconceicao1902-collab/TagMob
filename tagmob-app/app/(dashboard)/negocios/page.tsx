@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { ModelComparison } from "@/components/billing/ModelComparison";
 import NegociosKanban from "@/components/pipeline/NegociosKanban";
-import { useRouter } from "next/navigation";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const EMPREENDIMENTOS = [
@@ -139,17 +138,19 @@ function KpiCard({ label, value, sub, color, icon: Icon }: {
   );
 }
 
-function EmpreendimentoCard({ emp, onSelect }: { emp: typeof EMPREENDIMENTOS[0]; onSelect: (id: string) => void }) {
+function EmpreendimentoCard({ emp }: { emp: typeof EMPREENDIMENTOS[0] }) {
   const prog = pct(emp.pecasConcluidas, emp.totalPecas);
   const depIdx = PIPELINE_STEPS.findIndex(s => s.key === emp.depAtual);
 
   return (
-    <div
-      onClick={() => onSelect(emp.id)}
+    <Link
+      href={`/negocios/${encodeURIComponent(emp.id)}`}
+      prefetch={false}
       style={{
         background: "#111120", border: `1px solid #1A1A30`,
         borderRadius: 16, overflow: "hidden",
         cursor: "pointer", transition: "border-color 0.15s",
+        textDecoration: "none", color: "inherit", display: "block",
       }}
       onMouseEnter={e => (e.currentTarget.style.borderColor = emp.cor + "50")}
       onMouseLeave={e => (e.currentTarget.style.borderColor = "#1A1A30")}
@@ -240,9 +241,9 @@ function EmpreendimentoCard({ emp, onSelect }: { emp: typeof EMPREENDIMENTOS[0];
             <p style={{ fontSize: 11, color: "#7878A0", lineHeight: 1.5 }}>
               Realize o pagamento do Combo Fixo para liberar a esteira de produção.
             </p>
-            <Link href="/onboarding" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 8, fontSize: 11, fontWeight: 700, color: "#FFB800", textDecoration: "none" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 8, fontSize: 11, fontWeight: 700, color: "#FFB800" }}>
               Contratar Etapa 1 <ArrowUpRight size={11} />
-            </Link>
+            </span>
           </div>
         )}
 
@@ -258,18 +259,13 @@ function EmpreendimentoCard({ emp, onSelect }: { emp: typeof EMPREENDIMENTOS[0];
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
 // ─── Página principal ─────────────────────────────────────────────────────────
 export default function NegociosHub() {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState("kanban");
-
-  const openEmpDetail = (id: string) => {
-    router.push(`/negocios/${id}`);
-  };
 
   const totalOrc = EMPREENDIMENTOS.reduce((s, e) => s + e.orcamentoTotal, 0);
   const totalPecas = EMPREENDIMENTOS.reduce((s, e) => s + e.totalPecas, 0);
@@ -394,7 +390,7 @@ export default function NegociosHub() {
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
                 {EMPREENDIMENTOS.map(emp => (
-                  <EmpreendimentoCard key={emp.id} emp={emp} onSelect={openEmpDetail} />
+                  <EmpreendimentoCard key={emp.id} emp={emp} />
                 ))}
               </div>
             </div>
@@ -429,7 +425,7 @@ export default function NegociosHub() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
               {EMPREENDIMENTOS.map(emp => (
-                <EmpreendimentoCard key={emp.id} emp={emp} onSelect={openEmpDetail} />
+                <EmpreendimentoCard key={emp.id} emp={emp} />
               ))}
 
               {/* Card de adicionar novo */}

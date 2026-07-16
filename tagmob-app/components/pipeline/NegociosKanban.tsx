@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
   User, Clock, ChevronRight, DollarSign, TrendingUp,
@@ -148,20 +147,18 @@ function LeadCard({
 function DealCard({
   deal,
   columnColor,
-  onOpen,
 }: {
   deal: Empreendimento;
   columnColor: string;
-  onOpen: () => void;
 }) {
   const progresso = deal.total_assets > 0
     ? Math.round((deal.assets_aprovados / deal.total_assets) * 100)
     : deal.estrategia_completa ? 25 : 5;
 
   return (
-    <button
-      type="button"
-      onClick={onOpen}
+    <Link
+      href={`/negocios/${encodeURIComponent(deal.id)}`}
+      prefetch={false}
       style={{
         display: "block",
         width: "100%",
@@ -172,8 +169,9 @@ function DealCard({
         padding: 14,
         cursor: "pointer",
         transition: "border-color 0.15s, box-shadow 0.15s",
-        font: "inherit",
+        textDecoration: "none",
         color: "inherit",
+        boxSizing: "border-box",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = columnColor + "50";
@@ -269,7 +267,7 @@ function DealCard({
           </span>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }
 
@@ -289,11 +287,6 @@ export default function NegociosKanban({
   const [draggingLeadId, setDraggingLeadId] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<PipelineColumnId | null>(null);
   const [dbOffline, setDbOffline] = useState(false);
-  const router = useRouter();
-
-  const openDeal = (id: string) => {
-    router.push(`/negocios/${id}`);
-  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -730,7 +723,6 @@ export default function NegociosKanban({
                         key={deal.id}
                         deal={deal}
                         columnColor={col.color}
-                        onOpen={() => openDeal(deal.id)}
                       />
                     ))
                   )}
@@ -784,21 +776,14 @@ export default function NegociosKanban({
           {filteredDeals.map((deal) => {
             const fase = columns.find((c) => c.id === deal.fase_atual);
             return (
-              <div
+              <Link
                 key={deal.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => openDeal(deal.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    openDeal(deal.id);
-                  }
-                }}
+                href={`/negocios/${encodeURIComponent(deal.id)}`}
+                prefetch={false}
                 style={{
                   display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 80px",
                   padding: "14px 18px", borderBottom: "1px solid #1A1A3020",
-                  alignItems: "center", cursor: "pointer",
+                  alignItems: "center", cursor: "pointer", textDecoration: "none", color: "inherit",
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "#111122"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
@@ -821,7 +806,7 @@ export default function NegociosKanban({
                 <span style={{ fontSize: 11, color: "#FF0068", fontWeight: 700 }}>
                   Detalhes →
                 </span>
-              </div>
+              </Link>
             );
           })}
         </div>

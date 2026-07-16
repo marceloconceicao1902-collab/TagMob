@@ -1,12 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
   User, Clock, ChevronRight, DollarSign, TrendingUp,
   AlertCircle, GripVertical, Inbox, Mail, Phone, Star,
-  X, CheckSquare, Square, PlusCircle, Check,
 } from "lucide-react";
 import type { Empreendimento, OSFase } from "@/lib/types";
 import { MOCK_EMPREENDIMENTOS, MOCK_LEADS } from "@/lib/mock-data";
@@ -19,6 +18,7 @@ import {
   formatBRL,
   type PipelineColumnId,
 } from "@/lib/pipeline-kanban";
+import DealDetailDrawer from "@/components/pipeline/DealDetailDrawer";
 
 type ViewMode = "kanban" | "lista";
 
@@ -156,6 +156,9 @@ function DealCard({
   onDragStart: (id: string) => void;
   onClick: () => void;
 }) {
+  const didDrag = useRef(false);
+  const allowDrag = useRef(false);
+
   const progresso = deal.total_assets > 0
     ? Math.round((deal.assets_aprovados / deal.total_assets) * 100)
     : deal.estrategia_completa ? 25 : 5;
@@ -163,8 +166,25 @@ function DealCard({
   return (
     <div
       draggable
-      onDragStart={() => onDragStart(deal.id)}
-      onClick={onClick}
+      onDragStart={(e) => {
+        if (!allowDrag.current) {
+          e.preventDefault();
+          return;
+        }
+        didDrag.current = true;
+        onDragStart(deal.id);
+      }}
+      onDragEnd={() => {
+        allowDrag.current = false;
+        window.setTimeout(() => { didDrag.current = false; }, 0);
+      }}
+      onClick={() => {
+        if (didDrag.current) {
+          didDrag.current = false;
+          return;
+        }
+        onClick();
+      }}
       style={{
         background: "#111120",
         border: "1px solid #1A1A30",
@@ -172,6 +192,7 @@ function DealCard({
         padding: 14,
         cursor: "pointer",
         transition: "border-color 0.15s, box-shadow 0.15s",
+        userSelect: "none",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = columnColor + "50";
@@ -184,7 +205,18 @@ function DealCard({
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <GripVertical size={12} color="#3A3A5C" style={{ cursor: "grab" }} onMouseDown={(e) => e.stopPropagation()} />
+          <span
+            title="Arrastar para mudar etapa"
+            onMouseDown={() => { allowDrag.current = true; }}
+            onMouseUp={() => { allowDrag.current = false; }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: "inline-flex", cursor: "grab", padding: 2, borderRadius: 4,
+              touchAction: "none",
+            }}
+          >
+            <GripVertical size={12} color="#3A3A5C" />
+          </span>
           <PlanoBadge plano={deal.plano} />
         </div>
         <span style={{ fontSize: 10, color: "#3A3A5C" }}>{deal.tipo}</span>
@@ -288,229 +320,10 @@ export default function NegociosKanban({
   const [dbOffline, setDbOffline] = useState(false);
 
   const [selectedDealId, setSelectedDealId] = useState<string | null>(null);
-
-  // Lista de entregaveis disponíveis para contratação
-  const DELIVERABLES_LIST = [
-    { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000 },
-    { id: "ent-102", nome: "Filme Conceito do Lançamento", preco: 4500 },
-    { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000 },
-    { id: "ent-104", nome: "Manual da Marca (Brandbook)", preco: 1500 },
-    { id: "ent-201", nome: "Book do Cliente – Folhetão", preco: 3500 },
-    { id: "ent-202", nome: "Book do Cliente – Mini", preco: 2000 },
-    { id: "ent-203", nome: "Book de Mesa do Corretor", preco: 2800 },
-    { id: "ent-204", nome: "Caderno de Plantas", preco: 1500 },
-    { id: "ent-301", nome: "E-mail Marketing Lançamento", preco: 900 },
-    { id: "ent-302", nome: "WhatsApp Card Promocional", preco: 600 },
-    { id: "ent-801", nome: "Site do Empreendimento + LP", preco: 4500 },
-    { id: "ent-902", nome: "Tour Virtual 360° do Decorado", preco: 4000 },
-    { id: "ent-1001", nome: "Maquete Eletrônica (Imagens 3D)", preco: 6500 },
-  ];
-
-  // Estado para armazenar produtos contratados por empreendimento
-  const [contractedProducts, setContractedProducts] = useState<Record<string, Array<{ id: string; nome: string; preco: number; status: string }>>>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("tagmob_contracted_products");
-        if (saved) return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return {
-      "emp-001": [
-        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
-        { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000, status: "APROVADO" },
-        { id: "ent-201", nome: "Book do Cliente – Folhetão", preco: 3500, status: "EM_PRODUCAO" },
-      ],
-      "emp-002": [
-        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
-        { id: "ent-102", nome: "Filme Conceito do Lançamento", preco: 4500, status: "EM_PRODUCAO" },
-        { id: "ent-801", nome: "Site do Empreendimento + LP", preco: 4500, status: "PENDENTE" },
-      ],
-      "emp-003": [
-        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "PENDENTE" },
-      ],
-      "emp-004": [
-        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
-        { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000, status: "APROVADO" },
-        { id: "ent-1001", nome: "Maquete Eletrônica (Imagens 3D)", preco: 6500, status: "APROVADO" },
-      ]
-    };
-  });
-
-  // Estado para checklist de tarefas
-  const [dealChecklists, setDealChecklists] = useState<Record<string, Array<{ id: string; texto: string; concluida: boolean }>>>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("tagmob_checklists");
-        if (saved) return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return {
-      "emp-001": [
-        { id: "t-1", texto: "Workshop de naming e conceito preliminar", concluida: true },
-        { id: "t-2", texto: "Criação do Key Visual (KV) Matriz", concluida: true },
-        { id: "t-3", texto: "Desenho das plantas humanizadas", concluida: true },
-        { id: "t-4", texto: "Diagramação do Book do Cliente - Folhetão", concluida: false },
-        { id: "t-5", texto: "Envio de criativos digitais para aprovação", concluida: false },
-      ],
-      "emp-002": [
-        { id: "t-1", texto: "Roteiro e storyboard do Filme Conceito", concluida: true },
-        { id: "t-2", texto: "Edição e sonorização da trilha do vídeo", concluida: false },
-        { id: "t-3", texto: "Desenvolvimento da Landing Page", concluida: false },
-      ],
-      "emp-003": [
-        { id: "t-1", texto: "Kick-off técnico e briefing da marca Even", concluida: true },
-        { id: "t-2", texto: "Primeiras opções de Naming e Cores", concluida: false },
-      ],
-      "emp-004": [
-        { id: "t-1", texto: "Aprovação de conceito e tom de voz", concluida: true },
-        { id: "t-2", texto: "Render 3D da fachada principal", concluida: true },
-        { id: "t-3", texto: "Sinalização e tapume físico da Faria Lima", concluida: false },
-      ]
-    };
-  });
-
-  // Sync to localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("tagmob_contracted_products", JSON.stringify(contractedProducts));
-    }
-  }, [contractedProducts]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("tagmob_checklists", JSON.stringify(dealChecklists));
-    }
-  }, [dealChecklists]);
-
-  const [showProductDropdown, setShowProductDropdown] = useState(false);
-  const [newChecklistText, setNewChecklistText] = useState("");
-
-  const handleToggleTask = (dealId: string, taskId: string) => {
-    setDealChecklists(prev => {
-      const list = prev[dealId] ?? [];
-      const updated = list.map(t => t.id === taskId ? { ...t, concluida: !t.concluida } : t);
-      
-      const total = updated.length;
-      const approved = updated.filter(t => t.concluida).length;
-      
-      setDeals(prevDeals => prevDeals.map(d => {
-        if (d.id === dealId) {
-          return {
-            ...d,
-            total_assets: total,
-            assets_aprovados: approved,
-            assets_pendentes: total - approved
-          };
-        }
-        return d;
-      }));
-
-      return {
-        ...prev,
-        [dealId]: updated
-      };
-    });
-  };
-
-  const handleAddTask = (dealId: string) => {
-    if (!newChecklistText.trim()) return;
-    const newTask = {
-      id: `t-${Date.now()}`,
-      texto: newChecklistText.trim(),
-      concluida: false
-    };
-
-    setDealChecklists(prev => {
-      const list = prev[dealId] ?? [];
-      const updated = [...list, newTask];
-
-      const total = updated.length;
-      const approved = updated.filter(t => t.concluida).length;
-      setDeals(prevDeals => prevDeals.map(d => {
-        if (d.id === dealId) {
-          return {
-            ...d,
-            total_assets: total,
-            assets_aprovados: approved,
-            assets_pendentes: total - approved
-          };
-        }
-        return d;
-      }));
-
-      return { ...prev, [dealId]: updated };
-    });
-    setNewChecklistText("");
-  };
-
-  const handleAddProduct = (dealId: string, productId: string) => {
-    const prod = DELIVERABLES_LIST.find(p => p.id === productId);
-    if (!prod) return;
-
-    setContractedProducts(prev => {
-      const list = prev[dealId] ?? [];
-      if (list.some(p => p.id === productId)) return prev;
-
-      const newProd = {
-        id: prod.id,
-        nome: prod.nome,
-        preco: prod.preco,
-        status: "PENDENTE"
-      };
-      
-      const updated = [...list, newProd];
-
-      setDeals(prevDeals => prevDeals.map(d => {
-        if (d.id === dealId) {
-          return {
-            ...d,
-            valor_contrato: (d.valor_contrato ?? 0) + prod.preco
-          };
-        }
-        return d;
-      }));
-
-      setDealChecklists(prevCheck => {
-        const checkList = prevCheck[dealId] ?? [];
-        const taskText = `Produzir entregável: ${prod.nome}`;
-        if (checkList.some(t => t.texto === taskText)) return prevCheck;
-
-        const newTask = {
-          id: `t-prod-${prod.id}`,
-          texto: taskText,
-          concluida: false
-        };
-        const updatedCheckList = [...checkList, newTask];
-
-        const total = updatedCheckList.length;
-        const approved = updatedCheckList.filter(t => t.concluida).length;
-        setDeals(prevDeals => prevDeals.map(d => {
-          if (d.id === dealId) {
-            return {
-              ...d,
-              total_assets: total,
-              assets_aprovados: approved,
-              assets_pendentes: total - approved
-            };
-          }
-          return d;
-        }));
-
-        return { ...prevCheck, [dealId]: updatedCheckList };
-      });
-
-      return {
-        ...prev,
-        [dealId]: updated
-      };
-    });
-
-    setShowProductDropdown(false);
-  };
+  const selectedDeal = useMemo(
+    () => deals.find((d) => d.id === selectedDealId) ?? null,
+    [deals, selectedDealId]
+  );
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -1004,11 +817,22 @@ export default function NegociosKanban({
             return (
               <div
                 key={deal.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedDealId(deal.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedDealId(deal.id);
+                  }
+                }}
                 style={{
                   display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 80px",
                   padding: "14px 18px", borderBottom: "1px solid #1A1A3020",
-                  alignItems: "center",
+                  alignItems: "center", cursor: "pointer",
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "#111122"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
               >
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 700, color: "#EEEEFF" }}>{deal.nome}</p>
@@ -1025,282 +849,24 @@ export default function NegociosKanban({
                 <span style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF" }}>
                   {deal.valor_contrato ? formatBRL(deal.valor_contrato) : "—"}
                 </span>
-                <button
-                  onClick={() => setSelectedDealId(deal.id)}
-                  style={{ fontSize: 11, color: "#FF0068", background: "none", border: "none", cursor: "pointer", fontWeight: 700, padding: 0, textAlign: "left" }}
-                >
+                <span style={{ fontSize: 11, color: "#FF0068", fontWeight: 700 }}>
                   Detalhes →
-                </button>
+                </span>
               </div>
             );
           })}
         </div>
       )}
 
-      {/* ══ DRAWER DE DETALHAMENTO DO NEGÓCIO ════════════ */}
-      {selectedDealId && (() => {
-        const currentDeal = deals.find(d => d.id === selectedDealId);
-        if (!currentDeal) return null;
-
-        const colInfo = columns.find(c => c.id === currentDeal.fase_atual);
-        const colColor = colInfo?.color ?? "#FF0068";
-        const products = contractedProducts[currentDeal.id] ?? [];
-        const checklist = dealChecklists[currentDeal.id] ?? [];
-        const totalTasks = checklist.length;
-        const completedTasks = checklist.filter(t => t.concluida).length;
-        const taskProgresso = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-        const availableProductsToAdd = DELIVERABLES_LIST.filter(p => !products.some(pr => pr.id === p.id));
-
-        return (
-          <>
-            {/* Backdrop */}
-            <div 
-              onClick={() => { setSelectedDealId(null); setShowProductDropdown(false); }}
-              style={{
-                position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: "rgba(4, 4, 8, 0.75)", backdropFilter: "blur(6px)",
-                zIndex: 1000, transition: "all 0.2s"
-              }}
-            />
-
-            {/* Slide-over Panel */}
-            <div style={{
-              position: "fixed", top: 0, right: 0, bottom: 0, width: 500,
-              backgroundColor: "#0B0B16", borderLeft: `2.5px solid ${colColor}`,
-              zIndex: 1001, boxShadow: "-10px 0 40px rgba(0,0,0,0.6)",
-              display: "flex", flexDirection: "column", animation: "slideIn 0.25s ease-out",
-            }}>
-              
-              {/* Header */}
-              <div style={{ 
-                padding: "24px 28px", borderBottom: "1px solid #1A1A30", 
-                display: "flex", justifyContent: "space-between", alignItems: "flex-start",
-                background: "linear-gradient(180deg, rgba(26,26,48,0.1) 0%, transparent 100%)"
-              }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <span style={{
-                      fontSize: 10, fontWeight: 900, color: colColor,
-                      backgroundColor: colColor + "18", padding: "2px 8px", borderRadius: 4,
-                      letterSpacing: "0.05em"
-                    }}>
-                      FASE {currentDeal.fase_atual}: {colInfo?.title}
-                    </span>
-                    <PlanoBadge plano={currentDeal.plano} />
-                  </div>
-                  <h2 style={{ fontSize: 22, fontWeight: 900, color: "#EEEEFF", letterSpacing: "-0.03em" }}>{currentDeal.nome}</h2>
-                  <p style={{ fontSize: 13, color: "#7878A0", marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}>
-                    <Building2 size={13} /> {currentDeal.construtora}
-                  </p>
-                </div>
-                <button 
-                  onClick={() => { setSelectedDealId(null); setShowProductDropdown(false); }}
-                  style={{
-                    background: "#1A1A30", border: "none", borderRadius: 8, width: 32, height: 32,
-                    display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
-                    color: "#7878A0", transition: "color 0.15s"
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = "#EEEEFF"}
-                  onMouseLeave={(e) => e.currentTarget.style.color = "#7878A0"}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Drawer Content */}
-              <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 28 }}>
-                
-                {/* Info Cards Row */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-                  <div style={{ background: "#111122", border: "1px solid #1A1A30", borderRadius: 10, padding: "12px 14px" }}>
-                    <span style={{ fontSize: 10, color: "#7878A0", textTransform: "uppercase", fontWeight: 700 }}>Valor do Contrato</span>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: colColor, marginTop: 4 }}>
-                      {currentDeal.valor_contrato ? formatBRL(currentDeal.valor_contrato) : "—"}
-                    </p>
-                  </div>
-                  <div style={{ background: "#111122", border: "1px solid #1A1A30", borderRadius: 10, padding: "12px 14px" }}>
-                    <span style={{ fontSize: 10, color: "#7878A0", textTransform: "uppercase", fontWeight: 700 }}>Responsável</span>
-                    <p style={{ fontSize: 14, fontWeight: 800, color: "#EEEEFF", marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}>
-                      <User size={13} color={colColor} /> {currentDeal.responsavel ?? "Sem responsável"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Checklist de Tarefas Internas */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h3 style={{ fontSize: 13, fontWeight: 800, color: "#EEEEFF", letterSpacing: "0.03em", textTransform: "uppercase" }}>Checklist de Produção</h3>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: colColor }}>{taskProgresso}% completo</span>
-                  </div>
-
-                  {/* Barra de Progresso */}
-                  <div style={{ height: 6, backgroundColor: "#1A1A30", borderRadius: 3, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${taskProgresso}%`, backgroundColor: colColor, borderRadius: 3, transition: "width 0.3s ease" }} />
-                  </div>
-
-                  {/* Lista de Checkboxes */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
-                    {checklist.map(task => (
-                      <div 
-                        key={task.id}
-                        onClick={() => handleToggleTask(currentDeal.id, task.id)}
-                        style={{
-                          display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px",
-                          background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
-                          cursor: "pointer", transition: "all 0.15s"
-                        }}
-                      >
-                        <span style={{ marginTop: 2, display: "flex", alignItems: "center", color: task.concluida ? colColor : "#3A3A5C" }}>
-                          {task.concluida ? <CheckSquare size={15} /> : <Square size={15} />}
-                        </span>
-                        <span style={{
-                          fontSize: 12.5, color: task.concluida ? "#7878A0" : "#EEEEFF",
-                          textDecoration: task.concluida ? "line-through" : "none",
-                          lineHeight: 1.4
-                        }}>
-                          {task.texto}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Campo de adição de tarefa */}
-                  <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                    <input 
-                      type="text"
-                      placeholder="Adicionar nova tarefa..."
-                      value={newChecklistText}
-                      onChange={(e) => setNewChecklistText(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") handleAddTask(currentDeal.id); }}
-                      style={{
-                        flex: 1, background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
-                        padding: "8px 12px", fontSize: 12.5, color: "#EEEEFF", outline: "none"
-                      }}
-                    />
-                    <button
-                      onClick={() => handleAddTask(currentDeal.id)}
-                      style={{
-                        background: colColor, border: "none", borderRadius: 8, padding: "8px 14px",
-                        color: "#000", fontWeight: 700, fontSize: 12, cursor: "pointer"
-                      }}
-                    >
-                      Adicionar
-                    </button>
-                  </div>
-                </div>
-
-                {/* Produtos Contratados */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h3 style={{ fontSize: 13, fontWeight: 800, color: "#EEEEFF", letterSpacing: "0.03em", textTransform: "uppercase" }}>Produtos Contratados</h3>
-                    <span style={{ fontSize: 11, color: "#7878A0" }}>{products.length} ativos</span>
-                  </div>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {products.map(p => (
-                      <div 
-                        key={p.id}
-                        style={{
-                          display: "flex", justifyContent: "space-between", alignItems: "center",
-                          background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
-                          padding: "10px 14px",
-                        }}
-                      >
-                        <div>
-                          <p style={{ fontSize: 12.5, fontWeight: 700, color: "#EEEEFF" }}>{p.nome}</p>
-                          <span style={{ 
-                            fontSize: 9, fontWeight: 800, marginTop: 4, display: "inline-block",
-                            color: p.status === "APROVADO" ? "#39FF14" : p.status === "EM_PRODUCAO" ? "#00E5FF" : "#FFB800",
-                            backgroundColor: (p.status === "APROVADO" ? "#39FF14" : p.status === "EM_PRODUCAO" ? "#00E5FF" : "#FFB800") + "12",
-                            padding: "1px 6px", borderRadius: 3, border: "1px solid currentcolor"
-                          }}>
-                            {p.status === "APROVADO" ? "Aprovado" : p.status === "EM_PRODUCAO" ? "Em Produção" : "Pendente Setup"}
-                          </span>
-                        </div>
-                        <span style={{ fontSize: 12, fontWeight: 800, color: "#EEEEFF" }}>
-                          {formatBRL(p.preco)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Botão de solicitar/adicionar novo produto */}
-                  <div style={{ position: "relative", marginTop: 4 }}>
-                    <button
-                      onClick={() => setShowProductDropdown(!showProductDropdown)}
-                      style={{
-                        width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                        background: "rgba(0, 229, 255, 0.08)", border: "1px dashed rgba(0, 229, 255, 0.4)",
-                        borderRadius: 8, padding: "10px", color: "#00E5FF", fontSize: 12, fontWeight: 700,
-                        cursor: "pointer"
-                      }}
-                    >
-                      <PlusCircle size={14} /> Solicitar Novo Produto
-                    </button>
-
-                    {showProductDropdown && (
-                      <div style={{
-                        position: "absolute", bottom: "105%", left: 0, right: 0,
-                        backgroundColor: "#111122", border: "1px solid #1A1A30", borderRadius: 10,
-                        boxShadow: "0 -8px 24px rgba(0,0,0,0.5)", zIndex: 1050, maxHeight: 200,
-                        overflowY: "auto", padding: 6, display: "flex", flexDirection: "column", gap: 2
-                      }}>
-                        {availableProductsToAdd.length === 0 ? (
-                          <p style={{ fontSize: 11, color: "#7878A0", padding: "10px", textAlign: "center" }}>Todos os produtos já foram adicionados.</p>
-                        ) : (
-                          availableProductsToAdd.map(ap => (
-                            <div
-                              key={ap.id}
-                              onClick={() => handleAddProduct(currentDeal.id, ap.id)}
-                              style={{
-                                display: "flex", justifyContent: "space-between", alignItems: "center",
-                                padding: "8px 10px", borderRadius: 6, cursor: "pointer", transition: "background 0.1s"
-                              }}
-                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#1C1C36"}
-                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
-                            >
-                              <span style={{ fontSize: 12, color: "#EEEEFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>{ap.nome}</span>
-                              <span style={{ fontSize: 11, fontWeight: 700, color: "#39FF14" }}>+{formatBRL(ap.preco)}</span>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div style={{ 
-                padding: "20px 28px", borderTop: "1px solid #1A1A30", 
-                backgroundColor: "rgba(13,13,26,0.5)", display: "flex", gap: 12 
-              }}>
-                <Link
-                  href={`/tagmob-os/${currentDeal.id}`}
-                  style={{
-                    flex: 1, padding: "12px", borderRadius: 8, backgroundColor: colColor,
-                    border: "none", color: "#000", fontSize: 13, fontWeight: 800, cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                    textDecoration: "none"
-                  }}
-                >
-                  Abrir Workspace TAGMOB OS <ChevronRight size={14} />
-                </Link>
-              </div>
-
-            </div>
-            
-            {/* Custom keyframes for sliding animation */}
-            <style jsx global>{`
-              @keyframes slideIn {
-                from { transform: translateX(100%); }
-                to { transform: translate(0); }
-              }
-            `}</style>
-          </>
-        );
-      })()}
+      {selectedDeal && (
+        <DealDetailDrawer
+          deal={selectedDeal}
+          onClose={() => setSelectedDealId(null)}
+          onDealChange={(updated) => {
+            setDeals((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
+          }}
+        />
+      )}
     </div>
   );
 }

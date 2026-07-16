@@ -121,6 +121,20 @@ npm run lint            # Lint do projeto
 npm run build           # Build de produção
 ```
 
+## Deploy (produção)
+
+**Projeto Vercel oficial:** `tag-mob` → https://www.tagmob.com.br  
+**Não use** o projeto legado `tagmob-app` para produção.
+
+Na raiz do repositório:
+
+```bash
+npm run deploy:prod
+```
+
+O script valida `.vercel/project.json` (deve ser `tag-mob`) antes de publicar.  
+Root Directory no dashboard Vercel: `tagmob-app`.
+
 ---
 
 ## Fluxo de Onboarding

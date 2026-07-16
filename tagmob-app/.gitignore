@@ -35,8 +35,6 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 
-# Misc
+# Misc — link Vercel fica na raiz do monorepo (projeto tag-mob)
 .vercel
 *.pem
-
-.vercel

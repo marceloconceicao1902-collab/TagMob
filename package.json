@@ -1,0 +1,9 @@
+{
+  "name": "tagmob",
+  "private": true,
+  "scripts": {
+    "deploy:prod": "node scripts/deploy-prod.mjs",
+    "dev": "npm --prefix tagmob-app run dev",
+    "build": "npm --prefix tagmob-app run build"
+  }
+}

@@ -35,7 +35,9 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 
-# Misc
-.vercel
-**/.vercel
+# Misc — versionar só o link do projeto Vercel de produção (tag-mob)
+.vercel/*
+**/.vercel/*
+!.vercel/project.json
+!.vercel/README.md
 *.pem

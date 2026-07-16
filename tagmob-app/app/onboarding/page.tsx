@@ -71,20 +71,89 @@ interface DeliverableOption {
 }
 
 const DELIVERABLES: DeliverableOption[] = [
-  // Etapa 1 - OBRIGATÓRIOS (Setup Inicial Fixo)
-  { id: "e1-1", nome: "Apresentação de Conceito, Estratégia e Identidade Visual", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 6000, descricao: "Estudo de posicionamento, naming e marca mestre", isObrigatorio: true },
-  { id: "e1-2", nome: "Filme Conceito de 30\"", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 4500, descricao: "Vídeo manifesto de posicionamento conceitual", isObrigatorio: true },
-  { id: "e1-3", nome: "Key Visual (KV) Matriz", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 3000, descricao: "Identidade visual diretora de desdobramento", isObrigatorio: true },
-  { id: "e1-4", nome: "Manual da Marca (Brandbook)", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 1500, descricao: "Guia de uso de fontes, paletas e grids do OS", isObrigatorio: true },
+  // 1. Estratégia, Branding e Conceito
+  { id: "e1-1", nome: "Campanha (Conceito, Estratégia e Identidade Visual)", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 6000, descricao: "Apresentação da estratégia de marca, posicionamento mestre e marca mestre", isObrigatorio: true },
+  { id: "e1-2", nome: "Filme Conceito", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 4500, descricao: "Vídeo manifesto de posicionamento conceitual", isObrigatorio: true },
+  { id: "e1-3", nome: "KV (Key Visual)", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 3000, descricao: "Identidade visual diretora de desdobramento", isObrigatorio: true },
+  { id: "e1-4", nome: "Manual da Marca", etapa: 1, etapaLabel: "01. Estratégia & Branding", preco: 1500, descricao: "Guia de uso de fontes, paletas e grids do OS", isObrigatorio: true },
   
-  // Etapa 2 a 11 - Opcionais Incrementais
-  { id: "e3-1", nome: "Book do Cliente - Folhetão", etapa: 3, etapaLabel: "03. Materiais Comerciais", preco: 3500, descricao: "Brochura física e digital AAA em curvas" },
-  { id: "e3-2", nome: "Book de Mesa do Corretor", etapa: 3, etapaLabel: "03. Materiais Comerciais", preco: 2800, descricao: "Catálogo técnico com plantas de vendas" },
-  { id: "e4-1", nome: "E-mail Marketing + WhatsApp Card", etapa: 4, etapaLabel: "04. Comunicação Digital", preco: 1200, descricao: "Código HTML e criativos prontos p/ disparo" },
-  { id: "e5-1", nome: "Pack de Redes Sociais (Carrossel + Stories)", etapa: 5, etapaLabel: "05. Marketing Digital", preco: 2500, descricao: "Templates de feed e stories editáveis via RAG" },
-  { id: "e6-1", nome: "Tour Virtual 360° Interativo", etapa: 6, etapaLabel: "06. Conteúdo Audiovisual", preco: 4000, descricao: "Renderização imersiva do decorado 3D" },
-  { id: "e7-1", nome: "Ambientação Física Stand (Tapume + Totem)", etapa: 7, etapaLabel: "07. Comunicação Visual", preco: 5000, descricao: "Ficheiros de plotagem e fechamento gráfico" },
-  { id: "e8-1", nome: "Template Apresentação Meeting (PPTX)", etapa: 8, etapaLabel: "08. Materiais Eventos", preco: 1800, descricao: "Apresentação comercial dinâmica editável" },
+  // 2. Materiais Comerciais
+  { id: "e2-1", nome: "Book do Cliente – Folhetão (Digital e Impresso)", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 3500, descricao: "Brochura física e digital AAA em curvas" },
+  { id: "e2-2", nome: "Book do Cliente – Mini (Digital e Impresso)", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 2000, descricao: "Versão compacta e rápida para abordagem preliminar" },
+  { id: "e2-3", nome: "Book de Mesa do Corretor (Digital e Impresso)", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 2800, descricao: "Catálogo técnico com plantas de vendas" },
+  { id: "e2-4", nome: "Caderno de Plantas", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1500, descricao: "Compilado técnico de todas as tipologias" },
+  { id: "e2-5", nome: "Folder Prospecto", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1000, descricao: "Panfleto comercial de distribuição de rua e PDV" },
+  { id: "e2-6", nome: "Folheto Intermediário", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1200, descricao: "Material para meio de funil com mais detalhes técnicos" },
+  { id: "e2-7", nome: "Folheto de Combate", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 800, descricao: "Material direto e agressivo focado em preço/condições" },
+  { id: "e2-8", nome: "Implantação Ilustrada", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 1100, descricao: "Desenho ilustrado da inserção do prédio no terreno" },
+  { id: "e2-9", nome: "Ficha Técnica Geral", etapa: 2, etapaLabel: "02. Materiais Comerciais", preco: 700, descricao: "Memorial descritivo resumido de acabamentos e metragens" },
+
+  // 3. Comunicação Digital
+  { id: "e3-1", nome: "E-mail Marketing Lançamento", etapa: 3, etapaLabel: "03. Comunicação Digital", preco: 900, descricao: "Código HTML e criativos prontos p/ disparo" },
+  { id: "e3-2", nome: "WhatsApp Card Promocional", etapa: 3, etapaLabel: "03. Comunicação Digital", preco: 600, descricao: "Cards visuais otimizados para compartilhamento rápido" },
+  { id: "e3-3", nome: "Convite Digital (Corretores e Clientes)", etapa: 3, etapaLabel: "03. Comunicação Digital", preco: 500, descricao: "Convite com links para meeting de corretores e clientes" },
+
+  // 4. Eventos de Lançamento
+  { id: "e4-1", nome: "Convite Impresso Lançamento", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 700, descricao: "Design de convite impresso com acabamento premium" },
+  { id: "e4-2", nome: "Convite para Meeting", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 500, descricao: "Convite digital/físico para o meeting de corretores" },
+  { id: "e4-3", nome: "Template de Apresentação para Meeting", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 1800, descricao: "Apresentação comercial dinâmica editável em PPTX" },
+  { id: "e4-4", nome: "Backdrop para Eventos", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 1200, descricao: "Painel fotográfico para recepção e fotos do evento" },
+  { id: "e4-5", nome: "Banner Impresso Sinalizador", etapa: 4, etapaLabel: "04. Eventos Lançamento", preco: 800, descricao: "Banners sinalizadores de recepção de convenção" },
+
+  // 5. Materiais de Campo
+  { id: "e5-1", nome: "Sinalização para Promotores", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 1100, descricao: "Coletes, credenciais e bolsas personalizadas" },
+  { id: "e5-2", nome: "Folhetos Promocionais", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 800, descricao: "Folhetos simplificados de distribuição em massa" },
+  { id: "e5-3", nome: "Balcão de Degustação Adesivado", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 1200, descricao: "Programação visual para ações em praças e PDV externo" },
+  { id: "e5-4", nome: "Garrafa de Água Personalizada", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 900, descricao: "Rótulo e embalagem customizados para distribuição" },
+  { id: "e5-5", nome: "Lixo Car Personalizado", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 700, descricao: "Design de lixeiras de câmbio para automóveis" },
+  { id: "e5-6", nome: "Brindes Especiais", etapa: 5, etapaLabel: "05. Materiais de Campo", preco: 1400, descricao: "Design de sacolas, chaveiros e brindes promocionais" },
+
+  // 6. Comunicação Visual
+  { id: "e6-1", nome: "Comunicação Visual do Estande", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 5500, descricao: "Sinalização interna, tótens de maquete e ambientação" },
+  { id: "e6-2", nome: "Placas de Comunicação Visual", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 2500, descricao: "Placas internas e indicativas do estande de vendas" },
+  { id: "e6-3", nome: "Placa de Produto", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1800, descricao: "Placa frontal indicadora do lançamento e metragens" },
+  { id: "e6-4", nome: "Placa Seta de Trânsito", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1200, descricao: "Setas direcionais externas de trânsito" },
+  { id: "e6-5", nome: "Tapume de Fechamento", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 4500, descricao: "Projeto gráfico de fechamento de lote com apelo visual" },
+  { id: "e6-6", nome: "Cavalete Promocional", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 800, descricao: "Cavaletes promocionais móveis para calçada" },
+  { id: "e6-7", nome: "Adesivo Microperfurado para Carros", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1000, descricao: "Adesivos microperfurados de vidro traseiro" },
+  { id: "e6-8", nome: "Faixas de Poste", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1200, descricao: "Faixas de poste e fachadas promocionais" },
+  { id: "e6-9", nome: "Wind Banners Promocionais", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 1500, descricao: "Sinalização aérea promocional externa para atração" },
+  { id: "e6-10", nome: "Totens Internos e Externos", etapa: 6, etapaLabel: "06. Comunicação Visual", preco: 3500, descricao: "Totens sinalizadores com iluminação e mapas" },
+
+  // 7. Mídia Impressa
+  { id: "e7-1", nome: "Anúncio para Jornal", etapa: 7, etapaLabel: "07. Mídia Impressa", preco: 1600, descricao: "Páginas inteiras e meia página com especificações" },
+  { id: "e7-2", nome: "Anúncio para Revista", etapa: 7, etapaLabel: "07. Mídia Impressa", preco: 1400, descricao: "Layout premium de alta fidelidade para revistas do setor" },
+
+  // Plataformas Digitais
+  { id: "e8-1", nome: "Site ou Landing Page do Empreendimento", etapa: 8, etapaLabel: "08. Plataformas Digitais", preco: 4500, descricao: "Site completo com galeria, mapa e integração de leads" },
+  { id: "e8-2", nome: "Catálogo Digital Interativo", etapa: 8, etapaLabel: "08. Plataformas Digitais", preco: 2500, descricao: "Visualizador PDF/Web com links clicáveis e navegação" },
+  { id: "e8-3", nome: "Materiais para Portais Imobiliários", etapa: 8, etapaLabel: "08. Plataformas Digitais", preco: 1500, descricao: "Banners e fotos redimensionadas nos padrões Zap/VivaReal" },
+
+  // Conteúdo Audiovisual
+  { id: "e9-1", nome: "Vídeo Institucional do Empreendimento", etapa: 9, etapaLabel: "09. Audiovisual", preco: 5000, descricao: "Vídeo com entrevistas, detalhes de obra e depoimentos" },
+  { id: "e9-2", nome: "Vídeo da Região", etapa: 9, etapaLabel: "09. Audiovisual", preco: 3000, descricao: "Gravações aéreas e highlights da vizinhança" },
+  { id: "e9-3", nome: "Vídeo do Decorado", etapa: 9, etapaLabel: "09. Audiovisual", preco: 3500, descricao: "Apresentação guiada do apartamento decorado" },
+  { id: "e9-4", nome: "Tour Virtual 360°", etapa: 9, etapaLabel: "09. Audiovisual", preco: 4000, descricao: "Ambiente imersivo para navegação online pelo cliente" },
+
+  // Imagens
+  { id: "e10-1", nome: "Maquete Eletrônica (Imagens 3D)", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 6500, descricao: "Perspectivas externas, áreas comuns e fachadas realistas" },
+  { id: "e10-2", nome: "Perspectivas Ilustradas", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 3500, descricao: "Tratamento artístico e conceitual de perspectivas do prédio" },
+  { id: "e10-3", nome: "Plantas Humanizadas Coloridas", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 2200, descricao: "Esquemas coloridos e decorados de todas as tipologias" },
+  { id: "e10-4", nome: "Fotos Renderizadas Premium", etapa: 10, etapaLabel: "10. Imagens & Renders", preco: 2800, descricao: "Renders estáticos adicionais com detalhes de decoração" },
+
+  // Kits Comerciais
+  { id: "e11-1", nome: "Kit do Corretor de Vendas", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 1200, descricao: "Crachá, bloco de notas, caneta e pasta de apresentação" },
+  { id: "e11-2", nome: "Kit do Cliente Comprador", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 1500, descricao: "Sacola institucional, memorial descritivo impresso e folder" },
+  { id: "e11-3", nome: "Credenciais e Crachás Oficiais", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 600, descricao: "Acreditação oficial para o time de plantão e promotores" },
+  { id: "e11-4", nome: "Design de Assinatura de E-mail", etapa: 11, etapaLabel: "11. Kits Comerciais", preco: 400, descricao: "Arte e assinatura em HTML com a marca do lançamento" },
+
+  // Marketing Digital
+  { id: "e12-1", nome: "Posts para Redes Sociais", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1500, descricao: "Templates de feed de postagens institucionais" },
+  { id: "e12-2", nome: "Stories Instagram", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1200, descricao: "Templates de engajamento diário para Instagram" },
+  { id: "e12-3", nome: "Reels / TikTok", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 2000, descricao: "Criativos em vídeo vertical editáveis pelo time de marketing" },
+  { id: "e12-4", nome: "Banners Google Display e Portais", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1800, descricao: "Desdobramentos de anúncios em todas as resoluções da web" },
+  { id: "e12-5", nome: "Peças para Meta Ads (Anúncios)", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 2500, descricao: "Criativos em vídeo e carrossel focados em conversão de leads" },
+  { id: "e12-6", nome: "Peças para Google Ads (Display)", etapa: 12, etapaLabel: "12. Marketing Digital", preco: 1500, descricao: "Anúncios gráficos para rede de display do Google" },
 ];
 
 export default function OnboardingPage() {

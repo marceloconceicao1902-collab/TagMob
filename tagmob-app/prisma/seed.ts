@@ -782,6 +782,119 @@ async function main() {
   });
 
   console.log("✓ Atividades CRM semeadas");
+
+  // ─── 9. ENTREGAVEIS (DeliverableItems) ──────────────────────────────────
+  console.log("Semeando itens entregáveis...");
+  const entregaveisData = [
+    // 1. Estratégia, Branding e Conceito
+    { id: "ent-101", nome: "Campanha (Conceito, Estratégia e Identidade Visual)", etapa: 1, macroEtapaLabel: "Estratégia e Branding", precoBase: 6000, isObrigatorio: true, descricao: "Estudo de posicionamento, naming e marca mestre" },
+    { id: "ent-102", nome: "Filme Conceito", etapa: 1, macroEtapaLabel: "Estratégia e Branding", precoBase: 4500, isObrigatorio: true, descricao: "Vídeo manifesto de posicionamento conceitual de 30s" },
+    { id: "ent-103", nome: "KV (Key Visual)", etapa: 1, macroEtapaLabel: "Estratégia e Branding", precoBase: 3000, isObrigatorio: true, descricao: "Identidade visual diretora de desdobramento" },
+    { id: "ent-104", nome: "Manual da Marca", etapa: 1, macroEtapaLabel: "Estratégia e Branding", precoBase: 1500, isObrigatorio: true, descricao: "Guia de uso de fontes, paletas e grids do OS" },
+
+    // 2. Materiais Comerciais
+    { id: "ent-201", nome: "Book do Cliente – Folhetão (Digital e Impresso)", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 3500, isObrigatorio: false, descricao: "Brochura física e digital AAA em curvas" },
+    { id: "ent-202", nome: "Book do Cliente – Mini (Digital e Impresso)", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 2000, isObrigatorio: false, descricao: "Versão compacta e rápida para abordagem preliminar" },
+    { id: "ent-203", nome: "Book de Mesa do Corretor (Digital e Impresso)", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 2800, isObrigatorio: false, descricao: "Catálogo técnico com plantas de vendas" },
+    { id: "ent-204", nome: "Caderno de Plantas", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 1500, isObrigatorio: false, descricao: "Compilado técnico de todas as tipologias" },
+    { id: "ent-205", nome: "Folder Prospecto", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 1000, isObrigatorio: false, descricao: "Panfleto comercial de distribuição de rua e PDV" },
+    { id: "ent-206", nome: "Folheto Intermediário", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 1200, isObrigatorio: false, descricao: "Material para meio de funil com mais detalhes técnicos" },
+    { id: "ent-207", nome: "Folheto de Combate", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 800, isObrigatorio: false, descricao: "Material direto e agressivo focado em preço/condições" },
+    { id: "ent-208", nome: "Implantação", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 1100, isObrigatorio: false, descricao: "Desenho ilustrado da inserção do prédio no terreno" },
+    { id: "ent-209", nome: "Ficha Técnica", etapa: 2, macroEtapaLabel: "Materiais Comerciais", precoBase: 700, isObrigatorio: false, descricao: "Memorial descritivo resumido de acabamentos e metragens" },
+
+    // 3. Comunicação Digital
+    { id: "ent-301", nome: "E-mail Marketing", etapa: 3, macroEtapaLabel: "Comunicação Digital", precoBase: 900, isObrigatorio: false, descricao: "Código HTML e criativos prontos p/ disparo" },
+    { id: "ent-302", nome: "WhatsApp Card", etapa: 3, macroEtapaLabel: "Comunicação Digital", precoBase: 600, isObrigatorio: false, descricao: "Cards visuais otimizados para compartilhamento rápido" },
+    { id: "ent-303", nome: "Convite Digital (Corretores e Clientes)", etapa: 3, macroEtapaLabel: "Comunicação Digital", precoBase: 500, isObrigatorio: false, descricao: "Convite com links para meeting de corretores e clientes" },
+
+    // 4. Eventos de Lançamento
+    { id: "ent-401", nome: "Convite Impresso (Corretores e Clientes)", etapa: 4, macroEtapaLabel: "Eventos de Lançamento", precoBase: 700, isObrigatorio: false, descricao: "Design de convite impresso com acabamento premium" },
+    { id: "ent-402", nome: "Convite para Meeting", etapa: 4, macroEtapaLabel: "Eventos de Lançamento", precoBase: 500, isObrigatorio: false, descricao: "Convite digital/físico para o meeting de corretores" },
+    { id: "ent-403", nome: "Template de Apresentação para Meeting", etapa: 4, macroEtapaLabel: "Eventos de Lançamento", precoBase: 1800, isObrigatorio: false, descricao: "Apresentação comercial dinâmica editável em PPTX" },
+    { id: "ent-404", nome: "Backdrop para Eventos", etapa: 4, macroEtapaLabel: "Eventos de Lançamento", precoBase: 1200, isObrigatorio: false, descricao: "Painel fotográfico para recepção e fotos do evento" },
+    { id: "ent-405", nome: "Banner Impresso", etapa: 4, macroEtapaLabel: "Eventos de Lançamento", precoBase: 800, isObrigatorio: false, descricao: "Banners sinalizadores de recepção de convenção" },
+
+    // 5. Materiais de Campo
+    { id: "ent-501", nome: "Sinalização para Promotores", etapa: 5, macroEtapaLabel: "Materiais de Campo", precoBase: 1100, isObrigatorio: false, descricao: "Coletes, credenciais e bolsas personalizadas" },
+    { id: "ent-502", nome: "Folhetos Promocionais", etapa: 5, macroEtapaLabel: "Materiais de Campo", precoBase: 800, isObrigatorio: false, descricao: "Folhetos simplificados de distribuição em massa" },
+    { id: "ent-503", nome: "Balcão de Degustação Adesivado", etapa: 5, macroEtapaLabel: "Materiais de Campo", precoBase: 1200, isObrigatorio: false, descricao: "Programação visual para ações em praças e PDV externo" },
+    { id: "ent-504", nome: "Garrafa de Água Personalizada", etapa: 5, macroEtapaLabel: "Materiais de Campo", precoBase: 900, isObrigatorio: false, descricao: "Rótulo e embalagem customizados para distribuição" },
+    { id: "ent-505", nome: "Lixo Car", etapa: 5, macroEtapaLabel: "Materiais de Campo", precoBase: 700, isObrigatorio: false, descricao: "Design de lixeiras de câmbio para automóveis" },
+    { id: "ent-506", nome: "Brindes Especiais", etapa: 5, macroEtapaLabel: "Materiais de Campo", precoBase: 1400, isObrigatorio: false, descricao: "Design de sacolas, chaveiros e brindes promocionais" },
+
+    // 6. Comunicação Visual
+    { id: "ent-601", nome: "Comunicação Visual do Estande", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 5500, isObrigatorio: false, descricao: "Sinalização interna, tótens de maquete e ambientação" },
+    { id: "ent-602", nome: "Placas de Comunicação Visual", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 2500, isObrigatorio: false, descricao: "Placas internas e indicativas do estande de vendas" },
+    { id: "ent-603", nome: "Placa de Produto", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 1800, isObrigatorio: false, descricao: "Placa frontal indicadora do lançamento e metragens" },
+    { id: "ent-604", nome: "Placa Seta", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 1200, isObrigatorio: false, descricao: "Setas direcionais externas de trânsito" },
+    { id: "ent-605", nome: "Tapume", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 4500, isObrigatorio: false, descricao: "Projeto gráfico de fechamento de lote com apelo visual" },
+    { id: "ent-606", nome: "Cavalete", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 800, isObrigatorio: false, descricao: "Cavaletes promocionais móveis para calçada" },
+    { id: "ent-607", nome: "Adesivo para Carros", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 1000, isObrigatorio: false, descricao: "Adesivos microperfurados de vidro traseiro" },
+    { id: "ent-608", nome: "Faixas", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 1200, isObrigatorio: false, descricao: "Faixas de poste e fachadas promocionais" },
+    { id: "ent-609", nome: "Wind Banners", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 1500, isObrigatorio: false, descricao: "Sinalização aérea promocional externa para atração" },
+    { id: "ent-610", nome: "Totens Internos e Externos", etapa: 6, macroEtapaLabel: "Comunicação Visual", precoBase: 3500, isObrigatorio: false, descricao: "Totens sinalizadores com iluminação e mapas" },
+
+    // 7. Mídia Impressa
+    { id: "ent-701", nome: "Anúncio para Jornal", etapa: 7, macroEtapaLabel: "Mídia Impressa", precoBase: 1600, isObrigatorio: false, descricao: "Páginas inteiras e meia página com especificações" },
+    { id: "ent-702", nome: "Anúncio para Revista", etapa: 7, macroEtapaLabel: "Mídia Impressa", precoBase: 1400, isObrigatorio: false, descricao: "Layout premium de alta fidelidade para revistas do setor" },
+
+    // Plataformas Digitais
+    { id: "ent-801", nome: "Site ou Landing Page do Empreendimento", etapa: 8, macroEtapaLabel: "Plataformas Digitais", precoBase: 4500, isObrigatorio: false, descricao: "Site completo com galeria, mapa e integração de leads" },
+    { id: "ent-802", nome: "Catálogo Digital", etapa: 8, macroEtapaLabel: "Plataformas Digitais", precoBase: 2500, isObrigatorio: false, descricao: "Visualizador PDF/Web com links clicáveis e navegação" },
+    { id: "ent-803", nome: "Materiais para Portais Imobiliários", etapa: 8, macroEtapaLabel: "Plataformas Digitais", precoBase: 1500, isObrigatorio: false, descricao: "Banners e fotos redimensionadas nos padrões Zap/VivaReal" },
+
+    // Conteúdo Audiovisual
+    { id: "ent-901", nome: "Vídeo Institucional do Empreendimento", etapa: 9, macroEtapaLabel: "Conteúdo Audiovisual", precoBase: 5000, isObrigatorio: false, descricao: "Vídeo com interviews, detalhes de obra e depoimentos" },
+    { id: "ent-902", nome: "Vídeo da Região", etapa: 9, macroEtapaLabel: "Conteúdo Audiovisual", precoBase: 3000, isObrigatorio: false, descricao: "Gravações aéreas e highlights da vizinhança" },
+    { id: "ent-903", nome: "Vídeo do Decorado", etapa: 9, macroEtapaLabel: "Conteúdo Audiovisual", precoBase: 3500, isObrigatorio: false, descricao: "Apresentação guiada do apartamento decorado" },
+    { id: "ent-904", nome: "Tour Virtual 360°", etapa: 9, macroEtapaLabel: "Conteúdo Audiovisual", precoBase: 4000, isObrigatorio: false, descricao: "Ambiente imersivo para navegação online pelo cliente" },
+
+    // Imagens
+    { id: "ent-1001", nome: "Maquete Eletrônica (Imagens 3D)", etapa: 10, macroEtapaLabel: "Imagens 3D", precoBase: 6500, isObrigatorio: false, descricao: "Perspectivas externas, áreas comuns e fachadas realistas" },
+    { id: "ent-1002", nome: "Perspectivas Ilustradas", etapa: 10, macroEtapaLabel: "Imagens 3D", precoBase: 3500, isObrigatorio: false, descricao: "Tratamento artístico e conceitual de perspectivas do prédio" },
+    { id: "ent-1003", nome: "Plantas Humanizadas", etapa: 10, macroEtapaLabel: "Imagens 3D", precoBase: 2200, isObrigatorio: false, descricao: "Esquemas coloridos e decorados de todas as tipologias" },
+    { id: "ent-1004", nome: "Fotos Renderizadas", etapa: 10, macroEtapaLabel: "Imagens 3D", precoBase: 2800, isObrigatorio: false, descricao: "Renders estáticos adicionais com detalhes de decoração" },
+
+    // Kits Comerciais
+    { id: "ent-1101", nome: "Kit do Corretor", etapa: 11, macroEtapaLabel: "Kits Comerciais", precoBase: 1200, isObrigatorio: false, descricao: "Crachá, bloco de notas, caneta e pasta de apresentação" },
+    { id: "ent-1102", nome: "Kit do Cliente", etapa: 11, macroEtapaLabel: "Kits Comerciais", precoBase: 1500, isObrigatorio: false, descricao: "Sacola institucional, memorial descritivo impresso e folder" },
+    { id: "ent-1103", nome: "Credenciais e Crachás", etapa: 11, macroEtapaLabel: "Kits Comerciais", precoBase: 600, isObrigatorio: false, descricao: "Acreditação oficial para o time de plantão e promotores" },
+    { id: "ent-1104", nome: "Assinatura de E-mail", etapa: 11, macroEtapaLabel: "Kits Comerciais", precoBase: 400, isObrigatorio: false, descricao: "Arte e assinatura em HTML com a marca do lançamento" },
+
+    // Marketing Digital
+    { id: "ent-1201", nome: "Posts para Redes Sociais", etapa: 12, macroEtapaLabel: "Marketing Digital", precoBase: 1500, isObrigatorio: false, descricao: "Templates de feed de postagens institucionais" },
+    { id: "ent-1202", nome: "Stories", etapa: 12, macroEtapaLabel: "Marketing Digital", precoBase: 1200, isObrigatorio: false, descricao: "Templates de engajamento diário para Instagram" },
+    { id: "ent-1203", nome: "Reels", etapa: 12, macroEtapaLabel: "Marketing Digital", precoBase: 2000, isObrigatorio: false, descricao: "Criativos em vídeo vertical editáveis pelo time de marketing" },
+    { id: "ent-1204", nome: "Banners Digitais (Google Display e Portais)", etapa: 12, macroEtapaLabel: "Marketing Digital", precoBase: 1800, isObrigatorio: false, descricao: "Desdobramentos de anúncios em todas as resoluções da web" },
+    { id: "ent-1205", nome: "Peças para Meta Ads", etapa: 12, macroEtapaLabel: "Marketing Digital", precoBase: 2500, isObrigatorio: false, descricao: "Criativos em vídeo e carrossel focados em conversão de leads" },
+    { id: "ent-1206", nome: "Peças para Google Ads", etapa: 12, macroEtapaLabel: "Marketing Digital", precoBase: 1500, isObrigatorio: false, descricao: "Anúncios gráficos para rede de display do Google" },
+  ];
+
+  for (const item of entregaveisData) {
+    await prisma.entregavelItem.upsert({
+      where: { id: item.id },
+      update: {
+        nome: item.nome,
+        etapa: item.etapa,
+        macroEtapaLabel: item.macroEtapaLabel,
+        precoBase: item.precoBase,
+        isObrigatorio: item.isObrigatorio,
+        descricao: item.descricao,
+      },
+      create: {
+        id: item.id,
+        nome: item.nome,
+        etapa: item.etapa,
+        macroEtapaLabel: item.macroEtapaLabel,
+        precoBase: item.precoBase,
+        isObrigatorio: item.isObrigatorio,
+        descricao: item.descricao,
+      },
+    });
+  }
+  console.log("✓ Itens entregáveis semeados");
+
   console.log("==========================================");
   console.log("Seeding concluído com sucesso!");
 }

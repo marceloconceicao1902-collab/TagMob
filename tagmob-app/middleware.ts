@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const LEGACY_PATHS = new Set(["/crm", "/leads", "/contatos", "/atividades", "/construtora"]);
+const LEGACY_PATHS = new Set(["/crm", "/contatos", "/atividades", "/construtora"]);
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -27,5 +27,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/crm", "/leads", "/contatos", "/atividades", "/construtora", "/negocios", "/hub"],
+  matcher: ["/crm", "/contatos", "/atividades", "/construtora", "/negocios", "/hub"],
 };

@@ -19,6 +19,15 @@ enum ProfileType {
   CONSTRUTORA
 }
 
+enum UserRole {
+  AGENCIA_ADMIN
+  AGENCIA_CRIATIVO
+  CONSTRUTORA_GESTOR
+  CORRETOR_PARCEIRO
+  ARQUITETO_PARCEIRO
+  MARCA_PARCEIRA
+}
+
 enum PropertyCategory {
   RESIDENCIAL
   COMERCIAL
@@ -184,6 +193,7 @@ model User {
   email            String               @unique
   fullName         String
   profileType      ProfileType          @default(CORRETOR)
+  role             UserRole             @default(CORRETOR_PARCEIRO)
   clerkUserId      String               @unique
   tenantId         String?
   tenant           Tenant?              @relation(fields: [tenantId], references: [id])
@@ -201,9 +211,11 @@ model User {
   // CRM
   empreendimentosResponsavel Empreendimento[] @relation("EmpreendimentoResponsavel")
   leadsOwned                 LeadsContato[]   @relation("LeadOwner")
+  assignedLeads              LeadsContato[]   @relation("LeadAssigned")
   crmContactsOwned           CrmContact[]     @relation("ContactOwner")
   crmCompaniesOwned          CrmCompany[]     @relation("CompanyOwner")
   crmActivitiesOwned         CrmActivity[]    @relation("ActivityOwner")
+  timelineEvents             CrmTimelineEvent[]
 }
 
 model Tenant {
@@ -692,8 +704,11 @@ model LeadsContato {
   score                   Int           @default(0)
   ownerUserId             String?
   ownerUser               User?         @relation("LeadOwner", fields: [ownerUserId], references: [id])
+  assignedUserId          String?
+  assignedUser            User?         @relation("LeadAssigned", fields: [assignedUserId], references: [id])
   convertedEmpreendimento Empreendimento? @relation("LeadConvertido")
   crmActivities           CrmActivity[]
+  timelineEvents          CrmTimelineEvent[]
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
 }
@@ -710,6 +725,7 @@ model CrmCompany {
   tenantId    String?
   contacts    CrmContact[]
   activities  CrmActivity[]
+  timelineEvents CrmTimelineEvent[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
@@ -754,4 +770,34 @@ model CrmActivity {
   @@index([empreendimentoId, createdAt])
   @@index([leadId, createdAt])
   @@index([ownerUserId, status, dueAt])
+}
+
+enum TimelineEventType {
+  STAGE_CHANGE
+  NOTE
+  EMAIL_SENT
+  CALL_LOG
+  WHATSAPP_SENT
+  DOCUMENT_UPLOADED
+}
+
+model CrmTimelineEvent {
+  id              String            @id @default(uuid())
+  leadId          String?
+  lead            LeadsContato?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  companyId       String?
+  company         CrmCompany?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  type            TimelineEventType
+  title           String
+  description     String?           @db.Text
+  metadataJson    Json?             // Ex: { fromStage: "NOVO", toStage: "EM_ATENDIMENTO" }
+  
+  createdByUserId String?
+  createdByUser   User?             @relation(fields: [createdByUserId], references: [id])
+  
+  createdAt       DateTime          @default(now())
+
+  @@index([leadId, createdAt])
+  @@index([companyId, createdAt])
 }

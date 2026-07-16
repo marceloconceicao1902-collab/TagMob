@@ -7,7 +7,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
 import {
   LayoutDashboard, FolderKanban, Palette, Home,
-  Tag, LogOut, ChevronRight, Settings, Building2,
+  Tag, LogOut, ChevronRight, Settings, Building2, User,
 } from "lucide-react";
 
 type NavItem = {
@@ -18,6 +18,7 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { label: "Página Inicial",    href: "/hub",               icon: Home,            color: "#00E5FF" },
+  { label: "Leads (CRM)",       href: "/leads",             icon: User,            color: "#00E5FF" },
   { label: "Negócios",          href: "/negocios",          icon: Building2,       color: "#FF0068", badge: "OS" },
   { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068", badge: "NOVO" },
   { label: "Arquiteto",         href: "/arquiteto",         icon: Palette,         color: "#8B5CF6" },
@@ -50,7 +51,6 @@ export default function Sidebar() {
     if (href === "/arquiteto") return pathname === "/arquiteto" || pathname.startsWith("/arquiteto");
     if (href === "/negocios") {
       return pathname === "/negocios" || pathname.startsWith("/construtora")
-        || pathname === "/leads" || pathname === "/crm"
         || pathname === "/contatos" || pathname === "/atividades";
     }
     return pathname.startsWith(href);

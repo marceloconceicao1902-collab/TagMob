@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   Building2, User, X, CheckSquare, Square, PlusCircle, ChevronRight,
@@ -131,6 +132,7 @@ export default function DealDetailDrawer({
   const faseInfo = OS_FASES.find((f) => f.num === deal.fase_atual);
   const colColor = faseInfo?.cor ?? "#FF0068";
 
+  const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<DrawerTab>("resumo");
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -144,6 +146,8 @@ export default function DealDetailDrawer({
   const [proximaAcao, setProximaAcao] = useState(deal.proxima_acao ?? "");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   const [savingFase, setSavingFase] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     setProximaAcao(deal.proxima_acao ?? "");
@@ -447,14 +451,16 @@ export default function DealDetailDrawer({
   );
   const noteActivities = activities.filter((a) => a.tipo === "NOTA");
 
-  return (
+  if (!mounted) return null;
+
+  const drawer = (
     <>
       <div
         onClick={onClose}
         style={{
           position: "fixed", inset: 0,
           backgroundColor: "rgba(4, 4, 8, 0.75)", backdropFilter: "blur(6px)",
-          zIndex: 1000,
+          zIndex: 99980,
         }}
       />
 
@@ -465,7 +471,7 @@ export default function DealDetailDrawer({
         style={{
           position: "fixed", top: 0, right: 0, bottom: 0, width: "min(540px, 100vw)",
           backgroundColor: "#0B0B16", borderLeft: `2.5px solid ${colColor}`,
-          zIndex: 1001, boxShadow: "-10px 0 40px rgba(0,0,0,0.6)",
+          zIndex: 99981, boxShadow: "-10px 0 40px rgba(0,0,0,0.6)",
           display: "flex", flexDirection: "column",
           animation: "dealDrawerIn 0.22s ease-out",
         }}
@@ -942,7 +948,7 @@ export default function DealDetailDrawer({
         </div>
       </div>
 
-      <style jsx global>{`
+      <style>{`
         @keyframes dealDrawerIn {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
@@ -950,4 +956,6 @@ export default function DealDetailDrawer({
       `}</style>
     </>
   );
+
+  return createPortal(drawer, document.body);
 }

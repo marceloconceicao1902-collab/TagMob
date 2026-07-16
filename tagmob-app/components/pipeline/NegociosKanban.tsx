@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
@@ -156,34 +156,20 @@ function DealCard({
   onDragStart: (id: string) => void;
   onClick: () => void;
 }) {
-  const didDrag = useRef(false);
-  const allowDrag = useRef(false);
-
   const progresso = deal.total_assets > 0
     ? Math.round((deal.assets_aprovados / deal.total_assets) * 100)
     : deal.estrategia_completa ? 25 : 5;
 
   return (
     <div
-      draggable
-      onDragStart={(e) => {
-        if (!allowDrag.current) {
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          return;
+          onClick();
         }
-        didDrag.current = true;
-        onDragStart(deal.id);
-      }}
-      onDragEnd={() => {
-        allowDrag.current = false;
-        window.setTimeout(() => { didDrag.current = false; }, 0);
-      }}
-      onClick={() => {
-        if (didDrag.current) {
-          didDrag.current = false;
-          return;
-        }
-        onClick();
       }}
       style={{
         background: "#111120",
@@ -192,7 +178,6 @@ function DealCard({
         padding: 14,
         cursor: "pointer",
         transition: "border-color 0.15s, box-shadow 0.15s",
-        userSelect: "none",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = columnColor + "50";
@@ -207,11 +192,16 @@ function DealCard({
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span
             title="Arrastar para mudar etapa"
-            onMouseDown={() => { allowDrag.current = true; }}
-            onMouseUp={() => { allowDrag.current = false; }}
+            draggable
+            onDragStart={(e) => {
+              e.stopPropagation();
+              onDragStart(deal.id);
+              e.dataTransfer.effectAllowed = "move";
+              e.dataTransfer.setData("text/plain", deal.id);
+            }}
             onClick={(e) => e.stopPropagation()}
             style={{
-              display: "inline-flex", cursor: "grab", padding: 2, borderRadius: 4,
+              display: "inline-flex", cursor: "grab", padding: 4, borderRadius: 4,
               touchAction: "none",
             }}
           >
@@ -290,12 +280,17 @@ function DealCard({
               <Clock size={10} /> {deal.dias_na_fase}d
             </span>
           )}
-          <div
-            style={{ display: "flex", alignItems: "center", gap: 2, color: columnColor, fontSize: 10, fontWeight: 700 }}
+          <button
+            type="button"
+            style={{
+              display: "flex", alignItems: "center", gap: 2, color: columnColor,
+              fontSize: 10, fontWeight: 700, background: "none", border: "none",
+              cursor: "pointer", padding: 0,
+            }}
             onClick={(e) => { e.stopPropagation(); onClick(); }}
           >
             Detalhes <ChevronRight size={10} />
-          </div>
+          </button>
         </div>
       </div>
     </div>

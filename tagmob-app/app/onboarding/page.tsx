@@ -170,6 +170,7 @@ export default function OnboardingPage() {
   );
 
   const [loading, setLoading] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   // Cálculos financeiros
   const valorEtapa1Fixo = DELIVERABLES.filter(d => d.isObrigatorio)
@@ -526,10 +527,55 @@ export default function OnboardingPage() {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 18 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
                   <span style={{ fontSize: 13, fontWeight: 800, color: "#EEEEFF" }}>TOTAL ESTIMADO:</span>
                   <span style={{ fontSize: 20, fontWeight: 900, color: "#39FF14" }}>R$ {valorTotal.toLocaleString("pt-BR")},00</span>
                 </div>
+
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowDetails(!showDetails)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#00E5FF",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      padding: "4px 0",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                      outline: "none",
+                    }}
+                  >
+                    {showDetails ? "Ocultar Detalhes ▲" : "Ver Mais (Detalhes do Pedido) ▼"}
+                  </button>
+                </div>
+
+                {showDetails && (
+                  <div style={{
+                    marginBottom: 16,
+                    padding: "12px 14px",
+                    background: "#09090F",
+                    border: "1px solid #1A1A30",
+                    borderRadius: 10,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                    maxHeight: 180,
+                    overflowY: "auto",
+                  }}>
+                    <p style={{ fontSize: 10, fontWeight: 800, color: "#7878A0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Itens Selecionados</p>
+                    {DELIVERABLES.filter(d => selectedItems.includes(d.id)).map(d => (
+                      <div key={d.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#7878A0" }}>
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>• {d.nome}</span>
+                        <span style={{ color: d.isObrigatorio ? "#FF0068" : "#EEEEFF", fontWeight: 600 }}>R$ {d.preco.toLocaleString("pt-BR")}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 <div style={{ padding: "10px", background: "rgba(255,0,104,0.05)", border: "1px solid rgba(255,0,104,0.25)", borderRadius: 8, marginBottom: 16 }}>
                   <p style={{ fontSize: 11, color: "#FF0068", lineHeight: 1.5 }}>

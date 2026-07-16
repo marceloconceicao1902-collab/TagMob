@@ -11,21 +11,89 @@ import {
 } from "lucide-react";
 
 const DELIVERABLES = [
-  // Etapa 1 - Combo Fixo Obrigatório
-  { id: "campanha", nome: "Estratégia e Campanha de Lançamento", categoria: "Estratégia & Branding", preco: 6000, desc: "Apresentação do conceito criativo principal", isObrigatorio: true },
-  { id: "filme", nome: "Filme Concept 30\"", categoria: "Estratégia & Branding", preco: 4500, desc: "Roteiro e montagem conceitual de alto impacto", isObrigatorio: true },
-  { id: "kv", nome: "Key Visual (KV) Diretor", categoria: "Estratégia & Branding", preco: 3000, desc: "Identidade visual diretora de desdobramento", isObrigatorio: true },
-  { id: "manual", nome: "Manual da Marca (Brandbook)", categoria: "Estratégia & Branding", preco: 1500, desc: "Diretrizes de fontes, paletas e grids do OS", isObrigatorio: true },
+  // 1. Estratégia, Branding e Conceito
+  { id: "e1-1", nome: "Campanha (Conceito, Estratégia e Identidade Visual)", categoria: "01. Estratégia & Branding", preco: 6000, desc: "Apresentação da estratégia de marca, posicionamento mestre e marca mestre", isObrigatorio: true },
+  { id: "e1-2", nome: "Filme Conceito", categoria: "01. Estratégia & Branding", preco: 4500, desc: "Vídeo manifesto de posicionamento conceitual", isObrigatorio: true },
+  { id: "e1-3", nome: "KV (Key Visual)", categoria: "01. Estratégia & Branding", preco: 3000, desc: "Identidade visual diretora de desdobramento", isObrigatorio: true },
+  { id: "e1-4", nome: "Manual da Marca", categoria: "01. Estratégia & Branding", preco: 1500, desc: "Guia de uso de fontes, paletas e grids do OS", isObrigatorio: true },
   
-  // Modulares
-  { id: "book-folhetao", nome: "Book do Cliente - Folhetão", categoria: "Materiais Comerciais", preco: 3500, desc: "Brochura física e digital AAA para captação", isObrigatorio: false },
-  { id: "book-corretor", nome: "Book de Mesa do Corretor", categoria: "Materiais Comerciais", preco: 2800, desc: "Catálogo técnico com plantas de vendas", isObrigatorio: false },
-  { id: "folder-prospecto", nome: "Folder Prospecto / Ficha Técnica", categoria: "Materiais Comerciais", preco: 1500, desc: "Material resumo de distribuição rápida", isObrigatorio: false },
-  { id: "email-whatsapp", nome: "E-mail Marketing + WhatsApp Card", categoria: "Comunicação Digital", preco: 1200, desc: "Código HTML e peças de alta conversão", isObrigatorio: false },
-  { id: "redes-sociais", nome: "Pack de Redes Sociais (Canvas Vivo)", categoria: "Marketing Digital", preco: 2500, desc: "Templates de feed e stories editáveis via RAG", isObrigatorio: false },
-  { id: "tour-virtual", nome: "Tour Virtual 360° Interativo", categoria: "Conteúdo Audiovisual", preco: 4000, desc: "Renderização imersiva do decorado 3D", isObrigatorio: false },
-  { id: "stand-visual", nome: "Ambientação Física Stand (Tapume + Totem)", categoria: "Comunicação Visual", preco: 5000, desc: "Ficheiros de plotagem e fechamento gráfico", isObrigatorio: false },
-  { id: "apresentacao-meeting", nome: "Template Apresentação Meeting (PPTX)", categoria: "Materiais para Eventos", preco: 1800, desc: "Apresentação comercial dinâmica editável", isObrigatorio: false },
+  // 2. Materiais Comerciais
+  { id: "e2-1", nome: "Book do Cliente – Folhetão (Digital e Impresso)", categoria: "02. Materiais Comerciais", preco: 3500, desc: "Brochura física e digital AAA em curvas", isObrigatorio: false },
+  { id: "e2-2", nome: "Book do Cliente – Mini (Digital e Impresso)", categoria: "02. Materiais Comerciais", preco: 2000, desc: "Versão compacta e rápida para abordagem preliminar", isObrigatorio: false },
+  { id: "e2-3", nome: "Book de Mesa do Corretor (Digital e Impresso)", categoria: "02. Materiais Comerciais", preco: 2800, desc: "Catálogo técnico com plantas de vendas", isObrigatorio: false },
+  { id: "e2-4", nome: "Caderno de Plantas", categoria: "02. Materiais Comerciais", preco: 1500, desc: "Compilado técnico de todas as tipologias", isObrigatorio: false },
+  { id: "e2-5", nome: "Folder Prospecto", categoria: "02. Materiais Comerciais", preco: 1000, desc: "Panfleto comercial de distribuição de rua e PDV", isObrigatorio: false },
+  { id: "e2-6", nome: "Folheto Intermediário", categoria: "02. Materiais Comerciais", preco: 1200, desc: "Material para meio de funil com mais detalhes técnicos", isObrigatorio: false },
+  { id: "e2-7", nome: "Folheto de Combate", categoria: "02. Materiais Comerciais", preco: 800, desc: "Material direto e agressivo focado em preço/condições", isObrigatorio: false },
+  { id: "e2-8", nome: "Implantação Ilustrada", categoria: "02. Materiais Comerciais", preco: 1100, desc: "Desenho ilustrado da inserção do prédio no terreno", isObrigatorio: false },
+  { id: "e2-9", nome: "Ficha Técnica Geral", categoria: "02. Materiais Comerciais", preco: 700, desc: "Memorial descritivo resumido de acabamentos e metragens", isObrigatorio: false },
+
+  // 3. Comunicação Digital
+  { id: "e3-1", nome: "E-mail Marketing Lançamento", categoria: "03. Comunicação Digital", preco: 900, desc: "Código HTML e criativos prontos p/ disparo", isObrigatorio: false },
+  { id: "e3-2", nome: "WhatsApp Card Promocional", categoria: "03. Comunicação Digital", preco: 600, desc: "Cards visuais otimizados para compartilhamento rápido", isObrigatorio: false },
+  { id: "e3-3", nome: "Convite Digital (Corretores e Clientes)", categoria: "03. Comunicação Digital", preco: 500, desc: "Convite com links para meeting de corretores e clientes", isObrigatorio: false },
+
+  // 4. Eventos de Lançamento
+  { id: "e4-1", nome: "Convite Impresso Lançamento", categoria: "04. Eventos Lançamento", preco: 700, desc: "Design de convite impresso com acabamento premium", isObrigatorio: false },
+  { id: "e4-2", nome: "Convite para Meeting", categoria: "04. Eventos Lançamento", preco: 500, desc: "Convite digital/físico para o meeting de corretores", isObrigatorio: false },
+  { id: "e4-3", nome: "Template de Apresentação para Meeting", categoria: "04. Eventos Lançamento", preco: 1800, desc: "Apresentação comercial dinâmica editável em PPTX", isObrigatorio: false },
+  { id: "e4-4", nome: "Backdrop para Eventos", categoria: "04. Eventos Lançamento", preco: 1200, desc: "Painel fotográfico para recepção e fotos do evento", isObrigatorio: false },
+  { id: "e4-5", nome: "Banner Impresso Sinalizador", categoria: "04. Eventos Lançamento", preco: 800, desc: "Banners sinalizadores de recepção de convenção", isObrigatorio: false },
+
+  // 5. Materiais de Campo
+  { id: "e5-1", nome: "Sinalização para Promotores", categoria: "05. Materiais de Campo", preco: 1100, desc: "Coletes, credenciais e bolsas personalizadas", isObrigatorio: false },
+  { id: "e5-2", nome: "Folhetos Promocionais", categoria: "05. Materiais de Campo", preco: 800, desc: "Folhetos simplificados de distribuição em massa", isObrigatorio: false },
+  { id: "e5-3", nome: "Balcão de Degustação Adesivado", categoria: "05. Materiais de Campo", preco: 1200, desc: "Programação visual para ações em praças e PDV externo", isObrigatorio: false },
+  { id: "e5-4", nome: "Garrafa de Água Personalizada", categoria: "05. Materiais de Campo", preco: 900, desc: "Rótulo e embalagem customizados para distribuição", isObrigatorio: false },
+  { id: "e5-5", nome: "Lixo Car Personalizado", categoria: "05. Materiais de Campo", preco: 700, desc: "Design de lixeiras de câmbio para automóveis", isObrigatorio: false },
+  { id: "e5-6", nome: "Brindes Especiais", categoria: "05. Materiais de Campo", preco: 1400, desc: "Design de sacolas, chaveiros e brindes promocionais", isObrigatorio: false },
+
+  // 6. Comunicação Visual
+  { id: "e6-1", nome: "Comunicação Visual do Estande", categoria: "06. Comunicação Visual", preco: 5500, desc: "Sinalização interna, tótens de maquete e ambientação", isObrigatorio: false },
+  { id: "e6-2", nome: "Placas de Comunicação Visual", categoria: "06. Comunicação Visual", preco: 2500, desc: "Placas internas e indicativas do estande de vendas", isObrigatorio: false },
+  { id: "e6-3", nome: "Placa de Produto", categoria: "06. Comunicação Visual", preco: 1800, desc: "Placa frontal indicadora do lançamento e metragens", isObrigatorio: false },
+  { id: "e6-4", nome: "Placa Seta de Trânsito", categoria: "06. Comunicação Visual", preco: 1200, desc: "Setas direcionais externas de trânsito", isObrigatorio: false },
+  { id: "e6-5", nome: "Tapume de Fechamento", categoria: "06. Comunicação Visual", preco: 4500, desc: "Projeto gráfico de fechamento de lote com apelo visual", isObrigatorio: false },
+  { id: "e6-6", nome: "Cavalete Promocional", categoria: "06. Comunicação Visual", preco: 800, desc: "Cavaletes promocionais móveis para calçada", isObrigatorio: false },
+  { id: "e6-7", nome: "Adesivo Microperfurado para Carros", categoria: "06. Comunicação Visual", preco: 1000, desc: "Adesivos microperfurados de vidro traseiro", isObrigatorio: false },
+  { id: "e6-8", nome: "Faixas de Poste", categoria: "06. Comunicação Visual", preco: 1200, desc: "Faixas de poste e fachadas promocionais", isObrigatorio: false },
+  { id: "e6-9", nome: "Wind Banners Promocionais", categoria: "06. Comunicação Visual", preco: 1500, desc: "Sinalização aérea promocional externa para atração", isObrigatorio: false },
+  { id: "e6-10", nome: "Totens Internos e Externos", categoria: "06. Comunicação Visual", preco: 3500, desc: "Totens sinalizadores com iluminação e mapas", isObrigatorio: false },
+
+  // 7. Mídia Impressa
+  { id: "e7-1", nome: "Anúncio para Jornal", categoria: "07. Mídia Impressa", preco: 1600, desc: "Páginas inteiras e meia página com especificações", isObrigatorio: false },
+  { id: "e7-2", nome: "Anúncio para Revista", categoria: "07. Mídia Impressa", preco: 1400, desc: "Layout premium de alta fidelidade para revistas do setor", isObrigatorio: false },
+
+  // Plataformas Digitais
+  { id: "e8-1", nome: "Site ou Landing Page do Empreendimento", categoria: "08. Plataformas Digitais", preco: 4500, desc: "Site completo com galeria, mapa e integração de leads", isObrigatorio: false },
+  { id: "e8-2", nome: "Catálogo Digital Interativo", categoria: "08. Plataformas Digitais", preco: 2500, desc: "Visualizador PDF/Web com links clicáveis e navegação", isObrigatorio: false },
+  { id: "e8-3", nome: "Materiais para Portais Imobiliários", categoria: "08. Plataformas Digitais", preco: 1500, desc: "Banners e fotos redimensionadas nos padrões Zap/VivaReal", isObrigatorio: false },
+
+  // Conteúdo Audiovisual
+  { id: "e9-1", nome: "Vídeo Institucional do Empreendimento", categoria: "09. Audiovisual", preco: 5000, desc: "Vídeo com entrevistas, detalhes de obra e depoimentos", isObrigatorio: false },
+  { id: "e9-2", nome: "Vídeo da Região", categoria: "09. Audiovisual", preco: 3000, desc: "Gravações aéreas e highlights da vizinhança", isObrigatorio: false },
+  { id: "e9-3", nome: "Vídeo do Decorado", categoria: "09. Audiovisual", preco: 3500, desc: "Apresentação guiada do apartamento decorado", isObrigatorio: false },
+  { id: "e9-4", nome: "Tour Virtual 360°", categoria: "09. Audiovisual", preco: 4000, desc: "Ambiente imersivo para navegação online pelo cliente", isObrigatorio: false },
+
+  // Imagens
+  { id: "e10-1", nome: "Maquete Eletrônica (Imagens 3D)", categoria: "10. Imagens & Renders", preco: 6500, desc: "Perspectivas externas, áreas comuns e fachadas realistas", isObrigatorio: false },
+  { id: "e10-2", nome: "Perspectivas Ilustradas", categoria: "10. Imagens & Renders", preco: 3500, desc: "Tratamento artístico e conceitual de perspectivas do prédio", isObrigatorio: false },
+  { id: "e10-3", nome: "Plantas Humanizadas Coloridas", categoria: "10. Imagens & Renders", preco: 2200, desc: "Esquemas coloridos e decorados de todas as tipologias", isObrigatorio: false },
+  { id: "e10-4", nome: "Fotos Renderizadas Premium", categoria: "10. Imagens & Renders", preco: 2800, desc: "Renders estáticos adicionais com detalhes de decoração", isObrigatorio: false },
+
+  // Kits Comerciais
+  { id: "e11-1", nome: "Kit do Corretor de Vendas", categoria: "11. Kits Comerciais", preco: 1200, desc: "Crachá, bloco de notas, caneta e pasta de apresentação", isObrigatorio: false },
+  { id: "e11-2", nome: "Kit do Cliente Comprador", categoria: "11. Kits Comerciais", preco: 1500, desc: "Sacola institucional, memorial descritivo impresso e folder", isObrigatorio: false },
+  { id: "e11-3", nome: "Credenciais e Crachás Oficiais", categoria: "11. Kits Comerciais", preco: 600, desc: "Acreditação oficial para o time de plantão e promotores", isObrigatorio: false },
+  { id: "e11-4", nome: "Design de Assinatura de E-mail", categoria: "11. Kits Comerciais", preco: 400, desc: "Arte e assinatura em HTML com a marca do lançamento", isObrigatorio: false },
+
+  // Marketing Digital
+  { id: "e12-1", nome: "Posts para Redes Sociais", categoria: "12. Marketing Digital", preco: 1500, desc: "Templates de feed de postagens institucionais", isObrigatorio: false },
+  { id: "e12-2", nome: "Stories Instagram", categoria: "12. Marketing Digital", preco: 1200, desc: "Templates de engajamento diário para Instagram", isObrigatorio: false },
+  { id: "e12-3", nome: "Reels / TikTok", categoria: "12. Marketing Digital", preco: 2000, desc: "Criativos em vídeo vertical editáveis pelo time de marketing", isObrigatorio: false },
+  { id: "e12-4", nome: "Banners Google Display e Portais", categoria: "12. Marketing Digital", preco: 1800, desc: "Desdobramentos de anúncios em todas as resoluções da web", isObrigatorio: false },
+  { id: "e12-5", nome: "Peças para Meta Ads (Anúncios)", categoria: "12. Marketing Digital", preco: 2500, desc: "Criativos em vídeo e carrossel focados em conversão de leads", isObrigatorio: false },
+  { id: "e12-6", nome: "Peças para Google Ads (Display)", categoria: "12. Marketing Digital", preco: 1500, desc: "Anúncios gráficos para rede de display do Google", isObrigatorio: false },
 ];
 
 const COMPARATIVE_ROWS = [
@@ -88,6 +156,7 @@ export default function LandingPage() {
   
   const [loading, setLoading] = useState(false);
   const [successProposal, setSuccessProposal] = useState<any>(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   // Financial calculations
   const setupFixo = DELIVERABLES.filter((d) => d.isObrigatorio)
@@ -113,14 +182,45 @@ export default function LandingPage() {
     }
     setLoading(true);
 
+    const itemsSelecionados = DELIVERABLES.filter(d => selectedItems.includes(d.id))
+                                          .map(d => d.nome)
+                                          .join(", ");
+    const mensagemAdicional = mensagem ? `\n\nMensagem do cliente: ${mensagem}` : "";
+    const mensagemFinal = `Simulação de Escopo Landing Page:\nProdutos: ${itemsSelecionados}${mensagemAdicional}`;
+
     const leadData = {
       nome,
       email,
       telefone: telefone || null,
       empresa: empresa || null,
-      mensagem: mensagem || null,
+      mensagem: mensagemFinal,
       orcamentoEstimado: valorTotal,
     };
+
+    // Local fallback lead
+    const localLead = {
+      id: "LEAD-LOCAL-" + Math.random().toString(36).substring(2, 9).toUpperCase(),
+      nome,
+      email,
+      telefone: telefone || null,
+      empresa: empresa || null,
+      mensagem: mensagemFinal,
+      orcamentoEstimado: valorTotal,
+      status: "NOVO",
+      prioridade: 2,
+      score: 85,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to localStorage immediately so it's always accessible offline/locally
+    if (typeof window !== "undefined") {
+      try {
+        const existingLeads = JSON.parse(localStorage.getItem("tagmob_local_leads") || "[]");
+        localStorage.setItem("tagmob_local_leads", JSON.stringify([localLead, ...existingLeads]));
+      } catch (e) {
+        console.error("Erro ao salvar lead local", e);
+      }
+    }
 
     try {
       const res = await fetch("/api/leads", {
@@ -132,7 +232,7 @@ export default function LandingPage() {
       const data = await res.json();
       setLoading(false);
       setSuccessProposal({
-        id: data?.data?.id || Math.random().toString(36).substring(7).toUpperCase(),
+        id: data?.data?.id || localLead.id,
         total: valorTotal,
         itemsCount: selectedItems.length,
       });
@@ -146,10 +246,16 @@ export default function LandingPage() {
       console.error(err);
       setLoading(false);
       setSuccessProposal({
-        id: "PROP-" + Math.random().toString(36).substring(2, 7).toUpperCase(),
+        id: localLead.id,
         total: valorTotal,
         itemsCount: selectedItems.length,
       });
+      // Clear form
+      setNome("");
+      setEmail("");
+      setTelefone("");
+      setEmpresa("");
+      setMensagem("");
     }
   };
 
@@ -468,82 +574,171 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
                   <span style={{ fontSize: 13, fontWeight: 900, color: "#EEEEFF", letterSpacing: "-0.01em" }}>TOTAL ORÇADO:</span>
                   <span style={{ fontSize: 24, fontWeight: 900, color: "#39FF14", letterSpacing: "-0.02em" }}>R$ {valorTotal.toLocaleString("pt-BR")},00</span>
                 </div>
 
-                {/* Leads Form */}
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <p style={{ fontSize: 11, fontWeight: 800, color: "#7878A0", textTransform: "uppercase", letterSpacing: "0.04em", borderTop: "1px solid #1A1A30", paddingTop: 16, marginBottom: 4 }}>Solicitar Proposta Formal</p>
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Seu Nome completo *"
-                      required
-                      value={nome}
-                      onChange={(e) => setNome(e.target.value)}
-                      style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
-                    />
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                    <input
-                      type="email"
-                      placeholder="E-mail Corporativo *"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
-                    />
-                    <input
-                      type="tel"
-                      placeholder="Telefone / WhatsApp"
-                      value={telefone}
-                      onChange={(e) => setTelefone(e.target.value)}
-                      style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Nome da Incorporadora"
-                      value={empresa}
-                      onChange={(e) => setEmpresa(e.target.value)}
-                      style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
-                    />
-                  </div>
-                  <div>
-                    <textarea
-                      placeholder="Mensagem adicional ou objetivos do lançamento..."
-                      value={mensagem}
-                      onChange={(e) => setMensagem(e.target.value)}
-                      style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none", minHeight: 70, resize: "vertical" }}
-                    />
-                  </div>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
                   <button
-                    type="submit"
-                    disabled={loading}
+                    type="button"
+                    onClick={() => setShowDetails(!showDetails)}
                     style={{
-                      width: "100%",
-                      padding: "12px 18px",
-                      borderRadius: 10,
-                      backgroundColor: "#FF0068",
-                      color: "#fff",
+                      background: "none",
                       border: "none",
-                      fontSize: 13,
-                      fontWeight: 800,
+                      color: "#00E5FF",
+                      fontSize: 11,
+                      fontWeight: 700,
                       cursor: "pointer",
+                      padding: "4px 0",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      boxShadow: "0 4px 14px rgba(255,0,104,0.3)"
+                      gap: 4,
+                      outline: "none",
                     }}
                   >
-                    {loading ? "Registrando..." : "Enviar Simulação de Escopo"}
-                    <Send size={12} />
+                    {showDetails ? "Ocultar Detalhes ▲" : "Ver Mais (Detalhes do Pedido) ▼"}
                   </button>
-                </form>
+                </div>
+
+                {showDetails && (
+                  <div style={{
+                    marginBottom: 16,
+                    padding: "12px 14px",
+                    background: "#09090F",
+                    border: "1px solid #1A1A30",
+                    borderRadius: 10,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                    maxHeight: 180,
+                    overflowY: "auto",
+                  }}>
+                    <p style={{ fontSize: 10, fontWeight: 800, color: "#7878A0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Itens Selecionados</p>
+                    {DELIVERABLES.filter(d => selectedItems.includes(d.id)).map(d => (
+                      <div key={d.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#7878A0" }}>
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>• {d.nome}</span>
+                        <span style={{ color: d.isObrigatorio ? "#FF0068" : "#EEEEFF", fontWeight: 600 }}>R$ {d.preco.toLocaleString("pt-BR")}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {successProposal ? (
+                  <div style={{
+                    padding: "20px 16px",
+                    background: "rgba(57, 255, 20, 0.05)",
+                    border: "1px solid rgba(57, 255, 20, 0.25)",
+                    borderRadius: 12,
+                    textAlign: "center",
+                    marginTop: 16
+                  }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: "50%", backgroundColor: "rgba(57, 255, 20, 0.1)",
+                      display: "flex", alignItems: "center", justifyContent: "center", color: "#39FF14",
+                      margin: "0 auto 12px"
+                    }}>
+                      <Check size={20} strokeWidth={3} />
+                    </div>
+                    <p style={{ fontSize: 15, fontWeight: 900, color: "#EEEEFF", marginBottom: 6 }}>Simulação Enviada!</p>
+                    <p style={{ fontSize: 12, color: "#7878A0", lineHeight: 1.5, marginBottom: 16 }}>
+                      O orçamento de <strong>R$ {successProposal.total.toLocaleString("pt-BR")},00</strong> foi registrado na plataforma. Nossa equipe entrará em contato via WhatsApp em instantes!
+                    </p>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <Link
+                        href="/leads"
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                          padding: "10px", borderRadius: 8, backgroundColor: "#39FF14", color: "#000",
+                          fontSize: 12, fontWeight: 800, textDecoration: "none"
+                        }}
+                      >
+                        Ir para CRM (Pipeline)
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setSuccessProposal(null)}
+                        style={{
+                          background: "none", border: "none", color: "#7878A0", fontSize: 11,
+                          fontWeight: 700, cursor: "pointer", outline: "none"
+                        }}
+                      >
+                        Nova Simulação
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    <p style={{ fontSize: 11, fontWeight: 800, color: "#7878A0", textTransform: "uppercase", letterSpacing: "0.04em", borderTop: "1px solid #1A1A30", paddingTop: 16, marginBottom: 4 }}>Solicitar Proposta Formal</p>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Seu Nome completo *"
+                        required
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                        style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
+                      />
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                      <input
+                        type="email"
+                        placeholder="E-mail Corporativo *"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Telefone / WhatsApp"
+                        value={telefone}
+                        onChange={(e) => setTelefone(e.target.value)}
+                        style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Nome da Incorporadora"
+                        value={empresa}
+                        onChange={(e) => setEmpresa(e.target.value)}
+                        style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none" }}
+                      />
+                    </div>
+                    <div>
+                      <textarea
+                        placeholder="Mensagem adicional ou objetivos do lançamento..."
+                        value={mensagem}
+                        onChange={(e) => setMensagem(e.target.value)}
+                        style={{ width: "100%", background: "#09090F", border: "1.5px solid #1A1A30", borderRadius: 8, padding: "10px 14px", color: "#EEEEFF", fontSize: 13, outline: "none", minHeight: 70, resize: "vertical" }}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      style={{
+                        width: "100%",
+                        padding: "12px 18px",
+                        borderRadius: 10,
+                        backgroundColor: "#FF0068",
+                        color: "#fff",
+                        border: "none",
+                        fontSize: 13,
+                        fontWeight: 800,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                        boxShadow: "0 4px 14px rgba(255,0,104,0.3)"
+                      }}
+                    >
+                      {loading ? "Registrando..." : "Enviar Simulação de Escopo"}
+                      <Send size={12} />
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>

@@ -307,51 +307,84 @@ export default function NegociosKanban({
   ];
 
   // Estado para armazenar produtos contratados por empreendimento
-  const [contractedProducts, setContractedProducts] = useState<Record<string, Array<{ id: string; nome: string; preco: number; status: string }>>>({
-    "emp-001": [
-      { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
-      { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000, status: "APROVADO" },
-      { id: "ent-201", nome: "Book do Cliente – Folhetão", preco: 3500, status: "EM_PRODUCAO" },
-    ],
-    "emp-002": [
-      { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
-      { id: "ent-102", nome: "Filme Conceito do Lançamento", preco: 4500, status: "EM_PRODUCAO" },
-      { id: "ent-801", nome: "Site do Empreendimento + LP", preco: 4500, status: "PENDENTE" },
-    ],
-    "emp-003": [
-      { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "PENDENTE" },
-    ],
-    "emp-004": [
-      { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
-      { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000, status: "APROVADO" },
-      { id: "ent-1001", nome: "Maquete Eletrônica (Imagens 3D)", preco: 6500, status: "APROVADO" },
-    ]
+  const [contractedProducts, setContractedProducts] = useState<Record<string, Array<{ id: string; nome: string; preco: number; status: string }>>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("tagmob_contracted_products");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return {
+      "emp-001": [
+        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
+        { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000, status: "APROVADO" },
+        { id: "ent-201", nome: "Book do Cliente – Folhetão", preco: 3500, status: "EM_PRODUCAO" },
+      ],
+      "emp-002": [
+        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
+        { id: "ent-102", nome: "Filme Conceito do Lançamento", preco: 4500, status: "EM_PRODUCAO" },
+        { id: "ent-801", nome: "Site do Empreendimento + LP", preco: 4500, status: "PENDENTE" },
+      ],
+      "emp-003": [
+        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "PENDENTE" },
+      ],
+      "emp-004": [
+        { id: "ent-101", nome: "Campanha (Branding e Identidade Visual)", preco: 6000, status: "APROVADO" },
+        { id: "ent-103", nome: "KV (Key Visual) Diretor", preco: 3000, status: "APROVADO" },
+        { id: "ent-1001", nome: "Maquete Eletrônica (Imagens 3D)", preco: 6500, status: "APROVADO" },
+      ]
+    };
   });
 
   // Estado para checklist de tarefas
-  const [dealChecklists, setDealChecklists] = useState<Record<string, Array<{ id: string; texto: string; concluida: boolean }>>>({
-    "emp-001": [
-      { id: "t-1", texto: "Workshop de naming e conceito preliminar", concluida: true },
-      { id: "t-2", texto: "Criação do Key Visual (KV) Matriz", concluida: true },
-      { id: "t-3", texto: "Desenho das plantas humanizadas", concluida: true },
-      { id: "t-4", texto: "Diagramação do Book do Cliente - Folhetão", concluida: false },
-      { id: "t-5", texto: "Envio de criativos digitais para aprovação", concluida: false },
-    ],
-    "emp-002": [
-      { id: "t-1", texto: "Roteiro e storyboard do Filme Conceito", concluida: true },
-      { id: "t-2", texto: "Edição e sonorização da trilha do vídeo", concluida: false },
-      { id: "t-3", texto: "Desenvolvimento da Landing Page", concluida: false },
-    ],
-    "emp-003": [
-      { id: "t-1", texto: "Kick-off técnico e briefing da marca Even", concluida: true },
-      { id: "t-2", texto: "Primeiras opções de Naming e Cores", concluida: false },
-    ],
-    "emp-004": [
-      { id: "t-1", texto: "Aprovação de conceito e tom de voz", concluida: true },
-      { id: "t-2", texto: "Render 3D da fachada principal", concluida: true },
-      { id: "t-3", texto: "Sinalização e tapume físico da Faria Lima", concluida: false },
-    ]
+  const [dealChecklists, setDealChecklists] = useState<Record<string, Array<{ id: string; texto: string; concluida: boolean }>>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("tagmob_checklists");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return {
+      "emp-001": [
+        { id: "t-1", texto: "Workshop de naming e conceito preliminar", concluida: true },
+        { id: "t-2", texto: "Criação do Key Visual (KV) Matriz", concluida: true },
+        { id: "t-3", texto: "Desenho das plantas humanizadas", concluida: true },
+        { id: "t-4", texto: "Diagramação do Book do Cliente - Folhetão", concluida: false },
+        { id: "t-5", texto: "Envio de criativos digitais para aprovação", concluida: false },
+      ],
+      "emp-002": [
+        { id: "t-1", texto: "Roteiro e storyboard do Filme Conceito", concluida: true },
+        { id: "t-2", texto: "Edição e sonorização da trilha do vídeo", concluida: false },
+        { id: "t-3", texto: "Desenvolvimento da Landing Page", concluida: false },
+      ],
+      "emp-003": [
+        { id: "t-1", texto: "Kick-off técnico e briefing da marca Even", concluida: true },
+        { id: "t-2", texto: "Primeiras opções de Naming e Cores", concluida: false },
+      ],
+      "emp-004": [
+        { id: "t-1", texto: "Aprovação de conceito e tom de voz", concluida: true },
+        { id: "t-2", texto: "Render 3D da fachada principal", concluida: true },
+        { id: "t-3", texto: "Sinalização e tapume físico da Faria Lima", concluida: false },
+      ]
+    };
   });
+
+  // Sync to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tagmob_contracted_products", JSON.stringify(contractedProducts));
+    }
+  }, [contractedProducts]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tagmob_checklists", JSON.stringify(dealChecklists));
+    }
+  }, [dealChecklists]);
 
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   const [newChecklistText, setNewChecklistText] = useState("");
@@ -483,6 +516,17 @@ export default function NegociosKanban({
     setLoading(true);
     let offline = false;
 
+    let localLeads: LeadDTO[] = [];
+    let localDeals: Empreendimento[] = [];
+    if (typeof window !== "undefined") {
+      try {
+        localLeads = JSON.parse(localStorage.getItem("tagmob_local_leads") || "[]");
+        localDeals = JSON.parse(localStorage.getItem("tagmob_local_deals") || "[]");
+      } catch (e) {
+        console.error("Erro ao carregar do localStorage", e);
+      }
+    }
+
     try {
       const [dealsRes, leadsRes] = await Promise.all([
         fetch("/api/crm/deals"),
@@ -492,32 +536,32 @@ export default function NegociosKanban({
       if (dealsRes.ok) {
         const dealsJson = await dealsRes.json();
         if (dealsJson.data?.length) {
-          setDeals(dealsJson.data);
+          setDeals([...localDeals, ...dealsJson.data]);
         } else {
-          setDeals(MOCK_EMPREENDIMENTOS);
+          setDeals([...localDeals, ...MOCK_EMPREENDIMENTOS]);
           offline = true;
         }
       } else {
-        setDeals(MOCK_EMPREENDIMENTOS);
+        setDeals([...localDeals, ...MOCK_EMPREENDIMENTOS]);
         offline = true;
       }
 
       if (leadsRes.ok) {
         const leadsJson = await leadsRes.json();
         if (leadsJson.data?.length) {
-          setLeads(leadsJson.data);
+          setLeads([...localLeads, ...leadsJson.data]);
         } else if (offline) {
-          setLeads(MOCK_LEADS as LeadDTO[]);
+          setLeads([...localLeads, ...MOCK_LEADS as LeadDTO[]]);
         } else {
-          setLeads([]);
+          setLeads(localLeads);
         }
       } else {
-        setLeads(MOCK_LEADS as LeadDTO[]);
+        setLeads([...localLeads, ...MOCK_LEADS as LeadDTO[]]);
         offline = true;
       }
     } catch {
-      setDeals(MOCK_EMPREENDIMENTOS);
-      setLeads(MOCK_LEADS as LeadDTO[]);
+      setDeals([...localDeals, ...MOCK_EMPREENDIMENTOS]);
+      setLeads([...localLeads, ...MOCK_LEADS as LeadDTO[]]);
       offline = true;
     } finally {
       setDbOffline(offline);
@@ -535,6 +579,21 @@ export default function NegociosKanban({
   async function updateLeadStatus(id: string, status: string) {
     const prev = leads;
     setLeads((l) => l.map((lead) => (lead.id === id ? { ...lead, status } : lead)));
+
+    // Se for lead local, atualiza no localStorage
+    if (id.startsWith("LEAD-LOCAL-")) {
+      if (typeof window !== "undefined") {
+        try {
+          const local = JSON.parse(localStorage.getItem("tagmob_local_leads") || "[]");
+          const updated = local.map((lead: any) => lead.id === id ? { ...lead, status } : lead);
+          localStorage.setItem("tagmob_local_leads", JSON.stringify(updated));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return;
+    }
+
     try {
       const res = await fetch("/api/crm/leads", {
         method: "PATCH",
@@ -551,37 +610,63 @@ export default function NegociosKanban({
 
   async function convertLead(lead: LeadDTO) {
     const nome = lead.empresa ? `${lead.empresa} — Novo OS` : `Projeto ${lead.nome}`;
-    try {
-      const res = await fetch("/api/crm/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          leadId: lead.id,
-          nome,
-          valorContrato: lead.orcamentoEstimado ? Number(lead.orcamentoEstimado) : undefined,
-        }),
-      });
-      if (res.ok) {
-        await loadData();
-        return;
-      }
-    } catch { /* demo fallback */ }
+    
+    // Se for lead local ou se a API falhar
+    const isLocal = lead.id.startsWith("LEAD-LOCAL-");
 
-    if (dbOffline) {
-      setLeads((l) => l.filter((item) => item.id !== lead.id));
-      const novoDeal: Empreendimento = {
-        ...MOCK_EMPREENDIMENTOS[0],
-        id: `emp-from-${lead.id}`,
-        nome,
-        construtora: lead.empresa ?? lead.nome,
-        fase_atual: 1,
-        valor_contrato: lead.orcamentoEstimado ? Number(lead.orcamentoEstimado) : 68_000,
-        responsavel: lead.ownerUser?.fullName,
-        proxima_acao: "Kick-off de estratégia",
-        dias_na_fase: 0,
-      };
-      setDeals((d) => [novoDeal, ...d]);
+    if (!isLocal) {
+      try {
+        const res = await fetch("/api/crm/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            leadId: lead.id,
+            nome,
+            valorContrato: lead.orcamentoEstimado ? Number(lead.orcamentoEstimado) : undefined,
+          }),
+        });
+        if (res.ok) {
+          await loadData();
+          return;
+        }
+      } catch { /* demo fallback */ }
     }
+
+    // Fallback: Remove lead e cria deal local no localStorage
+    if (typeof window !== "undefined") {
+      try {
+        const localL = JSON.parse(localStorage.getItem("tagmob_local_leads") || "[]");
+        localStorage.setItem("tagmob_local_leads", JSON.stringify(localL.filter((item: any) => item.id !== lead.id)));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const novoDeal: Empreendimento = {
+      ...MOCK_EMPREENDIMENTOS[0],
+      id: `emp-local-${Date.now()}`,
+      nome,
+      construtora: lead.empresa ?? lead.nome,
+      fase_atual: 1,
+      valor_contrato: lead.orcamentoEstimado ? Number(lead.orcamentoEstimado) : 68_000,
+      responsavel: lead.ownerUser?.fullName || "Você",
+      proxima_acao: "Kick-off de estratégia",
+      dias_na_fase: 0,
+      plano: "PRO",
+      cor_tema: "#FF0068",
+    };
+
+    if (typeof window !== "undefined") {
+      try {
+        const localD = JSON.parse(localStorage.getItem("tagmob_local_deals") || "[]");
+        localStorage.setItem("tagmob_local_deals", JSON.stringify([novoDeal, ...localD]));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    setLeads((l) => l.filter((item) => item.id !== lead.id));
+    setDeals((d) => [novoDeal, ...d]);
   }
 
   async function handleDrop(columnId: PipelineColumnId) {
@@ -604,6 +689,23 @@ export default function NegociosKanban({
     setDeals((d) =>
       d.map((deal) => (deal.id === draggingDealId ? { ...deal, fase_atual: fase, dias_na_fase: 0 } : deal))
     );
+
+    // Se for deal local, atualiza no localStorage
+    if (draggingDealId.startsWith("emp-local-")) {
+      if (typeof window !== "undefined") {
+        try {
+          const local = JSON.parse(localStorage.getItem("tagmob_local_deals") || "[]");
+          const updated = local.map((deal: any) => deal.id === draggingDealId ? { ...deal, fase_atual: fase, dias_na_fase: 0 } : deal);
+          localStorage.setItem("tagmob_local_deals", JSON.stringify(updated));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      setDraggingDealId(null);
+      setDropTarget(null);
+      return;
+    }
+
     setDraggingDealId(null);
     setDropTarget(null);
 

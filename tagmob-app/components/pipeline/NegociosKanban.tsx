@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
   User, Clock, ChevronRight, DollarSign, TrendingUp,
-  AlertCircle, GripVertical, Inbox, Mail, Phone, Star,
+  AlertCircle, Inbox, Mail, Phone, Star,
 } from "lucide-react";
 import type { Empreendimento, OSFase } from "@/lib/types";
 import { MOCK_EMPREENDIMENTOS, MOCK_LEADS } from "@/lib/mock-data";
@@ -44,28 +44,29 @@ function PlanoBadge({ plano }: { plano: Empreendimento["plano"] }) {
 function LeadCard({
   lead,
   columnColor,
-  onDragStart,
   onUpdateStatus,
   onConvert,
 }: {
   lead: LeadDTO;
   columnColor: string;
-  onDragStart: (id: string) => void;
   onUpdateStatus: (id: string, status: string) => void;
   onConvert: (lead: LeadDTO) => void;
 }) {
   const statusColor = LEAD_STATUS_COLORS[lead.status] ?? columnColor;
 
   return (
-    <div
-      draggable
-      onDragStart={() => onDragStart(lead.id)}
+    <Link
+      href={`/negocios/lead/${encodeURIComponent(lead.id)}`}
+      prefetch={false}
       style={{
+        display: "block",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
         padding: 14,
-        cursor: "grab",
+        cursor: "pointer",
+        textDecoration: "none",
+        color: "inherit",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = columnColor + "50";
@@ -76,7 +77,6 @@ function LeadCard({
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <GripVertical size={12} color="#3A3A5C" />
           <span style={{
             fontSize: 9, fontWeight: 800, color: statusColor,
             backgroundColor: statusColor + "18", padding: "2px 6px", borderRadius: 4,
@@ -116,10 +116,18 @@ function LeadCard({
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", borderTop: "1px solid #1A1A30", paddingTop: 10 }}>
+      <div
+        style={{ display: "flex", gap: 6, flexWrap: "wrap", borderTop: "1px solid #1A1A30", paddingTop: 10, alignItems: "center" }}
+        onClick={(e) => e.preventDefault()}
+      >
         {lead.status === "NOVO" && (
           <button
-            onClick={() => onUpdateStatus(lead.id, "EM_ATENDIMENTO")}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onUpdateStatus(lead.id, "EM_ATENDIMENTO");
+            }}
             style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#FFB80020", border: "1px solid #FFB80040", color: "#FFB800", cursor: "pointer" }}
           >
             Atender
@@ -127,20 +135,33 @@ function LeadCard({
         )}
         {lead.status === "EM_ATENDIMENTO" && (
           <button
-            onClick={() => onUpdateStatus(lead.id, "QUALIFICADO")}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onUpdateStatus(lead.id, "QUALIFICADO");
+            }}
             style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#8B5CF620", border: "1px solid #8B5CF640", color: "#8B5CF6", cursor: "pointer" }}
           >
             Qualificar
           </button>
         )}
         <button
-          onClick={() => onConvert(lead)}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onConvert(lead);
+          }}
           style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#39FF1420", border: "1px solid #39FF1440", color: "#39FF14", cursor: "pointer" }}
         >
           Converter → OS
         </button>
+        <span style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: columnColor, display: "flex", alignItems: "center", gap: 2 }}>
+          Abrir detalhes <ChevronRight size={10} />
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -706,7 +727,6 @@ export default function NegociosKanban({
                           key={lead.id}
                           lead={lead}
                           columnColor={col.color}
-                          onDragStart={setDraggingLeadId}
                           onUpdateStatus={updateLeadStatus}
                           onConvert={convertLead}
                         />
@@ -747,12 +767,14 @@ export default function NegociosKanban({
             <span />
           </div>
           {filteredLeads.filter((l) => l.status !== "CONVERTIDO" && l.status !== "ARQUIVADO").map((lead) => (
-            <div
+            <Link
               key={lead.id}
+              href={`/negocios/lead/${encodeURIComponent(lead.id)}`}
+              prefetch={false}
               style={{
                 display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 80px",
                 padding: "14px 18px", borderBottom: "1px solid #1A1A3020",
-                alignItems: "center",
+                alignItems: "center", textDecoration: "none", color: "inherit",
               }}
             >
               <div>
@@ -765,13 +787,10 @@ export default function NegociosKanban({
               <span style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF" }}>
                 {lead.orcamentoEstimado ? formatBRL(Number(lead.orcamentoEstimado)) : "—"}
               </span>
-              <button
-                onClick={() => convertLead(lead)}
-                style={{ fontSize: 11, color: "#39FF14", background: "none", border: "none", cursor: "pointer", fontWeight: 700 }}
-              >
-                Converter
-              </button>
-            </div>
+              <span style={{ fontSize: 11, color: "#FF0068", fontWeight: 700 }}>
+                Detalhes →
+              </span>
+            </Link>
           ))}
           {filteredDeals.map((deal) => {
             const fase = columns.find((c) => c.id === deal.fase_atual);

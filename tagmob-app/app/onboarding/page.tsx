@@ -171,6 +171,11 @@ export default function OnboardingPage() {
 
   const [loading, setLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  
+  const [clienteNome, setClienteNome] = useState("");
+  const [clienteEmail, setClienteEmail] = useState("");
+  const [clienteTelefone, setClienteTelefone] = useState("");
+  const [clienteEmpresa, setClienteEmpresa] = useState("");
 
   // Cálculos financeiros
   const valorEtapa1Fixo = DELIVERABLES.filter(d => d.isObrigatorio)
@@ -200,10 +205,51 @@ export default function OnboardingPage() {
   }
 
   function handleFinalizeCheckout() {
+    setOnboardingStep(3); // Direciona para o formulário de cadastro de Lead
+  }
+
+  async function handleSubmitLead(e: React.FormEvent) {
+    e.preventDefault();
+    if (!clienteNome || !clienteEmail || !clienteTelefone || !clienteEmpresa) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
-      router.push("/tagmob-os");
-    }, 1200);
+
+    const itemsSelecionados = DELIVERABLES.filter(d => selectedItems.includes(d.id))
+                                          .map(d => d.nome)
+                                          .join(", ");
+    const mensagem = `Simulação de Escopo Onboarding:\nProdutos: ${itemsSelecionados}`;
+
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: clienteNome,
+          email: clienteEmail,
+          telefone: clienteTelefone,
+          empresa: clienteEmpresa,
+          mensagem: mensagem,
+          orcamentoEstimado: valorTotal,
+        }),
+      });
+
+      if (res.ok) {
+        setOnboardingStep(4); // Sucesso
+      } else {
+        const errorData = await res.json();
+        alert("Erro ao criar lead: " + (errorData.error || "Tente novamente."));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erro de conexão ao criar lead.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -618,6 +664,176 @@ export default function OnboardingPage() {
             </button>
           </div>
 
+        </div>
+      )}
+
+      {/* ══ STEP 3: CADASTRO DO CLIENTE (GERAR LEAD) ════════════════════════ */}
+      {onboardingStep === 3 && (
+        <div style={{ maxWidth: 540, width: "100%", zIndex: 10 }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <span style={{ color: "#00E5FF", fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>Etapa Final de Configuração</span>
+            <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.03em", marginTop: 4 }}>
+              Cadastre sua Incorporadora
+            </h1>
+            <p style={{ fontSize: 13, color: "#7878A0", marginTop: 4 }}>
+              Para salvar seu escopo simulado de <strong>R$ {valorTotal.toLocaleString("pt-BR")},00</strong> e iniciar o atendimento com nossa equipe.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmitLead} style={{ background: "#0D0D1A", border: "1px solid #1A1A30", borderRadius: 16, padding: 28, display: "flex", flexDirection: "column", gap: 18 }}>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#7878A0", textTransform: "uppercase" }}>Seu Nome Completo *</label>
+              <input 
+                type="text"
+                required
+                placeholder="Ex: Ricardo Souza"
+                value={clienteNome}
+                onChange={(e) => setClienteNome(e.target.value)}
+                style={{
+                  background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
+                  padding: "10px 14px", fontSize: 13, color: "#EEEEFF", outline: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#7878A0", textTransform: "uppercase" }}>E-mail Corporativo *</label>
+              <input 
+                type="email"
+                required
+                placeholder="Ex: ricardo.souza@incorporadora.com"
+                value={clienteEmail}
+                onChange={(e) => setClienteEmail(e.target.value)}
+                style={{
+                  background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
+                  padding: "10px 14px", fontSize: 13, color: "#EEEEFF", outline: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#7878A0", textTransform: "uppercase" }}>WhatsApp Corporativo *</label>
+              <input 
+                type="tel"
+                required
+                placeholder="Ex: (11) 99999-9999"
+                value={clienteTelefone}
+                onChange={(e) => setClienteTelefone(e.target.value)}
+                style={{
+                  background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
+                  padding: "10px 14px", fontSize: 13, color: "#EEEEFF", outline: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#7878A0", textTransform: "uppercase" }}>Nome da Construtora / Incorporadora *</label>
+              <input 
+                type="text"
+                required
+                placeholder="Ex: Tegra Incorporadora"
+                value={clienteEmpresa}
+                onChange={(e) => setClienteEmpresa(e.target.value)}
+                style={{
+                  background: "#111120", border: "1px solid #1A1A30", borderRadius: 8,
+                  padding: "10px 14px", fontSize: 13, color: "#EEEEFF", outline: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 10 }}>
+              <button
+                type="button"
+                onClick={() => setOnboardingStep(2)}
+                style={{
+                  padding: "12px 20px", borderRadius: 8, background: "transparent",
+                  border: "1px solid #1A1A30", color: "#7878A0", fontSize: 13, fontWeight: 700, cursor: "pointer"
+                }}
+              >
+                Editar Orçamento
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  flex: 1, padding: "12px", borderRadius: 8, backgroundColor: "#FF0068",
+                  border: "none", color: "#fff", fontSize: 13, fontWeight: 800, cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6
+                }}
+              >
+                {loading ? "Registrando..." : "Enviar Simulação & Criar Negócio"} <ArrowRight size={14} />
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* ══ STEP 4: TELA DE SUCESSO ═════════════════════════════════════════ */}
+      {onboardingStep === 4 && (
+        <div style={{ maxWidth: 540, width: "100%", zIndex: 10, textAlign: "center" }}>
+          <div style={{
+            background: "#0D0D1A", border: "1px solid #1A1A30", borderRadius: 20, padding: "40px 32px",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 20
+          }}>
+            <div style={{
+              width: 60, height: 60, borderRadius: "50%", backgroundColor: "rgba(57, 255, 20, 0.08)",
+              border: "2px solid #39FF14", display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#39FF14", marginBottom: 8
+            }}>
+              <Check size={28} strokeWidth={3} />
+            </div>
+
+            <h2 style={{ fontSize: 24, fontWeight: 900, color: "#EEEEFF", letterSpacing: "-0.03em" }}>
+              Simulação Enviada com Sucesso!
+            </h2>
+            
+            <p style={{ fontSize: 14, color: "#7878A0", lineHeight: 1.6 }}>
+              Olá <strong>{clienteNome}</strong>, registramos o interesse de <strong>{clienteEmpresa}</strong>. 
+              Sua estimativa de escopo está orçada em <strong>R$ {valorTotal.toLocaleString("pt-BR")},00</strong>.
+            </p>
+
+            <div style={{
+              width: "100%", padding: "14px 18px", background: "rgba(0, 229, 255, 0.04)",
+              border: "1px solid rgba(0, 229, 255, 0.2)", borderRadius: 12, textAlign: "left", fontSize: 12.5,
+              color: "#7878A0"
+            }}>
+              <p style={{ fontWeight: 800, color: "#00E5FF", marginBottom: 6 }}>Próximos Passos:</p>
+              <p style={{ marginBottom: 4 }}>• O negócio foi gerado no topo da esteira do CRM (como "Novo Lead").</p>
+              <p style={{ marginBottom: 4 }}>• Um especialista comercial entrará em contato via WhatsApp no número <strong>{clienteTelefone}</strong>.</p>
+              <p>• Analisaremos os {selectedItems.length} entregáveis selecionados para iniciar a sua central TAGMOB OS.</p>
+            </div>
+
+            <div style={{ display: "flex", gap: 12, width: "100%", marginTop: 10 }}>
+              <button
+                onClick={() => {
+                  setClienteNome("");
+                  setClienteEmail("");
+                  setClienteTelefone("");
+                  setClienteEmpresa("");
+                  setOnboardingStep(0);
+                }}
+                style={{
+                  flex: 1, padding: "12px", borderRadius: 8, background: "transparent",
+                  border: "1px solid #1A1A30", color: "#7878A0", fontSize: 13, fontWeight: 700, cursor: "pointer"
+                }}
+              >
+                Nova Simulação
+              </button>
+
+              <button
+                onClick={() => router.push("/leads")}
+                style={{
+                  flex: 1.2, padding: "12px", borderRadius: 8, backgroundColor: "#39FF14",
+                  border: "none", color: "#000", fontSize: 13, fontWeight: 800, cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6
+                }}
+              >
+                Ir para o CRM (Pipeline) <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

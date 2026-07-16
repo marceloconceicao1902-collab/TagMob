@@ -1,18 +1,14 @@
 # Vercel — projeto de produção
 
-**Produção oficial:** projeto `tag-mob` → https://www.tagmob.com.br
+**Produção oficial:** projeto `tag-mob` → https://www.tagmob.com.br  
+**Branch de produção:** sempre `main` (nunca feature/`cursor/*`).
 
-Não faça deploy no projeto `tagmob-app` (é legado / preview).
+Não faça deploy no projeto `tagmob-app` (legado).
 
 ```bash
-# Na raiz do repositório:
+# Na raiz, com checkout em main sincronizada com origin/main:
 npm run deploy:prod
 ```
 
-Ou:
-
-```bash
-npx vercel --prod --yes --cwd .
-```
-
-O Root Directory no dashboard da Vercel deve ser `tagmob-app`.
+O script recusa se a branch não for `main` ou se `main` ≠ `origin/main`.  
+Root Directory no dashboard Vercel: `tagmob-app`.

@@ -1,0 +1,32 @@
+---
+description: Deploy de produção sempre via main + projeto Vercel tag-mob
+alwaysApply: true
+---
+
+# Deploy TAGMOB — sempre na main
+
+## Regras obrigatórias
+
+1. **Produção só a partir de `main`.** Nunca faça deploy de feature branch (`cursor/*` etc.).
+2. **Projeto Vercel oficial:** `tag-mob` → https://www.tagmob.com.br  
+   Nunca publique no projeto legado `tagmob-app`.
+3. **Fluxo correto quando o usuário pedir deploy / “subir produção”:**
+   - Garantir que as alterações estão commitadas na branch de trabalho
+   - Fazer merge (fast-forward quando possível) em `main`
+   - `git push origin main`
+   - Rodar deploy **com a branch `main` checked out**: `npm run deploy:prod` (raiz do repo)
+4. Se estiver em outra branch, **checkout `main` + merge + push** antes do deploy. Não pular esse passo.
+5. O script `scripts/deploy-prod.mjs` recusa deploy se a branch atual não for `main` — não contorne isso.
+
+## Comando
+
+```bash
+# Na raiz, em main, limpa e sincronizada:
+npm run deploy:prod
+```
+
+## Errado
+
+- `vercel --prod` a partir de `cursor/*`
+- Deploy só da feature branch no GitHub sem merge em `main`
+- Link/CLI apontando para o projeto `tagmob-app`

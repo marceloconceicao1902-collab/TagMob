@@ -123,16 +123,19 @@ npm run build           # Build de produção
 
 ## Deploy (produção)
 
+**Sempre pela branch `main`.** Feature branches não podem publicar produção.  
 **Projeto Vercel oficial:** `tag-mob` → https://www.tagmob.com.br  
-**Não use** o projeto legado `tagmob-app` para produção.
+**Não use** o projeto legado `tagmob-app`.
 
-Na raiz do repositório:
+Fluxo:
 
 ```bash
-npm run deploy:prod
+git checkout main
+git merge sua-feature-branch
+git push origin main
+npm run deploy:prod   # na raiz; exige branch main == origin/main e projeto tag-mob
 ```
 
-O script valida `.vercel/project.json` (deve ser `tag-mob`) antes de publicar.  
 Root Directory no dashboard Vercel: `tagmob-app`.
 
 ---

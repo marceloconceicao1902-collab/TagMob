@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
   User, Clock, ChevronRight, DollarSign, TrendingUp,
@@ -18,7 +19,6 @@ import {
   formatBRL,
   type PipelineColumnId,
 } from "@/lib/pipeline-kanban";
-import DealDetailDrawer from "@/components/pipeline/DealDetailDrawer";
 
 type ViewMode = "kanban" | "lista";
 
@@ -148,36 +148,32 @@ function LeadCard({
 function DealCard({
   deal,
   columnColor,
-  onDragStart,
-  onClick,
+  onOpen,
 }: {
   deal: Empreendimento;
   columnColor: string;
-  onDragStart: (id: string) => void;
-  onClick: () => void;
+  onOpen: () => void;
 }) {
   const progresso = deal.total_assets > 0
     ? Math.round((deal.assets_aprovados / deal.total_assets) * 100)
     : deal.estrategia_completa ? 25 : 5;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick();
-        }
-      }}
+    <button
+      type="button"
+      onClick={onOpen}
       style={{
+        display: "block",
+        width: "100%",
+        textAlign: "left",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
         padding: 14,
         cursor: "pointer",
         transition: "border-color 0.15s, box-shadow 0.15s",
+        font: "inherit",
+        color: "inherit",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = columnColor + "50";
@@ -190,23 +186,6 @@ function DealCard({
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            title="Arrastar para mudar etapa"
-            draggable
-            onDragStart={(e) => {
-              e.stopPropagation();
-              onDragStart(deal.id);
-              e.dataTransfer.effectAllowed = "move";
-              e.dataTransfer.setData("text/plain", deal.id);
-            }}
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              display: "inline-flex", cursor: "grab", padding: 4, borderRadius: 4,
-              touchAction: "none",
-            }}
-          >
-            <GripVertical size={12} color="#3A3A5C" />
-          </span>
           <PlanoBadge plano={deal.plano} />
         </div>
         <span style={{ fontSize: 10, color: "#3A3A5C" }}>{deal.tipo}</span>
@@ -280,20 +259,17 @@ function DealCard({
               <Clock size={10} /> {deal.dias_na_fase}d
             </span>
           )}
-          <button
-            type="button"
+          <span
             style={{
               display: "flex", alignItems: "center", gap: 2, color: columnColor,
-              fontSize: 10, fontWeight: 700, background: "none", border: "none",
-              cursor: "pointer", padding: 0,
+              fontSize: 10, fontWeight: 700,
             }}
-            onClick={(e) => { e.stopPropagation(); onClick(); }}
           >
-            Detalhes <ChevronRight size={10} />
-          </button>
+            Abrir detalhes <ChevronRight size={10} />
+          </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -313,12 +289,11 @@ export default function NegociosKanban({
   const [draggingLeadId, setDraggingLeadId] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<PipelineColumnId | null>(null);
   const [dbOffline, setDbOffline] = useState(false);
+  const router = useRouter();
 
-  const [selectedDealId, setSelectedDealId] = useState<string | null>(null);
-  const selectedDeal = useMemo(
-    () => deals.find((d) => d.id === selectedDealId) ?? null,
-    [deals, selectedDealId]
-  );
+  const openDeal = (id: string) => {
+    router.push(`/negocios/${id}`);
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -755,8 +730,7 @@ export default function NegociosKanban({
                         key={deal.id}
                         deal={deal}
                         columnColor={col.color}
-                        onDragStart={setDraggingDealId}
-                        onClick={() => setSelectedDealId(deal.id)}
+                        onOpen={() => openDeal(deal.id)}
                       />
                     ))
                   )}
@@ -814,11 +788,11 @@ export default function NegociosKanban({
                 key={deal.id}
                 role="button"
                 tabIndex={0}
-                onClick={() => setSelectedDealId(deal.id)}
+                onClick={() => openDeal(deal.id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    setSelectedDealId(deal.id);
+                    openDeal(deal.id);
                   }
                 }}
                 style={{
@@ -851,16 +825,6 @@ export default function NegociosKanban({
             );
           })}
         </div>
-      )}
-
-      {selectedDeal && (
-        <DealDetailDrawer
-          deal={selectedDeal}
-          onClose={() => setSelectedDealId(null)}
-          onDealChange={(updated) => {
-            setDeals((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
-          }}
-        />
       )}
     </div>
   );

@@ -124,15 +124,17 @@ export default function DealDetailDrawer({
   deal,
   onClose,
   onDealChange,
+  variant = "drawer",
 }: {
   deal: Empreendimento;
   onClose: () => void;
   onDealChange: (updated: Empreendimento) => void;
+  variant?: "drawer" | "page";
 }) {
+  const isPage = variant === "page";
   const faseInfo = OS_FASES.find((f) => f.num === deal.fase_atual);
   const colColor = faseInfo?.cor ?? "#FF0068";
 
-  const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<DrawerTab>("resumo");
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -146,8 +148,6 @@ export default function DealDetailDrawer({
   const [proximaAcao, setProximaAcao] = useState(deal.proxima_acao ?? "");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   const [savingFase, setSavingFase] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     setProximaAcao(deal.proxima_acao ?? "");
@@ -451,31 +451,29 @@ export default function DealDetailDrawer({
   );
   const noteActivities = activities.filter((a) => a.tipo === "NOTA");
 
-  if (!mounted) return null;
-
-  const drawer = (
-    <>
+  const panel = (
       <div
-        onClick={onClose}
-        style={{
-          position: "fixed", inset: 0,
-          backgroundColor: "rgba(4, 4, 8, 0.75)", backdropFilter: "blur(6px)",
-          zIndex: 99980,
-        }}
-      />
-
-      <div
-        role="dialog"
-        aria-modal="true"
+        role={isPage ? "region" : "dialog"}
+        aria-modal={isPage ? undefined : true}
         aria-label={`Detalhes de ${deal.nome}`}
-        style={{
+        style={isPage ? {
+          width: "100%",
+          maxWidth: 920,
+          margin: "0 auto",
+          backgroundColor: "#0B0B16",
+          border: `1px solid ${colColor}40`,
+          borderRadius: 16,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "70vh",
+        } : {
           position: "fixed", top: 0, right: 0, bottom: 0, width: "min(540px, 100vw)",
           backgroundColor: "#0B0B16", borderLeft: `2.5px solid ${colColor}`,
           zIndex: 99981, boxShadow: "-10px 0 40px rgba(0,0,0,0.6)",
           display: "flex", flexDirection: "column",
           animation: "dealDrawerIn 0.22s ease-out",
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={isPage ? undefined : (e) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{
@@ -502,17 +500,17 @@ export default function DealDetailDrawer({
               <Building2 size={13} /> {deal.construtora}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{
-              background: "#1A1A30", border: "none", borderRadius: 8, width: 32, height: 32,
-              display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
-              color: "#7878A0", flexShrink: 0,
-            }}
-          >
-            <X size={16} />
-          </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  style={{
+                    background: "#1A1A30", border: "none", borderRadius: 8, width: 32, height: 32,
+                    display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+                    color: "#7878A0", flexShrink: 0,
+                  }}
+                >
+                  <X size={16} />
+                </button>
         </div>
 
         {/* Tabs */}
@@ -935,6 +933,18 @@ export default function DealDetailDrawer({
           padding: "16px 24px", borderTop: "1px solid #1A1A30",
           display: "flex", gap: 10,
         }}>
+          {!isPage && (
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                padding: "12px 16px", borderRadius: 8, background: "#1A1A30",
+                border: "none", color: "#EEEEFF", fontSize: 13, fontWeight: 700, cursor: "pointer",
+              }}
+            >
+              Fechar
+            </button>
+          )}
           <Link
             href={`/tagmob-os/${deal.id}`}
             style={{
@@ -947,15 +957,47 @@ export default function DealDetailDrawer({
           </Link>
         </div>
       </div>
+  );
 
+  if (isPage) {
+    return (
+      <div style={{ padding: "28px 36px", minHeight: "100%", background: "#09090F" }}>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 16,
+            background: "none", border: "none", color: "#7878A0", fontSize: 13,
+            fontWeight: 700, cursor: "pointer", padding: 0,
+          }}
+        >
+          ← Voltar para Negócios
+        </button>
+        {panel}
+      </div>
+    );
+  }
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <>
+      <div
+        onClick={onClose}
+        style={{
+          position: "fixed", inset: 0,
+          backgroundColor: "rgba(4, 4, 8, 0.75)", backdropFilter: "blur(6px)",
+          zIndex: 99980,
+        }}
+      />
+      {panel}
       <style>{`
         @keyframes dealDrawerIn {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
       `}</style>
-    </>
+    </>,
+    document.body
   );
-
-  return createPortal(drawer, document.body);
 }

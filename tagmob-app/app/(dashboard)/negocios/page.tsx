@@ -10,9 +10,7 @@ import {
 } from "lucide-react";
 import { ModelComparison } from "@/components/billing/ModelComparison";
 import NegociosKanban from "@/components/pipeline/NegociosKanban";
-import DealDetailDrawer from "@/components/pipeline/DealDetailDrawer";
-import type { Empreendimento } from "@/lib/types";
-import { MOCK_EMPREENDIMENTOS } from "@/lib/mock-data";
+import { useRouter } from "next/navigation";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const EMPREENDIMENTOS = [
@@ -265,45 +263,12 @@ function EmpreendimentoCard({ emp, onSelect }: { emp: typeof EMPREENDIMENTOS[0];
 }
 
 // ─── Página principal ─────────────────────────────────────────────────────────
-function toDeal(emp: typeof EMPREENDIMENTOS[0]): Empreendimento {
-  const fromMock = MOCK_EMPREENDIMENTOS.find((d) => d.id === emp.id);
-  if (fromMock) return fromMock;
-  return {
-    id: emp.id,
-    nome: emp.nome,
-    tipo: emp.tipo as Empreendimento["tipo"],
-    construtora: emp.nome,
-    bairro: emp.bairro,
-    cidade: emp.cidade,
-    fase_atual: 1,
-    status: emp.status === "EM_ANDAMENTO" ? "EM_ANDAMENTO" : "PAUSADO",
-    plano: emp.plano as Empreendimento["plano"],
-    assinatura_ativa: emp.etapa1Paga,
-    cor_tema: emp.cor,
-    thumbnail_url: "",
-    criado_em: new Date().toISOString(),
-    estrategia_completa: emp.etapa1Paga,
-    criacao_completa: false,
-    total_assets: emp.totalPecas,
-    assets_aprovados: emp.pecasConcluidas,
-    assets_pendentes: emp.pecasAprovacao,
-    valor_contrato: emp.orcamentoTotal,
-    responsavel: "Você",
-    proxima_acao: emp.etapa1Paga ? "Acompanhar esteira de produção" : "Concluir setup Etapa 1",
-    dias_na_fase: 0,
-  };
-}
-
 export default function NegociosHub() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("kanban");
-  const [selectedEmp, setSelectedEmp] = useState<string | null>(null);
-  const [drawerDeal, setDrawerDeal] = useState<Empreendimento | null>(null);
 
   const openEmpDetail = (id: string) => {
-    const emp = EMPREENDIMENTOS.find((e) => e.id === id);
-    if (!emp) return;
-    setSelectedEmp(id);
-    setDrawerDeal(toDeal(emp));
+    router.push(`/negocios/${id}`);
   };
 
   const totalOrc = EMPREENDIMENTOS.reduce((s, e) => s + e.orcamentoTotal, 0);
@@ -607,17 +572,6 @@ export default function NegociosHub() {
           </div>
         )}
       </div>
-
-      {drawerDeal && (
-        <DealDetailDrawer
-          deal={drawerDeal}
-          onClose={() => {
-            setDrawerDeal(null);
-            setSelectedEmp(null);
-          }}
-          onDealChange={setDrawerDeal}
-        />
-      )}
     </div>
   );
 }

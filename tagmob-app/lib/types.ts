@@ -266,3 +266,43 @@ export interface HubMetrica {
   specs_mes: number;
   empreendimentos_ativos: number;
 }
+
+export type CategoriaProfissional =
+  | "ARQUITETO"
+  | "DESIGNER_INTERIORES"
+  | "MARCENEIRO"
+  | "EMPRESA_REFORMA"
+  | "CORRETOR"
+  | "ENGENHEIRO";
+
+export type StatusHub = "PENDENTE" | "APROVADO" | "BLOQUEADO";
+
+export interface ProfissionalPerfil {
+  id: string;
+  usuarioId: string;
+  nomeRazao: string;
+  cnpjCpf: string;
+  categoria: CategoriaProfissional;
+  registroPro?: string; // CAU, CREA, CRECI
+  regiaoAtuacao: string;
+  portfolioUrl?: string;
+  marcasInsumos?: string[];
+  statusAprovacao: StatusHub;
+  createdAt: string;
+}
+
+export interface ProClienteConexao {
+  id: string;
+  profissionalId: string;
+  profissionalNome?: string;
+  profissionalCategoria?: CategoriaProfissional;
+  empreendimentoId?: string;
+  empreendimentoNome?: string;
+  clienteId: string;
+  clienteNome?: string;
+  regiao: string;
+  statusMatch: "Proposta Enviada" | "Em Negociação" | "Contratado";
+  valorEstimado?: number;
+  dataConexao: string;
+}
+

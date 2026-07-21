@@ -402,6 +402,7 @@ model Empreendimento {
   projetosEntregaveis ProjetoEntregavel[]
   orcamentos          OrcamentoContratado[]
   crmActivities       CrmActivity[]
+  proClienteConexoes  ProClienteConexao[]
 }
 
 model EstrategiaOS {
@@ -801,3 +802,54 @@ model CrmTimelineEvent {
   @@index([leadId, createdAt])
   @@index([companyId, createdAt])
 }
+
+// ==========================================
+// MÓDULO HUB DE PROFISSIONAIS (MATCHMAKING & FORNECEDORES)
+// ==========================================
+
+enum CategoriaProfissional {
+  ARQUITETO
+  DESIGNER_INTERIORES
+  MARCENEIRO
+  EMPRESA_REFORMA
+  CORRETOR
+  ENGENHEIRO
+}
+
+enum StatusHub {
+  PENDENTE
+  APROVADO
+  BLOQUEADO
+}
+
+model ProfissionalPerfil {
+  id              String                @id @default(uuid())
+  usuarioId       String                @unique
+  nomeRazao       String?
+  cnpjCpf         String?
+  categoria       CategoriaProfissional
+  registroPro     String?               // CAU, CREA, CRECI
+  regiaoAtuacao   String
+  portfolioUrl    String?
+  marcasInsumos   String[]              @default([]) // Lista de marcas de insumos com que trabalha
+  statusAprovacao StatusHub             @default(PENDENTE)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  // Relacionamentos e conexões de negócios
+  conexoesClientes ProClienteConexao[]
+}
+
+model ProClienteConexao {
+  id               String             @id @default(uuid())
+  profissionalId   String
+  empreendimentoId String?
+  clienteId        String             // ID da incorporadora ou do comprador final
+  statusMatch      String             // Proposta Enviada, Em Negociação, Contratado
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  profissional     ProfissionalPerfil @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+  empreendimento   Empreendimento?    @relation(fields: [empreendimentoId], references: [id], onDelete: SetNull)
+}
+

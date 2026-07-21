@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./tagmob-app/*"]
+    },
+    "typeRoots": [
+      "./tagmob-app/node_modules/@types"
+    ]
+  },
+  "include": [
+    "tagmob-app/**/*.ts",
+    "tagmob-app/**/*.tsx",
+    "tagmob-app/.next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "tagmob-app/node_modules"]
+}

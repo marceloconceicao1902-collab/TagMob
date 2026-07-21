@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Building2, CheckCircle2, DollarSign, Package, Sparkles,
   ArrowRight, ShieldCheck, Clock, Plus, Check, Send, Phone, Mail,
-  ChevronRight, Lock
+  ChevronRight, Lock, X
 } from "lucide-react";
 import { MOCK_EMPREENDIMENTOS, MOCK_LEADS } from "@/lib/mock-data";
 import { formatBRL } from "@/lib/pipeline-kanban";

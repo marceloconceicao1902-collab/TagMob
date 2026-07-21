@@ -541,7 +541,7 @@ export default function LandingPage() {
                 titulo: "Portal do Arquiteto",
                 desc: "Arquitetos especificam produtos reais do catálogo integrado. A marca recebe lead qualificado com projeto e empreendimento.",
                 items: ["Catálogo com produtos reais", "Especificação técnica por ambiente", "Lead enviado à marca automaticamente", "Comissão sobre especificação"],
-                link: `/arquiteto`, cta: "Portal do arquiteto →",
+                link: `/profissionais`, cta: "Portal de profissionais →",
               },
             ].map((f) => (
               <div key={f.titulo} style={{ background: "#111120", border: `1px solid ${f.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column", paddingBottom: 22 }}>
@@ -987,7 +987,7 @@ export default function LandingPage() {
                 recursos: ["Workspace completo por campanha", "Aprovação digital de todos os ativos", "Visão completa do pipeline"],
               },
               {
-                camada: "C4", titulo: "Arquitetos",      cor: "#8B5CF6", icon: Palette,   href: `/arquiteto`,
+                camada: "C4", titulo: "Profissionais",      cor: "#8B5CF6", icon: Palette,   href: `/profissionais`,
                 desc: "Especificam produtos reais no catálogo. Cada especificação gera um lead qualificado para a marca.",
                 recursos: ["Catálogo técnico de marcas", "Especificação por ambiente", "Comissão sobre leads gerados"],
               },

@@ -15,7 +15,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./tagmob-app/*"]
+      "@/*": ["./tagmob-app/*"],
+      "*": ["./tagmob-app/node_modules/*"]
     },
     "typeRoots": [
       "./tagmob-app/node_modules/@types"

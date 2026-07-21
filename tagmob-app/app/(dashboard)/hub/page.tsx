@@ -138,10 +138,10 @@ export default function HubPage() {
     },
     {
       camada: "Camada 4 — Os Especificadores",
-      titulo: "Arquitetos & Designers",
+      titulo: "Profissionais",
       subtitulo: "Especificadores técnicos e multiplicadores",
       cor: "#8B5CF6",
-      href: "/arquiteto",
+      href: "/profissionais",
       icon: Palette,
       papel: "Absorvem o conceito criativo do empreendimento e montam projetos de ambientes decorados, especificando produtos reais das marcas parceiras integradas ao catálogo.",
       consome: "Conceito criativo, plantas, assets e catálogo de marcas",

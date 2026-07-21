@@ -236,11 +236,11 @@ export default function ArquitetoPage() {
                   transition: "all 0.15s ease",
                   outline: "none",
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.currentTarget.style.backgroundColor = acao.color + "15";
                   e.currentTarget.style.borderColor = acao.color;
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.currentTarget.style.backgroundColor = "#111120";
                   e.currentTarget.style.borderColor = acao.color + "30";
                 }}

@@ -493,7 +493,7 @@ export default function LandingPage() {
                 titulo: "Portal de Criação",
                 desc: "Profissionais de Criação especificam produtos reais do catálogo integrado. Cada especificação gera valor e conectividade imediata.",
                 items: ["Catálogo com marcas qualificadas", "Especificação direta em ambientes", "Links diretos de compra integrados", "Autonomia de escolha criativa"],
-                link: `/arquiteto`, cta: "Portal de criação →",
+                link: `/profissionais`, cta: "Portal de criação →",
               },
             ].map((f) => (
               <div key={f.titulo} style={{ background: "#111120", border: `1px solid ${f.cor}18`, borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column", paddingBottom: 22 }}>
@@ -598,7 +598,7 @@ export default function LandingPage() {
                 recursos: ["Workspace completo por campanha", "Aprovação digital de todos os ativos", "Visão completa do pipeline de vendas"],
               },
               {
-                camada: "C2", titulo: "Profissionais de Criação", cor: "#8B5CF6", icon: Palette, href: `/arquiteto`,
+                camada: "C2", titulo: "Profissionais de Criação", cor: "#8B5CF6", icon: Palette, href: `/profissionais`,
                 desc: "Especificam produtos reais no catálogo digital de marcas. Cada especificação gera conexão qualificada.",
                 recursos: ["Catálogo técnico de marcas reais", "Especificação autoral por ambiente", "Autonomia na curadoria do projeto"],
               },

@@ -20,7 +20,7 @@ const NAV: NavItem[] = [
   { label: "Página Inicial",    href: "/hub",               icon: Home,            color: "#00E5FF" },
   { label: "Negócios",          href: "/negocios",          icon: Building2,       color: "#FF0068" },
   { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068" },
-  { label: "Profissionais",     href: "/arquiteto",         icon: Palette,         color: "#8B5CF6" },
+  { label: "Profissionais",     href: "/profissionais",         icon: Palette,         color: "#8B5CF6" },
   { label: "Visão Geral",       href: "/resumo",            icon: LayoutDashboard, color: "#FFB800" },
 ];
 
@@ -47,7 +47,7 @@ export default function Sidebar() {
     if (href === "/hub")       return pathname === "/hub";
     if (href === "/resumo")    return pathname === "/resumo";
     if (href === "/catalogo")  return pathname === "/catalogo"  || pathname.startsWith("/catalogo");
-    if (href === "/arquiteto") return pathname === "/arquiteto" || pathname.startsWith("/arquiteto");
+    if (href === "/profissionais") return pathname === "/profissionais" || pathname.startsWith("/profissionais");
     if (href === "/negocios") {
       return pathname === "/negocios" || pathname.startsWith("/negocios/")
         || pathname.startsWith("/construtora")

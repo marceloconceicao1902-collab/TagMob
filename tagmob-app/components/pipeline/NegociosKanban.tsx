@@ -5,7 +5,8 @@ import Link from "next/link";
 import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
   User, Clock, ChevronRight, DollarSign, TrendingUp,
-  AlertCircle, Inbox, Mail, Phone, Star,
+  AlertCircle, Inbox, Mail, Phone, Star, Eye, X, Check,
+  ExternalLink, RotateCcw,
 } from "lucide-react";
 import type { Empreendimento, OSFase } from "@/lib/types";
 import { MOCK_EMPREENDIMENTOS, MOCK_LEADS } from "@/lib/mock-data";
@@ -13,8 +14,6 @@ import { LEAD_STATUS_LABELS, type LeadDTO } from "@/lib/crm";
 import {
   buildPipelineColumns,
   calcPipelineMetrics,
-  filterDeals,
-  filterLeads,
   formatBRL,
   type PipelineColumnId,
 } from "@/lib/pipeline-kanban";
@@ -34,7 +33,7 @@ function PlanoBadge({ plano }: { plano: Empreendimento["plano"] }) {
     <span style={{
       fontSize: 9, fontWeight: 800, color, backgroundColor: color + "18",
       border: `1px solid ${color}30`, padding: "2px 6px", borderRadius: 4,
-      letterSpacing: "0.05em",
+      letterSpacing: "0.05em", whiteSpace: "nowrap", flexShrink: 0,
     }}>
       {plano}
     </span>
@@ -55,113 +54,124 @@ function LeadCard({
   const statusColor = LEAD_STATUS_COLORS[lead.status] ?? columnColor;
 
   return (
-    <Link
-      href={`/negocios/lead/${encodeURIComponent(lead.id)}`}
-      prefetch={false}
+    <div
       style={{
-        display: "block",
+        display: "flex",
+        flexDirection: "column",
+        justify: "space-between",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
         padding: 14,
-        cursor: "pointer",
-        textDecoration: "none",
-        color: "inherit",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        width: "100%",
+        gap: 8,
+        transition: "border-color 0.15s",
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = columnColor + "50";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "#1A1A30";
-      }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = columnColor + "60"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#1A1A30"; }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{
-            fontSize: 9, fontWeight: 800, color: statusColor,
-            backgroundColor: statusColor + "18", padding: "2px 6px", borderRadius: 4,
-          }}>
-            {LEAD_STATUS_LABELS[lead.status]}
-          </span>
-        </div>
-        {lead.prioridade === 1 && <Star size={12} color="#FFB800" fill="#FFB800" />}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
+        <span style={{
+          fontSize: 9, fontWeight: 800, color: statusColor,
+          backgroundColor: statusColor + "18", padding: "2px 6px", borderRadius: 4,
+          whiteSpace: "nowrap",
+        }}>
+          {LEAD_STATUS_LABELS[lead.status]}
+        </span>
+        {lead.prioridade === 1 && <Star size={12} color="#FFB800" fill="#FFB800" style={{ flexShrink: 0 }} />}
       </div>
 
-      <p style={{ fontSize: 14, fontWeight: 800, color: "#EEEEFF", marginBottom: 4 }}>{lead.nome}</p>
+      <div style={{ overflow: "hidden" }}>
+        <p style={{
+          fontSize: 14, fontWeight: 800, color: "#EEEEFF",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          lineHeight: 1.3, marginBottom: 2
+        }}>
+          {lead.nome}
+        </p>
 
-      {lead.empresa && (
-        <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}>
-          <Building2 size={11} color="#7878A0" />
-          <span style={{ fontSize: 11, color: "#7878A0" }}>{lead.empresa}</span>
-        </div>
-      )}
+        {lead.empresa && (
+          <div style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+            <Building2 size={11} color="#7878A0" style={{ flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: "#7878A0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {lead.empresa}
+            </span>
+          </div>
+        )}
+      </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 10 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#3A3A5C" }}>
-          <Mail size={10} /> {lead.email}
+      <div style={{ display: "flex", flexDirection: "column", gap: 3, overflow: "hidden" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#5A5A7A", overflow: "hidden" }}>
+          <Mail size={10} style={{ flexShrink: 0 }} />
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.email}</span>
         </span>
         {lead.telefone && (
-          <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#3A3A5C" }}>
-            <Phone size={10} /> {lead.telefone}
+          <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#5A5A7A", overflow: "hidden" }}>
+            <Phone size={10} style={{ flexShrink: 0 }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.telefone}</span>
           </span>
         )}
       </div>
 
       {lead.orcamentoEstimado != null && (
-        <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 10 }}>
-          <DollarSign size={12} color={columnColor} />
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <DollarSign size={12} color={columnColor} style={{ flexShrink: 0 }} />
           <span style={{ fontSize: 13, fontWeight: 800, color: columnColor }}>
             {formatBRL(Number(lead.orcamentoEstimado))}
           </span>
         </div>
       )}
 
-      <div
-        style={{ display: "flex", gap: 6, flexWrap: "wrap", borderTop: "1px solid #1A1A30", paddingTop: 10, alignItems: "center" }}
-        onClick={(e) => e.preventDefault()}
-      >
-        {lead.status === "NOVO" && (
+      {/* Visão do Cliente Link & Ações */}
+      <div style={{ borderTop: "1px solid #1A1A30", paddingTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+          {lead.status === "NOVO" && (
+            <button
+              type="button"
+              onClick={() => onUpdateStatus(lead.id, "EM_ATENDIMENTO")}
+              style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#FFB80020", border: "1px solid #FFB80040", color: "#FFB800", cursor: "pointer" }}
+            >
+              Atender
+            </button>
+          )}
+          {lead.status === "EM_ATENDIMENTO" && (
+            <button
+              type="button"
+              onClick={() => onUpdateStatus(lead.id, "QUALIFICADO")}
+              style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#8B5CF620", border: "1px solid #8B5CF640", color: "#8B5CF6", cursor: "pointer" }}
+            >
+              Qualificar
+            </button>
+          )}
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onUpdateStatus(lead.id, "EM_ATENDIMENTO");
-            }}
-            style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#FFB80020", border: "1px solid #FFB80040", color: "#FFB800", cursor: "pointer" }}
+            onClick={() => onConvert(lead)}
+            style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#39FF1420", border: "1px solid #39FF1440", color: "#39FF14", cursor: "pointer" }}
           >
-            Atender
+            Converter → OS
           </button>
-        )}
-        {lead.status === "EM_ATENDIMENTO" && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onUpdateStatus(lead.id, "QUALIFICADO");
-            }}
-            style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#8B5CF620", border: "1px solid #8B5CF640", color: "#8B5CF6", cursor: "pointer" }}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2 }}>
+          <Link
+            href={`/digital-room/${encodeURIComponent(lead.id)}`}
+            target="_blank"
+            style={{ fontSize: 10, fontWeight: 700, color: "#00E5FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 3 }}
           >
-            Qualificar
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onConvert(lead);
-          }}
-          style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#39FF1420", border: "1px solid #39FF1440", color: "#39FF14", cursor: "pointer" }}
-        >
-          Converter → OS
-        </button>
-        <span style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: columnColor, display: "flex", alignItems: "center", gap: 2 }}>
-          Abrir detalhes <ChevronRight size={10} />
-        </span>
+            <Eye size={10} /> Visão do Cliente
+          </Link>
+
+          <Link
+            href={`/negocios/lead/${encodeURIComponent(lead.id)}`}
+            style={{ fontSize: 10, fontWeight: 700, color: columnColor, textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}
+          >
+            Detalhes <ChevronRight size={10} />
+          </Link>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -177,25 +187,23 @@ function DealCard({
     : deal.estrategia_completa ? 25 : 5;
 
   return (
-    <Link
-      href={`/negocios/${encodeURIComponent(deal.id)}`}
-      prefetch={false}
+    <div
       style={{
-        display: "block",
-        width: "100%",
-        textAlign: "left",
+        display: "flex",
+        flexDirection: "column",
+        justify: "space-between",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
         padding: 14,
-        cursor: "pointer",
-        transition: "border-color 0.15s, box-shadow 0.15s",
-        textDecoration: "none",
-        color: "inherit",
         boxSizing: "border-box",
+        overflow: "hidden",
+        width: "100%",
+        gap: 8,
+        transition: "border-color 0.15s, box-shadow 0.15s",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = columnColor + "50";
+        e.currentTarget.style.borderColor = columnColor + "60";
         e.currentTarget.style.boxShadow = `0 4px 20px ${columnColor}10`;
       }}
       onMouseLeave={(e) => {
@@ -203,31 +211,35 @@ function DealCard({
         e.currentTarget.style.boxShadow = "none";
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <PlanoBadge plano={deal.plano} />
-        </div>
-        <span style={{ fontSize: 10, color: "#3A3A5C" }}>{deal.tipo}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
+        <PlanoBadge plano={deal.plano} />
+        <span style={{ fontSize: 10, color: "#5A5A7A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{deal.tipo}</span>
       </div>
 
-      <div style={{ marginBottom: 4 }}>
-        <p style={{ fontSize: 14, fontWeight: 800, color: "#EEEEFF", marginBottom: 4, letterSpacing: "-0.02em" }}>
+      <div style={{ overflow: "hidden" }}>
+        <p style={{
+          fontSize: 14, fontWeight: 800, color: "#EEEEFF",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          letterSpacing: "-0.02em", marginBottom: 2
+        }}>
           {deal.nome}
+        </p>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+          <Building2 size={11} color="#7878A0" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: 11, color: "#7878A0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {deal.construtora}
+          </span>
+        </div>
+
+        <p style={{ fontSize: 11, color: "#5A5A7A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 2 }}>
+          {deal.bairro}, {deal.cidade}
         </p>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 10 }}>
-        <Building2 size={11} color="#7878A0" />
-        <span style={{ fontSize: 11, color: "#7878A0" }}>{deal.construtora}</span>
-      </div>
-
-      <p style={{ fontSize: 11, color: "#3A3A5C", marginBottom: 10 }}>
-        {deal.bairro}, {deal.cidade}
-      </p>
-
       {deal.valor_contrato != null && (
-        <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 10 }}>
-          <DollarSign size={12} color={columnColor} />
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <DollarSign size={12} color={columnColor} style={{ flexShrink: 0 }} />
           <span style={{ fontSize: 13, fontWeight: 800, color: columnColor }}>
             {formatBRL(deal.valor_contrato)}
           </span>
@@ -235,7 +247,7 @@ function DealCard({
       )}
 
       {deal.total_assets > 0 && (
-        <div style={{ marginBottom: 10 }}>
+        <div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
             <span style={{ fontSize: 10, color: "#7878A0" }}>Assets aprovados</span>
             <span style={{ fontSize: 10, fontWeight: 700, color: "#EEEEFF" }}>{progresso}%</span>
@@ -249,46 +261,59 @@ function DealCard({
       {deal.proxima_acao && (
         <div style={{
           background: columnColor + "08", border: `1px solid ${columnColor}20`,
-          borderRadius: 6, padding: "6px 8px", marginBottom: 10,
+          borderRadius: 6, padding: "6px 8px", overflow: "hidden"
         }}>
-          <p style={{ fontSize: 10, color: "#7878A0", marginBottom: 2 }}>Próxima ação</p>
-          <p style={{ fontSize: 11, color: "#EEEEFF", fontWeight: 600, lineHeight: 1.3 }}>
+          <p style={{ fontSize: 9, color: "#7878A0", marginBottom: 2 }}>Próxima ação</p>
+          <p style={{ fontSize: 11, color: "#EEEEFF", fontWeight: 600, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {deal.proxima_acao}
           </p>
         </div>
       )}
 
+      {/* Visão do Cliente Link & Footer do Card */}
       <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        borderTop: "1px solid #1A1A30", paddingTop: 10,
+        borderTop: "1px solid #1A1A30", paddingTop: 8, display: "flex",
+        flexDirection: "column", gap: 6
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <div style={{
-            width: 22, height: 22, borderRadius: "50%", backgroundColor: columnColor + "20",
-            border: `1px solid ${columnColor}40`, display: "flex", alignItems: "center",
-            justifyContent: "center", fontSize: 9, fontWeight: 800, color: columnColor,
-          }}>
-            {deal.responsavel?.[0] ?? "?"}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+            <div style={{
+              width: 20, height: 20, borderRadius: "50%", backgroundColor: columnColor + "20",
+              border: `1px solid ${columnColor}40`, display: "flex", alignItems: "center",
+              justifyContent: "center", fontSize: 9, fontWeight: 800, color: columnColor, flexShrink: 0
+            }}>
+              {deal.responsavel?.[0] ?? "?"}
+            </div>
+            <span style={{ fontSize: 10, color: "#7878A0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {deal.responsavel ?? "—"}
+            </span>
           </div>
-          <span style={{ fontSize: 10, color: "#7878A0" }}>{deal.responsavel ?? "—"}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+
           {deal.dias_na_fase != null && (
-            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, color: "#3A3A5C" }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, color: "#5A5A7A", flexShrink: 0 }}>
               <Clock size={10} /> {deal.dias_na_fase}d
             </span>
           )}
-          <span
-            style={{
-              display: "flex", alignItems: "center", gap: 2, color: columnColor,
-              fontSize: 10, fontWeight: 700,
-            }}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2 }}>
+          <Link
+            href={`/digital-room/${encodeURIComponent(deal.id)}`}
+            target="_blank"
+            style={{ fontSize: 10, fontWeight: 700, color: "#00E5FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 3 }}
           >
-            Abrir detalhes <ChevronRight size={10} />
-          </span>
+            <Eye size={10} /> Visão do Cliente
+          </Link>
+
+          <Link
+            href={`/negocios/${encodeURIComponent(deal.id)}`}
+            style={{ fontSize: 10, fontWeight: 700, color: columnColor, textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}
+          >
+            Detalhes <ChevronRight size={10} />
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -304,6 +329,12 @@ export default function NegociosKanban({
   const [loading, setLoading] = useState(initialDeals.length === 0);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("kanban");
+
+  // Filtros Avançados
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [filterPlano, setFilterPlano] = useState<string>("TODOS");
+  const [filterStatusLead, setFilterStatusLead] = useState<string>("TODOS");
+
   const [draggingDealId, setDraggingDealId] = useState<string | null>(null);
   const [draggingLeadId, setDraggingLeadId] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<PipelineColumnId | null>(null);
@@ -368,16 +399,55 @@ export default function NegociosKanban({
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const filteredDeals = useMemo(() => filterDeals(deals, search), [deals, search]);
-  const filteredLeads = useMemo(() => filterLeads(leads, search), [leads, search]);
+  // Filtros aplicados em tempo real
+  const filteredDeals = useMemo(() => {
+    let result = deals;
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      result = result.filter((d) =>
+        d.nome.toLowerCase().includes(q) ||
+        d.construtora.toLowerCase().includes(q) ||
+        d.bairro.toLowerCase().includes(q) ||
+        d.responsavel?.toLowerCase().includes(q)
+      );
+    }
+    if (filterPlano !== "TODOS") {
+      result = result.filter((d) => d.plano === filterPlano);
+    }
+    return result;
+  }, [deals, search, filterPlano]);
+
+  const filteredLeads = useMemo(() => {
+    let result = leads;
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      result = result.filter((l) =>
+        l.nome.toLowerCase().includes(q) ||
+        l.email.toLowerCase().includes(q) ||
+        (l.empresa?.toLowerCase().includes(q) ?? false)
+      );
+    }
+    if (filterStatusLead !== "TODOS") {
+      result = result.filter((l) => l.status === filterStatusLead);
+    }
+    return result;
+  }, [leads, search, filterStatusLead]);
+
   const columns = useMemo(() => buildPipelineColumns(filteredDeals, filteredLeads), [filteredDeals, filteredLeads]);
   const metrics = useMemo(() => calcPipelineMetrics(filteredDeals, filteredLeads), [filteredDeals, filteredLeads]);
+
+  const activeFiltersCount = (filterPlano !== "TODOS" ? 1 : 0) + (filterStatusLead !== "TODOS" ? 1 : 0) + (search ? 1 : 0);
+
+  const resetFilters = () => {
+    setSearch("");
+    setFilterPlano("TODOS");
+    setFilterStatusLead("TODOS");
+  };
 
   async function updateLeadStatus(id: string, status: string) {
     const prev = leads;
     setLeads((l) => l.map((lead) => (lead.id === id ? { ...lead, status } : lead)));
 
-    // Se for lead local, atualiza no localStorage
     if (id.startsWith("LEAD-LOCAL-")) {
       if (typeof window !== "undefined") {
         try {
@@ -407,8 +477,6 @@ export default function NegociosKanban({
 
   async function convertLead(lead: LeadDTO) {
     const nome = lead.empresa ? `${lead.empresa} — Novo OS` : `Projeto ${lead.nome}`;
-    
-    // Se for lead local ou se a API falhar
     const isLocal = lead.id.startsWith("LEAD-LOCAL-");
 
     if (!isLocal) {
@@ -426,10 +494,9 @@ export default function NegociosKanban({
           await loadData();
           return;
         }
-      } catch { /* demo fallback */ }
+      } catch { /* fallback */ }
     }
 
-    // Fallback: Remove lead e cria deal local no localStorage
     if (typeof window !== "undefined") {
       try {
         const localL = JSON.parse(localStorage.getItem("tagmob_local_leads") || "[]");
@@ -487,7 +554,6 @@ export default function NegociosKanban({
       d.map((deal) => (deal.id === draggingDealId ? { ...deal, fase_atual: fase, dias_na_fase: 0 } : deal))
     );
 
-    // Se for deal local, atualiza no localStorage
     if (draggingDealId.startsWith("emp-local-")) {
       if (typeof window !== "undefined") {
         try {
@@ -562,7 +628,7 @@ export default function NegociosKanban({
       )}
 
       {/* Toolbar */}
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: embedded ? 20 : 28 }}>
+      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: 16 }}>
         <div style={{ position: "relative" }}>
           <Search size={14} color="#7878A0" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
           <input
@@ -577,13 +643,30 @@ export default function NegociosKanban({
             }}
           />
         </div>
-        <button style={{
-          display: "flex", alignItems: "center", gap: 6, background: "#111120",
-          border: "1px solid #1A1A30", borderRadius: 8, padding: "8px 12px",
-          color: "#7878A0", fontSize: 13, cursor: "pointer",
-        }}>
-          <Filter size={14} /> Filtrar
+
+        <button
+          onClick={() => setShowFilterPanel(!showFilterPanel)}
+          style={{
+            display: "flex", alignItems: "center", gap: 6, background: showFilterPanel ? "#FF006820" : "#111120",
+            border: `1px solid ${showFilterPanel ? "#FF0068" : "#1A1A30"}`, borderRadius: 8, padding: "8px 12px",
+            color: showFilterPanel ? "#FF0068" : "#7878A0", fontSize: 13, cursor: "pointer", fontWeight: 700,
+          }}
+        >
+          <Filter size={14} /> Filtrar {activeFiltersCount > 0 && `(${activeFiltersCount})`}
         </button>
+
+        {activeFiltersCount > 0 && (
+          <button
+            onClick={resetFilters}
+            style={{
+              display: "flex", alignItems: "center", gap: 4, background: "none",
+              border: "none", color: "#FF0068", fontSize: 12, fontWeight: 700, cursor: "pointer"
+            }}
+          >
+            <RotateCcw size={12} /> Limpar
+          </button>
+        )}
+
         <div style={{ display: "flex", background: "#111120", border: "1px solid #1A1A30", borderRadius: 8, overflow: "hidden" }}>
           {(["kanban", "lista"] as ViewMode[]).map((v) => (
             <button
@@ -601,6 +684,7 @@ export default function NegociosKanban({
             </button>
           ))}
         </div>
+
         <Link
           href="/onboarding"
           style={{
@@ -613,6 +697,42 @@ export default function NegociosKanban({
         </Link>
       </div>
 
+      {/* Painel de Filtros Expansível */}
+      {showFilterPanel && (
+        <div style={{
+          background: "#111120", border: "1px solid #1A1A30", borderRadius: 12,
+          padding: 16, marginBottom: 20, display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap"
+        }}>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#7878A0", display: "block", marginBottom: 6 }}>Plano do Negócio</label>
+            <select
+              value={filterPlano}
+              onChange={(e) => setFilterPlano(e.target.value)}
+              style={{ background: "#09090F", border: "1px solid #1A1A30", color: "#EEEEFF", borderRadius: 6, padding: "6px 12px", fontSize: 12, outline: "none" }}
+            >
+              <option value="TODOS">Todos os Planos</option>
+              <option value="STARTER">STARTER</option>
+              <option value="PRO">PRO</option>
+              <option value="ENTERPRISE">ENTERPRISE</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#7878A0", display: "block", marginBottom: 6 }}>Status do Lead</label>
+            <select
+              value={filterStatusLead}
+              onChange={(e) => setFilterStatusLead(e.target.value)}
+              style={{ background: "#09090F", border: "1px solid #1A1A30", color: "#EEEEFF", borderRadius: 6, padding: "6px 12px", fontSize: 12, outline: "none" }}
+            >
+              <option value="TODOS">Todos os Status</option>
+              <option value="NOVO">NOVO</option>
+              <option value="EM_ATENDIMENTO">EM ATENDIMENTO</option>
+              <option value="QUALIFICADO">QUALIFICADO</option>
+            </select>
+          </div>
+        </div>
+      )}
+
       {dbOffline && (
         <div style={{
           background: "rgba(255,184,0,0.08)", border: "1px solid rgba(255,184,0,0.3)",
@@ -622,6 +742,7 @@ export default function NegociosKanban({
         </div>
       )}
 
+      {/* KPI Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 28 }}>
         {[
           { label: "Leads Ativos", value: metrics.leadsAtivos, color: "#FFB800", icon: Inbox },
@@ -648,15 +769,19 @@ export default function NegociosKanban({
       {view === "kanban" ? (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(6, minmax(200px, 1fr))",
+          gridTemplateColumns: "repeat(6, minmax(230px, 1fr))",
           gap: 14,
           overflowX: "auto",
           paddingBottom: 16,
         }}>
           {columns.map((col) => {
-            const colValor = col.deals.reduce((s, d) => s + (d.valor_contrato ?? 0), 0);
-            const isDropTarget = dropTarget === col.id;
             const isLeadColumn = col.id === "leads";
+            const totalItemsCount = isLeadColumn ? col.leads.length : col.deals.length;
+            const colValorTotal = isLeadColumn
+              ? col.leads.reduce((s, l) => s + Number(l.orcamentoEstimado ?? 0), 0)
+              : col.deals.reduce((s, d) => s + (d.valor_contrato ?? 0), 0);
+            
+            const isDropTarget = dropTarget === col.id;
 
             return (
               <div
@@ -665,61 +790,60 @@ export default function NegociosKanban({
                 onDragLeave={() => setDropTarget(null)}
                 onDrop={() => handleDrop(col.id)}
                 style={{
-                  display: "flex", flexDirection: "column", gap: 10, minWidth: 200,
-                  background: isDropTarget ? col.color + "08" : "transparent",
-                  borderRadius: 12,
+                  display: "flex", flexDirection: "column", gap: 8, minWidth: 230,
+                  background: isDropTarget ? col.color + "08" : "#0D0D1A",
+                  borderRadius: 14, padding: 10, border: "1px solid #1A1A30",
                   outline: isDropTarget ? `2px dashed ${col.color}50` : "none",
                   transition: "background 0.15s",
                 }}
               >
+                {/* Cabeçalho da Etapa */}
                 <div style={{ paddingBottom: 8, borderBottom: `2.5px solid ${col.color}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {isLeadColumn ? (
                         <Inbox size={12} color={col.color} />
                       ) : (
                         <span style={{
                           fontSize: 10, fontWeight: 900, color: col.color,
-                          backgroundColor: col.color + "18", padding: "1px 6px", borderRadius: 4,
+                          backgroundColor: col.color + "18", padding: "1px 5px", borderRadius: 4,
                         }}>
                           {String(col.id).padStart(2, "0")}
                         </span>
                       )}
-                      <span style={{ fontSize: 12, fontWeight: 800, color: "#EEEEFF" }}>{col.title}</span>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: "#EEEEFF" }}>{col.title}</span>
                     </div>
                     <span style={{
-                      fontSize: 11, fontWeight: 700, color: "#7878A0",
-                      backgroundColor: "#111120", padding: "1px 7px", borderRadius: 10,
+                      fontSize: 11, fontWeight: 800, color: col.color,
+                      backgroundColor: col.color + "15", padding: "1px 7px", borderRadius: 10,
                     }}>
-                      {isLeadColumn ? col.leads.length : col.deals.length}
+                      {totalItemsCount}
                     </span>
                   </div>
-                  <p style={{ fontSize: 10, color: "#3A3A5C", lineHeight: 1.3, marginBottom: 4 }}>
+                  <p style={{ fontSize: 10, color: "#5A5A7A", lineHeight: 1.3, marginBottom: 4, height: 26, overflow: "hidden" }}>
                     {col.subtitle}
                   </p>
-                  {colValor > 0 && (
-                    <p style={{ fontSize: 11, fontWeight: 700, color: col.color }}>
-                      {formatBRL(colValor)}
-                    </p>
-                  )}
-                  {isLeadColumn && draggingLeadId && (
-                    <p style={{ fontSize: 10, color: col.color, marginTop: 4 }}>
-                      Arraste para Estratégia para converter
+                  {colValorTotal > 0 && (
+                    <p style={{ fontSize: 11, fontWeight: 800, color: col.color }}>
+                      {formatBRL(colValorTotal)}
                     </p>
                   )}
                 </div>
 
-                <div style={{
-                  display: "flex", flexDirection: "column", gap: 10,
-                  minHeight: "50vh", background: "rgba(17,17,32,0.2)",
-                  borderRadius: 12, padding: 8,
-                  border: "1px dashed rgba(26,26,48,0.5)",
-                }}>
+                {/* Lista de Cards com Rolagem Individual (Max 3 visíveis / ~560px max height) */}
+                <div
+                  className="tagmob-kanban-scroll"
+                  style={{
+                    display: "flex", flexDirection: "column", gap: 10,
+                    maxHeight: "560px", overflowY: "auto", paddingRight: 4,
+                    minHeight: "180px",
+                  }}
+                >
                   {isLeadColumn ? (
                     col.leads.length === 0 ? (
                       <div style={{ padding: "40px 16px", textAlign: "center" }}>
-                        <p style={{ fontSize: 11, color: "#3A3A5C" }}>Nenhum lead</p>
-                        <p style={{ fontSize: 10, color: "#2E2E4A" }}>Leads da landing aparecem aqui</p>
+                        <p style={{ fontSize: 11, color: "#5A5A7A" }}>Nenhum lead</p>
+                        <p style={{ fontSize: 10, color: "#3A3A5C" }}>Leads da landing aparecem aqui</p>
                       </div>
                     ) : (
                       col.leads.map((lead) => (
@@ -734,8 +858,8 @@ export default function NegociosKanban({
                     )
                   ) : col.deals.length === 0 ? (
                     <div style={{ padding: "40px 16px", textAlign: "center" }}>
-                      <p style={{ fontSize: 11, color: "#3A3A5C", marginBottom: 4 }}>Nenhum negócio</p>
-                      <p style={{ fontSize: 10, color: "#2E2E4A" }}>Arraste um card para cá</p>
+                      <p style={{ fontSize: 11, color: "#5A5A7A", marginBottom: 4 }}>Nenhum negócio</p>
+                      <p style={{ fontSize: 10, color: "#3A3A5C" }}>Arraste um card para cá</p>
                     </div>
                   ) : (
                     col.deals.map((deal) => (
@@ -747,6 +871,24 @@ export default function NegociosKanban({
                     ))
                   )}
                 </div>
+
+                {/* Resumo de Valores ao Final da Coluna (Estilo HubSpot) */}
+                <div style={{
+                  borderTop: "1px solid #1A1A30", paddingTop: 8, marginTop: "auto",
+                  fontSize: 10, display: "flex", flexDirection: "column", gap: 2,
+                  backgroundColor: "#111120", borderRadius: 8, padding: "8px 10px"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: "#7878A0" }}>Valor total:</span>
+                    <strong style={{ color: col.color, fontSize: 11 }}>
+                      {colValorTotal > 0 ? formatBRL(colValorTotal) : "R$ 0"}
+                    </strong>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: "#5A5A7A" }}>Total de itens:</span>
+                    <span style={{ color: "#EEEEFF", fontWeight: 700 }}>{totalItemsCount}</span>
+                  </div>
+                </div>
               </div>
             );
           })}
@@ -754,9 +896,9 @@ export default function NegociosKanban({
       ) : (
         <div style={{ background: "#111120", border: "1px solid #1A1A30", borderRadius: 14, overflow: "hidden" }}>
           <div style={{
-            display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 80px",
+            display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 100px",
             padding: "10px 18px", borderBottom: "1px solid #1A1A30",
-            fontSize: 10, fontWeight: 800, color: "#3A3A5C", letterSpacing: "0.06em",
+            fontSize: 10, fontWeight: 800, color: "#5A5A7A", letterSpacing: "0.06em",
             textTransform: "uppercase",
           }}>
             <span>Nome</span>
@@ -764,22 +906,21 @@ export default function NegociosKanban({
             <span>Etapa</span>
             <span>Responsável</span>
             <span>Valor</span>
-            <span />
+            <span>Ações</span>
           </div>
+
           {filteredLeads.filter((l) => l.status !== "CONVERTIDO" && l.status !== "ARQUIVADO").map((lead) => (
-            <Link
+            <div
               key={lead.id}
-              href={`/negocios/lead/${encodeURIComponent(lead.id)}`}
-              prefetch={false}
               style={{
-                display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 80px",
+                display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 100px",
                 padding: "14px 18px", borderBottom: "1px solid #1A1A3020",
-                alignItems: "center", textDecoration: "none", color: "inherit",
+                alignItems: "center", color: "inherit",
               }}
             >
               <div>
                 <p style={{ fontSize: 13, fontWeight: 700, color: "#EEEEFF" }}>{lead.nome}</p>
-                <p style={{ fontSize: 11, color: "#3A3A5C" }}>{lead.email}</p>
+                <p style={{ fontSize: 11, color: "#5A5A7A" }}>{lead.email}</p>
               </div>
               <span style={{ fontSize: 12, color: "#7878A0" }}>{lead.empresa ?? "—"}</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: "#FFB800" }}>Lead · {LEAD_STATUS_LABELS[lead.status]}</span>
@@ -787,29 +928,31 @@ export default function NegociosKanban({
               <span style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF" }}>
                 {lead.orcamentoEstimado ? formatBRL(Number(lead.orcamentoEstimado)) : "—"}
               </span>
-              <span style={{ fontSize: 11, color: "#FF0068", fontWeight: 700 }}>
-                Detalhes →
-              </span>
-            </Link>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <Link href={`/digital-room/${encodeURIComponent(lead.id)}`} target="_blank" style={{ fontSize: 11, color: "#00E5FF", fontWeight: 700, textDecoration: "none" }}>
+                  Cliente
+                </Link>
+                <Link href={`/negocios/lead/${encodeURIComponent(lead.id)}`} style={{ fontSize: 11, color: "#FF0068", fontWeight: 700, textDecoration: "none" }}>
+                  Abrir →
+                </Link>
+              </div>
+            </div>
           ))}
+
           {filteredDeals.map((deal) => {
             const fase = columns.find((c) => c.id === deal.fase_atual);
             return (
-              <Link
+              <div
                 key={deal.id}
-                href={`/negocios/${encodeURIComponent(deal.id)}`}
-                prefetch={false}
                 style={{
-                  display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 80px",
+                  display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 100px 100px",
                   padding: "14px 18px", borderBottom: "1px solid #1A1A3020",
-                  alignItems: "center", cursor: "pointer", textDecoration: "none", color: "inherit",
+                  alignItems: "center", color: "inherit",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "#111122"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
               >
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 700, color: "#EEEEFF" }}>{deal.nome}</p>
-                  <p style={{ fontSize: 11, color: "#3A3A5C" }}>{deal.bairro}</p>
+                  <p style={{ fontSize: 11, color: "#5A5A7A" }}>{deal.bairro}</p>
                 </div>
                 <span style={{ fontSize: 12, color: "#7878A0" }}>{deal.construtora}</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: fase?.color ?? "#7878A0" }}>
@@ -822,10 +965,15 @@ export default function NegociosKanban({
                 <span style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF" }}>
                   {deal.valor_contrato ? formatBRL(deal.valor_contrato) : "—"}
                 </span>
-                <span style={{ fontSize: 11, color: "#FF0068", fontWeight: 700 }}>
-                  Detalhes →
-                </span>
-              </Link>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <Link href={`/digital-room/${encodeURIComponent(deal.id)}`} target="_blank" style={{ fontSize: 11, color: "#00E5FF", fontWeight: 700, textDecoration: "none" }}>
+                    Cliente
+                  </Link>
+                  <Link href={`/negocios/${encodeURIComponent(deal.id)}`} style={{ fontSize: 11, color: "#FF0068", fontWeight: 700, textDecoration: "none" }}>
+                    Abrir →
+                  </Link>
+                </div>
+              </div>
             );
           })}
         </div>

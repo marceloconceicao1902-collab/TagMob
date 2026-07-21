@@ -3,7 +3,7 @@ import type {
   Empreendimento, AssetOS, EstrategiaOS, DesignSystemOS,
   ProdutoIndustria, ExclusividadeRegra, EspecificacaoArquiteto,
   ProjetoArquiteto, MetricaAdTech, HubMetrica,
-  ProfissionalPerfil, ProClienteConexao
+  ProfissionalPerfil, ProClienteConexao, ServicoAberto, PropostaMatch
 } from "./types";
 
 export const MOCK_IMOVEIS: Imovel[] = [
@@ -1078,4 +1078,92 @@ export const MOCK_CONEXOES_MATCHMAKING: ProClienteConexao[] = [
     dataConexao: "2026-05-18",
   },
 ];
+
+export const MOCK_SERVICOS_ABERTOS: ServicoAberto[] = [
+  {
+    id: "srv-001",
+    empreendimentoId: "emp-001",
+    empreendimentoNome: "Residencial Horizon Jardins",
+    incorporadoraNome: "Incorporadora VillaReal",
+    bairroCidade: "Jardins — São Paulo",
+    titulo: "Execução de Reforma & Interiores para Plantão de Vendas Premium",
+    categoria: "EMPRESA_REFORMA",
+    descricao: "Contratação de empreiteira especializada em alto padrão para adequação do estande e salas de atendimento de corretores.",
+    orcamentoEst: 140000,
+    prazo: "30 dias",
+    status: "ABERTO",
+    createdAt: "2026-07-15",
+  },
+  {
+    id: "srv-002",
+    empreendimentoId: "emp-001",
+    empreendimentoNome: "Residencial Horizon Jardins",
+    incorporadoraNome: "Incorporadora VillaReal",
+    bairroCidade: "Jardins — São Paulo",
+    titulo: "Marcenaria Fina Sob Medida para Unidade Decorada 142m²",
+    categoria: "MARCENEIRO",
+    descricao: "Produção de painéis ripados, armários embutidos e cozinha gourmet no modelo conceito do residencial.",
+    orcamentoEst: 85000,
+    prazo: "45 dias",
+    status: "ABERTO",
+    createdAt: "2026-07-18",
+  },
+  {
+    id: "srv-003",
+    empreendimentoId: "emp-002",
+    empreendimentoNome: "Vibe Pinheiros Studios",
+    incorporadoraNome: "NextGen Urbanismo",
+    bairroCidade: "Pinheiros — São Paulo",
+    titulo: "Projeto de Interiores Otimizado para Studios Compactos (35m² - 45m²)",
+    categoria: "DESIGNER_INTERIORES",
+    descricao: "Desenvolvimento de 3 opções de pacotes de mobiliário e decoração para proprietários investidores.",
+    orcamentoEst: 35000,
+    prazo: "20 dias",
+    status: "ABERTO",
+    createdAt: "2026-07-19",
+  },
+  {
+    id: "srv-004",
+    empreendimentoId: "emp-003",
+    empreendimentoNome: "Epic Alphaville Residences",
+    incorporadoraNome: "Incorporadora VillaReal",
+    bairroCidade: "Alphaville — Barueri",
+    titulo: "Captação & Vendas Exclusivas para Corretores Credenciados CRECI",
+    categoria: "CORRETOR",
+    descricao: "Acesso à esteira de materiais autônomos para corretores autônomos atuarem no lançamento.",
+    orcamentoEst: 95000,
+    prazo: "Contínuo",
+    status: "ABERTO",
+    createdAt: "2026-07-10",
+  },
+];
+
+export const MOCK_PROPOSTAS_MATCH: PropostaMatch[] = [
+  {
+    id: "prop-001",
+    profissionalId: "pro-004",
+    profissionalNome: "ReformaJá Engenharia e Empreiteira",
+    servicoId: "srv-001",
+    empreendimentoId: "emp-001",
+    empreendimentoNome: "Residencial Horizon Jardins",
+    tipoMatch: "CANDIDATURA_PASSIVA",
+    mensagem: "Temos equipe disponível na região dos Jardins para execução imediata do plantão de vendas.",
+    valorProposta: 135000,
+    status: "EM_ANALISE",
+    createdAt: "2026-07-16",
+  },
+  {
+    id: "prop-002",
+    profissionalId: "pro-001",
+    profissionalNome: "Studio Arq & Design Ltda",
+    empreendimentoId: "emp-001",
+    empreendimentoNome: "Residencial Horizon Jardins",
+    tipoMatch: "OFERTA_ATIVA",
+    mensagem: "Apresentamos nosso portfólio de arquitetura para personalização das plantas das coberturas duplex.",
+    valorProposta: 48000,
+    status: "ENVIADA",
+    createdAt: "2026-07-17",
+  },
+];
+
 

@@ -403,6 +403,8 @@ model Empreendimento {
   orcamentos          OrcamentoContratado[]
   crmActivities       CrmActivity[]
   proClienteConexoes  ProClienteConexao[]
+  servicosAbertos     ServicoAberto[]
+  propostasMatch      PropostaMatch[]
 }
 
 model EstrategiaOS {
@@ -838,6 +840,7 @@ model ProfissionalPerfil {
 
   // Relacionamentos e conexões de negócios
   conexoesClientes ProClienteConexao[]
+  propostas        PropostaMatch[]
 }
 
 model ProClienteConexao {
@@ -852,4 +855,37 @@ model ProClienteConexao {
   profissional     ProfissionalPerfil @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
   empreendimento   Empreendimento?    @relation(fields: [empreendimentoId], references: [id], onDelete: SetNull)
 }
+
+model ServicoAberto {
+  id               String                @id @default(uuid())
+  empreendimentoId String
+  titulo           String
+  categoria        CategoriaProfissional
+  descricao        String                @db.Text
+  orcamentoEst     Decimal?              @db.Decimal(10, 2)
+  prazo            String?
+  status           String                @default("ABERTO") // ABERTO, EM_ANDAMENTO, FECHADO
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  empreendimento   Empreendimento        @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
+  propostas        PropostaMatch[]
+}
+
+model PropostaMatch {
+  id               String              @id @default(uuid())
+  profissionalId   String
+  servicoId        String?
+  empreendimentoId String?
+  tipoMatch        String              // CANDIDATURA_PASSIVA ou OFERTA_ATIVA
+  mensagem         String              @db.Text
+  valorProposta    Decimal?            @db.Decimal(10, 2)
+  status           String              @default("ENVIADA") // ENVIADA, EM_ANALISE, ACEITA, RECUSADA
+  createdAt        DateTime            @default(now())
+
+  profissional     ProfissionalPerfil  @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+  servico          ServicoAberto?      @relation(fields: [servicoId], references: [id], onDelete: SetNull)
+  empreendimento   Empreendimento?     @relation(fields: [empreendimentoId], references: [id], onDelete: SetNull)
+}
+
 

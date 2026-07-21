@@ -306,3 +306,33 @@ export interface ProClienteConexao {
   dataConexao: string;
 }
 
+export interface ServicoAberto {
+  id: string;
+  empreendimentoId: string;
+  empreendimentoNome: string;
+  incorporadoraNome: string;
+  bairroCidade: string;
+  titulo: string;
+  categoria: CategoriaProfissional;
+  descricao: string;
+  orcamentoEst?: number;
+  prazo?: string;
+  status: "ABERTO" | "EM_ANDAMENTO" | "FECHADO";
+  createdAt: string;
+}
+
+export interface PropostaMatch {
+  id: string;
+  profissionalId: string;
+  profissionalNome: string;
+  servicoId?: string;
+  empreendimentoId?: string;
+  empreendimentoNome?: string;
+  tipoMatch: "CANDIDATURA_PASSIVA" | "OFERTA_ATIVA";
+  mensagem: string;
+  valorProposta?: number;
+  status: "ENVIADA" | "EM_ANALISE" | "ACEITA" | "RECUSADA";
+  createdAt: string;
+}
+
+

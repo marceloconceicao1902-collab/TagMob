@@ -6,7 +6,8 @@ import {
   Search, Filter, Plus, Kanban, LayoutList, Building2,
   User, Clock, ChevronRight, DollarSign, TrendingUp,
   AlertCircle, Inbox, Mail, Phone, Star, Eye, X, Check,
-  ExternalLink, RotateCcw,
+  ExternalLink, RotateCcw, Copy, MessageSquare, ArrowUpDown,
+  Share2
 } from "lucide-react";
 import type { Empreendimento, OSFase } from "@/lib/types";
 import { MOCK_EMPREENDIMENTOS, MOCK_LEADS } from "@/lib/mock-data";
@@ -19,11 +20,22 @@ import {
 } from "@/lib/pipeline-kanban";
 
 type ViewMode = "kanban" | "lista";
+type SortOption = "recentes" | "valor_desc" | "prioridade";
 
 const LEAD_STATUS_COLORS: Record<string, string> = {
   NOVO: "#00E5FF",
   EM_ATENDIMENTO: "#FFB800",
   QUALIFICADO: "#8B5CF6",
+};
+
+// Probabilidades de fechamento por etapa (Estilo CRM HubSpot)
+const STAGE_PROBABILITIES: Record<string, number> = {
+  leads: 0.10,       // 10%
+  1: 0.25,           // 25% Estratégia
+  2: 0.50,           // 50% Criação
+  3: 0.75,           // 75% Aprovação
+  4: 0.90,           // 90% Organização
+  5: 1.00,           // 100% Autonomia do Cliente
 };
 
 function PlanoBadge({ plano }: { plano: Empreendimento["plano"] }) {
@@ -45,129 +57,166 @@ function LeadCard({
   columnColor,
   onUpdateStatus,
   onConvert,
+  onCopyClientLink,
 }: {
   lead: LeadDTO;
   columnColor: string;
   onUpdateStatus: (id: string, status: string) => void;
   onConvert: (lead: LeadDTO) => void;
+  onCopyClientLink: (id: string) => void;
 }) {
   const statusColor = LEAD_STATUS_COLORS[lead.status] ?? columnColor;
+  const cleanPhone = lead.telefone?.replace(/\D/g, "") || "";
 
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
         padding: 14,
         boxSizing: "border-box",
-        overflow: "hidden",
         width: "100%",
-        gap: 8,
-        transition: "border-color 0.15s",
+        gap: 10,
+        flexShrink: 0,
+        transition: "border-color 0.15s, box-shadow 0.15s",
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.borderColor = columnColor + "60"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#1A1A30"; }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = columnColor + "80";
+        e.currentTarget.style.boxShadow = `0 4px 16px ${columnColor}12`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "#1A1A30";
+        e.currentTarget.style.boxShadow = "none";
+      }}
     >
+      {/* Top Header: Badge + Priority */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
         <span style={{
           fontSize: 9, fontWeight: 800, color: statusColor,
-          backgroundColor: statusColor + "18", padding: "2px 6px", borderRadius: 4,
-          whiteSpace: "nowrap",
+          backgroundColor: statusColor + "18", border: `1px solid ${statusColor}30`,
+          padding: "2px 7px", borderRadius: 4, whiteSpace: "nowrap",
         }}>
           {LEAD_STATUS_LABELS[lead.status]}
         </span>
-        {lead.prioridade === 1 && <Star size={12} color="#FFB800" fill="#FFB800" style={{ flexShrink: 0 }} />}
+
+        {lead.prioridade === 1 && (
+          <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, color: "#FFB800", fontWeight: 700 }}>
+            <Star size={12} color="#FFB800" fill="#FFB800" /> Alta
+          </span>
+        )}
       </div>
 
-      <div style={{ overflow: "hidden" }}>
+      {/* Title & Company */}
+      <div>
         <p style={{
           fontSize: 14, fontWeight: 800, color: "#EEEEFF",
-          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-          lineHeight: 1.3, marginBottom: 2
+          lineHeight: 1.35, marginBottom: 4, wordBreak: "break-word"
         }}>
           {lead.nome}
         </p>
 
         {lead.empresa && (
-          <div style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-            <Building2 size={11} color="#7878A0" style={{ flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: "#7878A0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <Building2 size={12} color="#7878A0" style={{ flexShrink: 0 }} />
+            <span style={{ fontSize: 11, color: "#7878A0", fontWeight: 600, wordBreak: "break-word" }}>
               {lead.empresa}
             </span>
           </div>
         )}
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 3, overflow: "hidden" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#5A5A7A", overflow: "hidden" }}>
-          <Mail size={10} style={{ flexShrink: 0 }} />
+      {/* Contacts */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, backgroundColor: "#0D0D1A", padding: "8px 10px", borderRadius: 8, border: "1px solid #1A1A30" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#9898C0", overflow: "hidden" }}>
+          <Mail size={11} color="#7878A0" style={{ flexShrink: 0 }} />
           <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.email}</span>
         </span>
         {lead.telefone && (
-          <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#5A5A7A", overflow: "hidden" }}>
-            <Phone size={10} style={{ flexShrink: 0 }} />
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.telefone}</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#9898C0" }}>
+            <Phone size={11} color="#7878A0" style={{ flexShrink: 0 }} />
+            <span>{lead.telefone}</span>
           </span>
         )}
       </div>
 
+      {/* Budget */}
       {lead.orcamentoEstimado != null && (
-        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <DollarSign size={12} color={columnColor} style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: 13, fontWeight: 800, color: columnColor }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", backgroundColor: columnColor + "0A", padding: "6px 10px", borderRadius: 8, border: `1px solid ${columnColor}20` }}>
+          <span style={{ fontSize: 10, color: "#7878A0", fontWeight: 600 }}>Valor Estimado</span>
+          <span style={{ fontSize: 13, fontWeight: 900, color: columnColor }}>
             {formatBRL(Number(lead.orcamentoEstimado))}
           </span>
         </div>
       )}
 
-      {/* Visão do Cliente Link & Ações */}
-      <div style={{ borderTop: "1px solid #1A1A30", paddingTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-          {lead.status === "NOVO" && (
-            <button
-              type="button"
-              onClick={() => onUpdateStatus(lead.id, "EM_ATENDIMENTO")}
-              style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#FFB80020", border: "1px solid #FFB80040", color: "#FFB800", cursor: "pointer" }}
-            >
-              Atender
-            </button>
-          )}
-          {lead.status === "EM_ATENDIMENTO" && (
-            <button
-              type="button"
-              onClick={() => onUpdateStatus(lead.id, "QUALIFICADO")}
-              style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#8B5CF620", border: "1px solid #8B5CF640", color: "#8B5CF6", cursor: "pointer" }}
-            >
-              Qualificar
-            </button>
-          )}
+      {/* Workflow Quick Buttons */}
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", paddingTop: 4 }}>
+        {lead.status === "NOVO" && (
           <button
             type="button"
-            onClick={() => onConvert(lead)}
-            style={{ fontSize: 10, fontWeight: 700, padding: "4px 8px", borderRadius: 6, background: "#39FF1420", border: "1px solid #39FF1440", color: "#39FF14", cursor: "pointer" }}
+            onClick={() => onUpdateStatus(lead.id, "EM_ATENDIMENTO")}
+            style={{ fontSize: 11, fontWeight: 700, padding: "5px 9px", borderRadius: 6, background: "#FFB80020", border: "1px solid #FFB80040", color: "#FFB800", cursor: "pointer", flex: 1 }}
           >
-            Converter → OS
+            Atender
           </button>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2 }}>
-          <Link
-            href={`/digital-room/${encodeURIComponent(lead.id)}`}
-            target="_blank"
-            style={{ fontSize: 10, fontWeight: 700, color: "#00E5FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 3 }}
+        )}
+        {lead.status === "EM_ATENDIMENTO" && (
+          <button
+            type="button"
+            onClick={() => onUpdateStatus(lead.id, "QUALIFICADO")}
+            style={{ fontSize: 11, fontWeight: 700, padding: "5px 9px", borderRadius: 6, background: "#8B5CF620", border: "1px solid #8B5CF640", color: "#8B5CF6", cursor: "pointer", flex: 1 }}
           >
-            <Eye size={10} /> Visão do Cliente
-          </Link>
+            Qualificar
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => onConvert(lead)}
+          style={{ fontSize: 11, fontWeight: 700, padding: "5px 9px", borderRadius: 6, background: "#39FF1420", border: "1px solid #39FF1440", color: "#39FF14", cursor: "pointer", flex: 1 }}
+        >
+          Converter → OS
+        </button>
+
+        {cleanPhone && (
+          <a
+            href={`https://wa.me/55${cleanPhone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Abrir no WhatsApp"
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, borderRadius: 6, backgroundColor: "#39FF1418", border: "1px solid #39FF1435", color: "#39FF14" }}
+          >
+            <MessageSquare size={13} />
+          </a>
+        )}
+      </div>
+
+      {/* Bottom Footer Actions */}
+      <div style={{ borderTop: "1px solid #1A1A30", paddingTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+        <Link
+          href={`/digital-room/${encodeURIComponent(lead.id)}`}
+          target="_blank"
+          style={{ fontSize: 11, fontWeight: 700, color: "#00E5FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
+        >
+          <Eye size={12} /> Visão do Cliente
+        </Link>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            onClick={() => onCopyClientLink(lead.id)}
+            title="Copiar Link do Cliente"
+            style={{ background: "none", border: "none", color: "#7878A0", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}
+          >
+            <Copy size={12} />
+          </button>
 
           <Link
             href={`/negocios/lead/${encodeURIComponent(lead.id)}`}
-            style={{ fontSize: 10, fontWeight: 700, color: columnColor, textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}
+            style={{ fontSize: 11, fontWeight: 700, color: columnColor, textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}
           >
-            Detalhes <ChevronRight size={10} />
+            Detalhes <ChevronRight size={11} />
           </Link>
         </div>
       </div>
@@ -178,9 +227,11 @@ function LeadCard({
 function DealCard({
   deal,
   columnColor,
+  onCopyClientLink,
 }: {
   deal: Empreendimento;
   columnColor: string;
+  onCopyClientLink: (id: string) => void;
 }) {
   const progresso = deal.total_assets > 0
     ? Math.round((deal.assets_aprovados / deal.total_assets) * 100)
@@ -191,92 +242,92 @@ function DealCard({
       style={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
         padding: 14,
         boxSizing: "border-box",
-        overflow: "hidden",
         width: "100%",
-        gap: 8,
+        gap: 10,
+        flexShrink: 0,
         transition: "border-color 0.15s, box-shadow 0.15s",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = columnColor + "60";
-        e.currentTarget.style.boxShadow = `0 4px 20px ${columnColor}10`;
+        e.currentTarget.style.borderColor = columnColor + "80";
+        e.currentTarget.style.boxShadow = `0 4px 16px ${columnColor}12`;
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.borderColor = "#1A1A30";
         e.currentTarget.style.boxShadow = "none";
       }}
     >
+      {/* Top Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
         <PlanoBadge plano={deal.plano} />
-        <span style={{ fontSize: 10, color: "#5A5A7A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{deal.tipo}</span>
+        <span style={{ fontSize: 10, color: "#7878A0", fontWeight: 600 }}>{deal.tipo}</span>
       </div>
 
-      <div style={{ overflow: "hidden" }}>
+      {/* Deal Name & Construtora */}
+      <div>
         <p style={{
           fontSize: 14, fontWeight: 800, color: "#EEEEFF",
-          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-          letterSpacing: "-0.02em", marginBottom: 2
+          lineHeight: 1.35, marginBottom: 4, letterSpacing: "-0.01em", wordBreak: "break-word"
         }}>
           {deal.nome}
         </p>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-          <Building2 size={11} color="#7878A0" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: 11, color: "#7878A0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Building2 size={12} color="#7878A0" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: 11, color: "#7878A0", fontWeight: 600, wordBreak: "break-word" }}>
             {deal.construtora}
           </span>
         </div>
 
-        <p style={{ fontSize: 11, color: "#5A5A7A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 2 }}>
+        <p style={{ fontSize: 11, color: "#5A5A7A", marginTop: 2 }}>
           {deal.bairro}, {deal.cidade}
         </p>
       </div>
 
+      {/* Contract Value */}
       {deal.valor_contrato != null && (
-        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <DollarSign size={12} color={columnColor} style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: 13, fontWeight: 800, color: columnColor }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", backgroundColor: columnColor + "0A", padding: "6px 10px", borderRadius: 8, border: `1px solid ${columnColor}20` }}>
+          <span style={{ fontSize: 10, color: "#7878A0", fontWeight: 600 }}>Valor do Negócio</span>
+          <span style={{ fontSize: 13, fontWeight: 900, color: columnColor }}>
             {formatBRL(deal.valor_contrato)}
           </span>
         </div>
       )}
 
+      {/* Progress Bar */}
       {deal.total_assets > 0 && (
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-            <span style={{ fontSize: 10, color: "#7878A0" }}>Assets aprovados</span>
+            <span style={{ fontSize: 10, color: "#7878A0" }}>Assets Aprovados</span>
             <span style={{ fontSize: 10, fontWeight: 700, color: "#EEEEFF" }}>{progresso}%</span>
           </div>
-          <div style={{ height: 3, backgroundColor: "#1A1A30", borderRadius: 2, overflow: "hidden" }}>
+          <div style={{ height: 4, backgroundColor: "#1A1A30", borderRadius: 2, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${progresso}%`, backgroundColor: columnColor, borderRadius: 2 }} />
           </div>
         </div>
       )}
 
+      {/* Next Action */}
       {deal.proxima_acao && (
         <div style={{
           background: columnColor + "08", border: `1px solid ${columnColor}20`,
-          borderRadius: 6, padding: "6px 8px", overflow: "hidden"
+          borderRadius: 8, padding: "6px 9px",
         }}>
           <p style={{ fontSize: 9, color: "#7878A0", marginBottom: 2 }}>Próxima ação</p>
-          <p style={{ fontSize: 11, color: "#EEEEFF", fontWeight: 600, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <p style={{ fontSize: 11, color: "#EEEEFF", fontWeight: 600, lineHeight: 1.25, wordBreak: "break-word" }}>
             {deal.proxima_acao}
           </p>
         </div>
       )}
 
-      {/* Visão do Cliente Link & Footer do Card */}
-      <div style={{
-        borderTop: "1px solid #1A1A30", paddingTop: 8, display: "flex",
-        flexDirection: "column", gap: 6
-      }}>
+      {/* Bottom Footer Actions */}
+      <div style={{ borderTop: "1px solid #1A1A30", paddingTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div style={{
               width: 20, height: 20, borderRadius: "50%", backgroundColor: columnColor + "20",
               border: `1px solid ${columnColor}40`, display: "flex", alignItems: "center",
@@ -284,13 +335,11 @@ function DealCard({
             }}>
               {deal.responsavel?.[0] ?? "?"}
             </div>
-            <span style={{ fontSize: 10, color: "#7878A0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {deal.responsavel ?? "—"}
-            </span>
+            <span style={{ fontSize: 11, color: "#7878A0" }}>{deal.responsavel ?? "—"}</span>
           </div>
 
           {deal.dias_na_fase != null && (
-            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, color: "#5A5A7A", flexShrink: 0 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, color: "#5A5A7A" }}>
               <Clock size={10} /> {deal.dias_na_fase}d
             </span>
           )}
@@ -300,17 +349,27 @@ function DealCard({
           <Link
             href={`/digital-room/${encodeURIComponent(deal.id)}`}
             target="_blank"
-            style={{ fontSize: 10, fontWeight: 700, color: "#00E5FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 3 }}
+            style={{ fontSize: 11, fontWeight: 700, color: "#00E5FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
           >
-            <Eye size={10} /> Visão do Cliente
+            <Eye size={12} /> Visão do Cliente
           </Link>
 
-          <Link
-            href={`/negocios/${encodeURIComponent(deal.id)}`}
-            style={{ fontSize: 10, fontWeight: 700, color: columnColor, textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}
-          >
-            Detalhes <ChevronRight size={10} />
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              onClick={() => onCopyClientLink(deal.id)}
+              title="Copiar Link do Cliente"
+              style={{ background: "none", border: "none", color: "#7878A0", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}
+            >
+              <Copy size={12} />
+            </button>
+
+            <Link
+              href={`/negocios/${encodeURIComponent(deal.id)}`}
+              style={{ fontSize: 11, fontWeight: 700, color: columnColor, textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}
+            >
+              Detalhes <ChevronRight size={11} />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -329,6 +388,10 @@ export default function NegociosKanban({
   const [loading, setLoading] = useState(initialDeals.length === 0);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("kanban");
+  const [sortOrder, setSortOrder] = useState<SortOption>("recentes");
+
+  // Toast Notification
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Filtros Avançados
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -339,6 +402,19 @@ export default function NegociosKanban({
   const [draggingLeadId, setDraggingLeadId] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<PipelineColumnId | null>(null);
   const [dbOffline, setDbOffline] = useState(false);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleCopyClientLink = (id: string) => {
+    if (typeof window !== "undefined") {
+      const url = `${window.location.origin}/digital-room/${id}`;
+      navigator.clipboard.writeText(url);
+      showToast("✓ Link do Cliente copiado para a área de transferência!");
+    }
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -399,7 +475,7 @@ export default function NegociosKanban({
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  // Filtros aplicados em tempo real
+  // Filtros & Ordenação em Tempo Real
   const filteredDeals = useMemo(() => {
     let result = deals;
     if (search.trim()) {
@@ -414,8 +490,11 @@ export default function NegociosKanban({
     if (filterPlano !== "TODOS") {
       result = result.filter((d) => d.plano === filterPlano);
     }
+    if (sortOrder === "valor_desc") {
+      result = [...result].sort((a, b) => (b.valor_contrato ?? 0) - (a.valor_contrato ?? 0));
+    }
     return result;
-  }, [deals, search, filterPlano]);
+  }, [deals, search, filterPlano, sortOrder]);
 
   const filteredLeads = useMemo(() => {
     let result = leads;
@@ -430,8 +509,13 @@ export default function NegociosKanban({
     if (filterStatusLead !== "TODOS") {
       result = result.filter((l) => l.status === filterStatusLead);
     }
+    if (sortOrder === "valor_desc") {
+      result = [...result].sort((a, b) => Number(b.orcamentoEstimado ?? 0) - Number(a.orcamentoEstimado ?? 0));
+    } else if (sortOrder === "prioridade") {
+      result = [...result].sort((a, b) => (a.prioridade ?? 2) - (b.prioridade ?? 2));
+    }
     return result;
-  }, [leads, search, filterStatusLead]);
+  }, [leads, search, filterStatusLead, sortOrder]);
 
   const columns = useMemo(() => buildPipelineColumns(filteredDeals, filteredLeads), [filteredDeals, filteredLeads]);
   const metrics = useMemo(() => calcPipelineMetrics(filteredDeals, filteredLeads), [filteredDeals, filteredLeads]);
@@ -531,6 +615,7 @@ export default function NegociosKanban({
 
     setLeads((l) => l.filter((item) => item.id !== lead.id));
     setDeals((d) => [novoDeal, ...d]);
+    showToast(`✓ Lead ${lead.nome} convertido em Negócio!`);
   }
 
   async function handleDrop(columnId: PipelineColumnId) {
@@ -604,8 +689,19 @@ export default function NegociosKanban({
 
   return (
     <div style={{ padding, minHeight: embedded ? undefined : "100vh", backgroundColor: embedded ? "transparent" : "#09090F" }}>
+      {/* Toast floating */}
+      {toastMessage && (
+        <div style={{
+          position: "fixed", bottom: 28, right: 28, zIndex: 1000,
+          backgroundColor: "#39FF14", color: "#000", fontWeight: 800, fontSize: 13,
+          padding: "12px 20px", borderRadius: 10, boxShadow: "0 8px 30px rgba(57,255,20,0.3)"
+        }}>
+          {toastMessage}
+        </div>
+      )}
+
       {!embedded && (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, flexWrap: "wrap", gap: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <Kanban size={14} color="#FF0068" />
@@ -666,6 +762,20 @@ export default function NegociosKanban({
             <RotateCcw size={12} /> Limpar
           </button>
         )}
+
+        {/* Ordenação */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#111120", border: "1px solid #1A1A30", borderRadius: 8, padding: "4px 10px" }}>
+          <ArrowUpDown size={13} color="#7878A0" />
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as SortOption)}
+            style={{ background: "none", border: "none", color: "#EEEEFF", fontSize: 12, outline: "none", fontWeight: 600, cursor: "pointer" }}
+          >
+            <option value="recentes" style={{ background: "#111120" }}>Mais Recentes</option>
+            <option value="valor_desc" style={{ background: "#111120" }}>Maior Valor</option>
+            <option value="prioridade" style={{ background: "#111120" }}>Alta Prioridade</option>
+          </select>
+        </div>
 
         <div style={{ display: "flex", background: "#111120", border: "1px solid #1A1A30", borderRadius: 8, overflow: "hidden" }}>
           {(["kanban", "lista"] as ViewMode[]).map((v) => (
@@ -743,7 +853,7 @@ export default function NegociosKanban({
       )}
 
       {/* KPI Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 28 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 20 }}>
         {[
           { label: "Leads Ativos", value: metrics.leadsAtivos, color: "#FFB800", icon: Inbox },
           { label: "Valor do Pipeline", value: formatBRL(metrics.valorTotal), color: "#FF0068", icon: DollarSign },
@@ -769,10 +879,12 @@ export default function NegociosKanban({
       {view === "kanban" ? (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(6, minmax(230px, 1fr))",
+          gridTemplateColumns: "repeat(6, minmax(260px, 1fr))",
           gap: 14,
           overflowX: "auto",
-          paddingBottom: 16,
+          height: "calc(100vh - 290px)",
+          minHeight: "560px",
+          paddingBottom: 8,
         }}>
           {columns.map((col) => {
             const isLeadColumn = col.id === "leads";
@@ -781,6 +893,9 @@ export default function NegociosKanban({
               ? col.leads.reduce((s, l) => s + Number(l.orcamentoEstimado ?? 0), 0)
               : col.deals.reduce((s, d) => s + (d.valor_contrato ?? 0), 0);
             
+            const prob = STAGE_PROBABILITIES[String(col.id)] ?? 0.5;
+            const valorPonderado = Math.round(colValorTotal * prob);
+
             const isDropTarget = dropTarget === col.id;
 
             return (
@@ -790,19 +905,21 @@ export default function NegociosKanban({
                 onDragLeave={() => setDropTarget(null)}
                 onDrop={() => handleDrop(col.id)}
                 style={{
-                  display: "flex", flexDirection: "column", gap: 8, minWidth: 230,
-                  background: isDropTarget ? col.color + "08" : "#0D0D1A",
-                  borderRadius: 14, padding: 10, border: "1px solid #1A1A30",
-                  outline: isDropTarget ? `2px dashed ${col.color}50` : "none",
+                  display: "flex", flexDirection: "column",
+                  height: "100%", overflow: "hidden",
+                  minWidth: 260,
+                  background: isDropTarget ? col.color + "0C" : "#0D0D1A",
+                  borderRadius: 14, padding: 12, border: "1px solid #1A1A30",
+                  outline: isDropTarget ? `2px dashed ${col.color}70` : "none",
                   transition: "background 0.15s",
                 }}
               >
-                {/* Cabeçalho da Etapa */}
-                <div style={{ paddingBottom: 8, borderBottom: `2.5px solid ${col.color}` }}>
+                {/* Header Fixo da Coluna */}
+                <div style={{ paddingBottom: 10, borderBottom: `2.5px solid ${col.color}`, flexShrink: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {isLeadColumn ? (
-                        <Inbox size={12} color={col.color} />
+                        <Inbox size={13} color={col.color} />
                       ) : (
                         <span style={{
                           fontSize: 10, fontWeight: 900, color: col.color,
@@ -815,28 +932,39 @@ export default function NegociosKanban({
                     </div>
                     <span style={{
                       fontSize: 11, fontWeight: 800, color: col.color,
-                      backgroundColor: col.color + "15", padding: "1px 7px", borderRadius: 10,
+                      backgroundColor: col.color + "15", border: `1px solid ${col.color}30`,
+                      padding: "1px 7px", borderRadius: 10,
                     }}>
                       {totalItemsCount}
                     </span>
                   </div>
+
                   <p style={{ fontSize: 10, color: "#5A5A7A", lineHeight: 1.3, marginBottom: 4, height: 26, overflow: "hidden" }}>
                     {col.subtitle}
                   </p>
-                  {colValorTotal > 0 && (
-                    <p style={{ fontSize: 11, fontWeight: 800, color: col.color }}>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: col.color }}>
                       {formatBRL(colValorTotal)}
-                    </p>
-                  )}
+                    </span>
+                    <span style={{ fontSize: 9, color: "#7878A0", fontWeight: 600 }}>
+                      Ponderado: {formatBRL(valorPonderado)} ({Math.round(prob * 100)}%)
+                    </span>
+                  </div>
                 </div>
 
-                {/* Lista de Cards com Rolagem Individual (Max 3 visíveis / ~560px max height) */}
+                {/* Lista de Cards com Rolagem Individual Nativa */}
                 <div
-                  className="tagmob-kanban-scroll"
                   style={{
-                    display: "flex", flexDirection: "column", gap: 10,
-                    maxHeight: "560px", overflowY: "auto", paddingRight: 4,
-                    minHeight: "180px",
+                    flex: 1,
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingRight: 4,
+                    minHeight: 0,
                   }}
                 >
                   {isLeadColumn ? (
@@ -853,6 +981,7 @@ export default function NegociosKanban({
                           columnColor={col.color}
                           onUpdateStatus={updateLeadStatus}
                           onConvert={convertLead}
+                          onCopyClientLink={handleCopyClientLink}
                         />
                       ))
                     )
@@ -867,25 +996,34 @@ export default function NegociosKanban({
                         key={deal.id}
                         deal={deal}
                         columnColor={col.color}
+                        onCopyClientLink={handleCopyClientLink}
                       />
                     ))
                   )}
                 </div>
 
-                {/* Resumo de Valores ao Final da Coluna (Estilo HubSpot) */}
+                {/* Resumo Fixo de Valores ao Final da Coluna (Estilo HubSpot CRM) */}
                 <div style={{
-                  borderTop: "1px solid #1A1A30", paddingTop: 8, marginTop: "auto",
-                  fontSize: 10, display: "flex", flexDirection: "column", gap: 2,
+                  borderTop: "1px solid #1A1A30", paddingTop: 8, marginTop: "auto", flexShrink: 0,
+                  fontSize: 10, display: "flex", flexDirection: "column", gap: 3,
                   backgroundColor: "#111120", borderRadius: 8, padding: "8px 10px"
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "#7878A0" }}>Valor total:</span>
+                    <span style={{ color: "#7878A0" }}>Valor Total:</span>
                     <strong style={{ color: col.color, fontSize: 11 }}>
                       {colValorTotal > 0 ? formatBRL(colValorTotal) : "R$ 0"}
                     </strong>
                   </div>
+
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "#5A5A7A" }}>Total de itens:</span>
+                    <span style={{ color: "#5A5A7A" }}>Valor Ponderado ({Math.round(prob * 100)}%):</span>
+                    <span style={{ color: "#EEEEFF", fontWeight: 700 }}>
+                      {formatBRL(valorPonderado)}
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: "#5A5A7A" }}>Total de Itens:</span>
                     <span style={{ color: "#EEEEFF", fontWeight: 700 }}>{totalItemsCount}</span>
                   </div>
                 </div>

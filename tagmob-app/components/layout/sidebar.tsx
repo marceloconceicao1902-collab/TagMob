@@ -18,8 +18,8 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { label: "Página Inicial",    href: "/hub",               icon: Home,            color: "#00E5FF" },
-  { label: "Negócios",          href: "/negocios",          icon: Building2,       color: "#FF0068", badge: "OS" },
-  { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068", badge: "NOVO" },
+  { label: "Negócios",          href: "/negocios",          icon: Building2,       color: "#FF0068" },
+  { label: "Catálogo",          href: "/catalogo",          icon: FolderKanban,    color: "#FF0068" },
   { label: "Profissionais",     href: "/arquiteto",         icon: Palette,         color: "#8B5CF6" },
   { label: "Visão Geral",       href: "/resumo",            icon: LayoutDashboard, color: "#FFB800" },
 ];

@@ -96,7 +96,7 @@ export default function DigitalRoomClientPage({ params }: { params: Promise<{ id
     <div style={{ backgroundColor: "#09090F", color: "#EEEEFF", minHeight: "100vh" }}>
       {/* Top Banner Exclusivo */}
       <nav style={{ borderBottom: "1px solid #1A1A30", backgroundColor: "#0D0D1A", padding: "16px 32px" }}>
-        <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", alignItems: "center", justifyBetween: "space-between" }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1 }}>
             <div style={{ width: 32, height: 32, backgroundColor: "#FF0068", borderRadius: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, padding: 5 }}>
               {[0,1,2,3].map((i) => <div key={i} style={{ backgroundColor: "rgba(255,255,255,0.9)", borderRadius: 1 }} />)}

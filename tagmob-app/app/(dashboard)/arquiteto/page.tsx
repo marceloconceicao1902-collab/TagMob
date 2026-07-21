@@ -70,7 +70,7 @@ export default function ArquitetoPage() {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
             <div style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: "#8B5CF6" }} />
-            <p style={{ fontSize: 11, fontWeight: 800, color: "#8B5CF6", letterSpacing: "0.08em", textTransform: "uppercase" }}>Portal do Arquiteto & Especificador</p>
+            <p style={{ fontSize: 11, fontWeight: 800, color: "#8B5CF6", letterSpacing: "0.08em", textTransform: "uppercase" }}>Portal de Profissionais de Criação</p>
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.04em", color: "#EEEEFF", marginBottom: 4 }}>
             Gestão de Projetos & Escolhas do Catálogo
@@ -213,7 +213,7 @@ export default function ArquitetoPage() {
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
           <Zap size={18} color="#39FF14" />
-          <h2 style={{ fontSize: 17, fontWeight: 800, color: "#EEEEFF" }}>Ações Operacionais de Autonomia (Disponíveis para o Arquitetos/Cliente)</h2>
+          <h2 style={{ fontSize: 17, fontWeight: 800, color: "#EEEEFF" }}>Ações Operacionais de Autonomia (Disponíveis para Criação/Cliente)</h2>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>

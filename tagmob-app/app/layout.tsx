@@ -11,7 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "TAGMOB — Ambientalização Imobiliária",
   description:
-    "A plataforma que encaixa marcas, corretores e arquitetos no momento e no encaixe certos.",
+    "A plataforma que encaixa marcas, corretores e profissionais de criação no momento e no encaixe certos.",
   keywords: ["imobiliária", "proptech", "adtech", "ambientalização", "product placement"],
 };
 

@@ -142,7 +142,7 @@ export default function ResumoPage() {
           <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 0 }}>
             {[
               { camada: "C1", label: "Construtoras",   cor: "#FF0068", desc: "Contratam a TAGMOB, aprovam o ecossistema e liberam a cadeia",      href: "/tagmob-os" },
-              { camada: "C4", label: "Arquitetos",     cor: "#8B5CF6", desc: "Absorvem o conceito e especificam marcas reais nos projetos",        href: "/arquiteto" },
+              { camada: "C4", label: "Profissionais",  cor: "#8B5CF6", desc: "Absorvem o conceito e especificam marcas reais nos projetos",        href: "/arquiteto" },
               { camada: "C3", label: "Marcas",         cor: "#FFB800", desc: "Aparecem no catálogo no momento de especificação — leads quentes",   href: "/marcas"    },
               { camada: "C2", label: "Corretores",     cor: "#00E5FF", desc: "Recebem peças turbinadas, personalizam contato e vendem na ponta",  href: "/corretor"  },
             ].map((a, i, arr) => (
@@ -168,7 +168,7 @@ export default function ResumoPage() {
               {[
                 { l: "TAGMOB", c: "#FF006880" },
                 { l: "Construtora", c: "#FF0068" },
-                { l: "Arquiteto", c: "#8B5CF6" },
+                { l: "Criação", c: "#8B5CF6" },
                 { l: "Marca", c: "#FFB800" },
                 { l: "Corretor", c: "#00E5FF" },
               ].map((s, i, a) => (
@@ -263,7 +263,7 @@ export default function ResumoPage() {
                 <p style={{ fontSize: 12, fontWeight: 700, color: "#EEEEFF" }}>Especificação Técnica</p>
               </div>
               <p style={{ fontSize: 11, color: "#7878A0", marginBottom: 10, lineHeight: 1.6 }}>
-                Arquitetos especificam produtos reais do catálogo integrado de marcas. A cada especificação, a marca recebe um lead qualificado.
+                Profissionais de criação especificam produtos reais do catálogo integrado de marcas. A cada especificação, a marca recebe um lead qualificado.
               </p>
               <div style={{ background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.18)", borderRadius: 7, padding: "8px 10px", marginBottom: 10 }}>
                 <p style={{ fontSize: 11, color: "#8B5CF6", lineHeight: 1.6, fontStyle: "italic" }}>
@@ -271,7 +271,7 @@ export default function ResumoPage() {
                 </p>
               </div>
               <Link href="/arquiteto" style={{ fontSize: 11, color: "#8B5CF6", textDecoration: "none", fontWeight: 700 }}>
-                Portal do Arquiteto →
+                Portal de Criação →
               </Link>
             </div>
 
@@ -398,7 +398,7 @@ export default function ResumoPage() {
               {
                 tipo: "TAGMOB OS Pro",
                 modelo: "SaaS mensal",
-                desc: "Até 3 empreendimentos + IA Contextual + Portal do Arquiteto",
+                desc: "Até 3 empreendimentos + IA Contextual + Portal de Criação",
                 cor: "#8B5CF6",
               },
               {
@@ -444,7 +444,7 @@ export default function ResumoPage() {
               { label: "Novo Empreendimento",    sub: "Iniciar workflow de 5 etapas", cor: "#FF0068",  href: "/tagmob-os",                icon: Building2    },
               { label: "Gatekeeper",             sub: "Aprovar peças pendentes",      cor: "#FFB800",  href: "/tagmob-os/emp-001/aprovacao", icon: ShieldCheck },
               { label: "Editor do Cliente",      sub: "Abrir autonomia controlada",   cor: "#39FF14",  href: "/tagmob-os/emp-004/autonomia", icon: Unlock      },
-              { label: "Especificar Produto",    sub: "Portal do arquiteto",          cor: "#8B5CF6",  href: "/arquiteto",                   icon: Palette     },
+              { label: "Especificar Produto",    sub: "Portal de criação",            cor: "#8B5CF6",  href: "/arquiteto",                   icon: Palette     },
               { label: "Catálogo de Marcas",     sub: "AdTech e product placement",  cor: "#FFB800",  href: "/marcas",                      icon: Tag         },
               { label: "Portfolio Corretor",     sub: "Imóveis e encaixe perfeito",  cor: "#00E5FF",  href: "/corretor",                    icon: Sparkles    },
             ].map((a) => (

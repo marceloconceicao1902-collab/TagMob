@@ -58,7 +58,7 @@ function LeadCard({
       style={{
         display: "flex",
         flexDirection: "column",
-        justify: "space-between",
+        justifyContent: "space-between",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,
@@ -191,7 +191,7 @@ function DealCard({
       style={{
         display: "flex",
         flexDirection: "column",
-        justify: "space-between",
+        justifyContent: "space-between",
         background: "#111120",
         border: "1px solid #1A1A30",
         borderRadius: 12,

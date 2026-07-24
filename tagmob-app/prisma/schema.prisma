@@ -824,6 +824,11 @@ enum StatusHub {
   BLOQUEADO
 }
 
+enum TipoDistribuicao {
+  ABERTO      // Qualquer profissional da categoria pode ver e se candidatar
+  DIRECIONADO // Apenas profissionais explicitamente convidados podem ver
+}
+
 model ProfissionalPerfil {
   id              String                @id @default(uuid())
   usuarioId       String                @unique
@@ -839,8 +844,9 @@ model ProfissionalPerfil {
   updatedAt       DateTime              @updatedAt
 
   // Relacionamentos e conexões de negócios
-  conexoesClientes ProClienteConexao[]
-  propostas        PropostaMatch[]
+  conexoesClientes  ProClienteConexao[]
+  propostas         PropostaMatch[]
+  convitesRecebidos ProfissionalConvidado[]
 }
 
 model ProClienteConexao {
@@ -865,11 +871,27 @@ model ServicoAberto {
   orcamentoEst     Decimal?              @db.Decimal(10, 2)
   prazo            String?
   status           String                @default("ABERTO") // ABERTO, EM_ANDAMENTO, FECHADO
+  
+  // Regra de Seleção Dinâmica
+  tipoDistribuicao TipoDistribuicao      @default(ABERTO)
+
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @updatedAt
 
   empreendimento   Empreendimento        @relation(fields: [empreendimentoId], references: [id], onDelete: Cascade)
   propostas        PropostaMatch[]
+  convidados       ProfissionalConvidado[]
+}
+
+model ProfissionalConvidado {
+  id             String             @id @default(uuid())
+  servicoId      String
+  profissionalId String
+  statusConvite  String             @default("ENVIADO") // Enviado, Aceito, Recusado
+  createdAt      DateTime           @default(now())
+  
+  servico        ServicoAberto      @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+  profissional   ProfissionalPerfil @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
 }
 
 model PropostaMatch {
@@ -887,5 +909,6 @@ model PropostaMatch {
   servico          ServicoAberto?      @relation(fields: [servicoId], references: [id], onDelete: SetNull)
   empreendimento   Empreendimento?     @relation(fields: [empreendimentoId], references: [id], onDelete: SetNull)
 }
+
 
 

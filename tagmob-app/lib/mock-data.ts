@@ -1092,6 +1092,7 @@ export const MOCK_SERVICOS_ABERTOS: ServicoAberto[] = [
     orcamentoEst: 140000,
     prazo: "30 dias",
     status: "ABERTO",
+    tipoDistribuicao: "ABERTO",
     createdAt: "2026-07-15",
   },
   {
@@ -1106,6 +1107,11 @@ export const MOCK_SERVICOS_ABERTOS: ServicoAberto[] = [
     orcamentoEst: 85000,
     prazo: "45 dias",
     status: "ABERTO",
+    tipoDistribuicao: "DIRECIONADO",
+    convidadosIds: ["pro-003"],
+    convidados: [
+      { id: "cnv-001", servicoId: "srv-002", profissionalId: "pro-003", statusConvite: "Enviado", createdAt: "2026-07-18" }
+    ],
     createdAt: "2026-07-18",
   },
   {
@@ -1120,6 +1126,7 @@ export const MOCK_SERVICOS_ABERTOS: ServicoAberto[] = [
     orcamentoEst: 35000,
     prazo: "20 dias",
     status: "ABERTO",
+    tipoDistribuicao: "ABERTO",
     createdAt: "2026-07-19",
   },
   {
@@ -1134,7 +1141,27 @@ export const MOCK_SERVICOS_ABERTOS: ServicoAberto[] = [
     orcamentoEst: 95000,
     prazo: "Contínuo",
     status: "ABERTO",
+    tipoDistribuicao: "ABERTO",
     createdAt: "2026-07-10",
+  },
+  {
+    id: "srv-005",
+    empreendimentoId: "emp-001",
+    empreendimentoNome: "Residencial Horizon Jardins",
+    incorporadoraNome: "Incorporadora VillaReal",
+    bairroCidade: "Jardins — São Paulo",
+    titulo: "Consultoria Conceito & Detalhamento Executivo de Fachada",
+    categoria: "ARQUITETO",
+    descricao: "Convite direto exclusivo para o Studio Arq & Design elaborar o detalhamento executivo e especificações técnicas de alto padrão para a fachada.",
+    orcamentoEst: 65000,
+    prazo: "25 dias",
+    status: "ABERTO",
+    tipoDistribuicao: "DIRECIONADO",
+    convidadosIds: ["pro-001"],
+    convidados: [
+      { id: "cnv-002", servicoId: "srv-005", profissionalId: "pro-001", statusConvite: "Enviado", createdAt: "2026-07-22" }
+    ],
+    createdAt: "2026-07-22",
   },
 ];
 

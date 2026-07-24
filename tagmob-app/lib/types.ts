@@ -306,6 +306,16 @@ export interface ProClienteConexao {
   dataConexao: string;
 }
 
+export type TipoDistribuicao = "ABERTO" | "DIRECIONADO";
+
+export interface ProfissionalConvidado {
+  id: string;
+  servicoId: string;
+  profissionalId: string;
+  statusConvite: "Enviado" | "Aceito" | "Recusado";
+  createdAt?: string;
+}
+
 export interface ServicoAberto {
   id: string;
   empreendimentoId: string;
@@ -318,6 +328,9 @@ export interface ServicoAberto {
   orcamentoEst?: number;
   prazo?: string;
   status: "ABERTO" | "EM_ANDAMENTO" | "FECHADO";
+  tipoDistribuicao: TipoDistribuicao;
+  convidadosIds?: string[];
+  convidados?: ProfissionalConvidado[];
   createdAt: string;
 }
 

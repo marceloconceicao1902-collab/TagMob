@@ -1,1 +1,18 @@
-{ "extends": "./tagmob-app/tsconfig.json", "include": [ "tagmob-app/next-env.d.ts", "tagmob-app/**/*.ts", "tagmob-app/**/*.tsx", "tagmob-app/.next/types/**/*.ts", "tagmob-app/.next/dev/types/**/*.ts" ] }
+{
+  "extends": "./tagmob-app/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./tagmob-app/*"]
+    }
+  },
+  "include": [
+    "tagmob-app/next-env.d.ts",
+    "tagmob-app/**/*.ts",
+    "tagmob-app/**/*.tsx",
+    "tagmob-app/.next/types/**/*.ts"
+  ],
+  "exclude": [
+    "**/node_modules"
+  ]
+}

@@ -11,18 +11,19 @@ export function ManifestoSection() {
       badgeGlyph="pink"
       panelTitle={"MANIFESTO\nTAGMOB"}
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {MANIFESTO.map((paragrafo, i) => (
-          <Reveal key={i} as="p" delay={i * 60}>
-            <span
+          <Reveal key={i} delay={i * 55}>
+            <p
+              style={{ color: "#FFFFFF" }}
               className={
                 i === MANIFESTO.length - 1
-                  ? "font-display text-lg font-black uppercase tracking-[-0.02em] text-white sm:text-xl"
-                  : "text-[0.95rem] leading-relaxed text-white font-normal whitespace-pre-line sm:text-[1.05rem]"
+                  ? "font-display text-lg font-black uppercase tracking-[-0.02em] sm:text-xl"
+                  : "text-[1rem] leading-[1.75] sm:text-[1.05rem]"
               }
             >
               {paragrafo}
-            </span>
+            </p>
           </Reveal>
         ))}
       </div>

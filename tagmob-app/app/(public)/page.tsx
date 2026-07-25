@@ -14,7 +14,7 @@ import { SobreSection } from "./_components/sobre-section";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0E0E1C] text-white">
+    <div style={{ backgroundColor: "#0E0E1C", color: "#FFFFFF" }} className="min-h-screen overflow-x-hidden">
       <SiteNav />
       <main>
         <Hero />

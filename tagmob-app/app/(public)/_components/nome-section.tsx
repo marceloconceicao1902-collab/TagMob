@@ -1,17 +1,18 @@
-import { DeckHeading, DeckSplit } from "./deck-split";
+import { NOME_PARTES, NOME_INTRO, NOME_FECHAMENTO } from "../_content";
+import { ACCENT_HEX } from "./accents";
+import { DeckHeading, DeckSplit, Tag } from "./deck-split";
 import { Reveal } from "./reveal";
 
 export function NomeSection() {
   return (
     <DeckSplit
-      id="a-tagmob"
+      id="nome"
       accent="white"
       badgeAccent="violet"
-      badgeGlyph="white"
       badgePosition="center"
     >
-      <div className="flex flex-col gap-10 text-white">
-        {/* DE ONDE VEM O NOME TAGMOB? */}
+      <div className="flex flex-col gap-10">
+        {/* Heading */}
         <div>
           <Reveal>
             <DeckHeading>
@@ -20,63 +21,55 @@ export function NomeSection() {
               NOME TAGMOB?
             </DeckHeading>
           </Reveal>
-
-          <div className="mt-6 flex flex-col gap-4 text-[0.975rem] leading-relaxed text-white sm:text-base">
-            <Reveal delay={60}>
-              <p>
-                A <strong className="font-display font-black uppercase text-white">TAGMOB</strong> nasce da união de três conceitos que definem nossa essência.
-              </p>
-            </Reveal>
-
-            <Reveal delay={120}>
-              <p>
-                <strong className="font-display font-black text-white">T de Tetris:</strong> acreditamos que estratégia, branding, criação, mídia e conteúdo são peças que precisam se encaixar com inteligência para gerar resultados.
-              </p>
-            </Reveal>
-
-            <Reveal delay={180}>
-              <p>
-                <strong className="font-display font-black text-white">AG de Agência:</strong> somos especialistas em transformar empreendimentos em marcas fortes, unindo planejamento, criatividade e execução.
-              </p>
-            </Reveal>
-
-            <Reveal delay={240}>
-              <p>
-                <strong className="font-display font-black text-white">MOB de Mobilidade:</strong> atuamos com flexibilidade para montar equipes, processos e soluções sob medida para cada desafio.
-              </p>
-            </Reveal>
-
-            <Reveal delay={300}>
-              <p>
-                Na <strong className="font-display font-black uppercase text-white">TAGMOB</strong>, cada peça tem uma função, cada estratégia tem um propósito e cada projeto é construído para gerar valor e resultados. Porque grandes marcas nascem quando tudo se encaixa.
-              </p>
-            </Reveal>
-          </div>
-        </div>
-
-        {/* COMO FUNCIONA A TAGMOB? */}
-        <div id="como-funciona" className="scroll-mt-20 border-t border-white/10 pt-10">
-          <Reveal>
-            <DeckHeading>
-              COMO FUNCIONA
-              <br />
-              A TAGMOB?
-            </DeckHeading>
+          <Reveal delay={80}>
+            <p style={{ color: "#FFFFFF" }} className="mt-5 text-[1rem] leading-[1.75] sm:text-[1.05rem]">
+              <Tag /> {NOME_INTRO.replace("A TAGMOB ", "")}
+            </p>
           </Reveal>
-
-          <div className="mt-6 flex flex-col gap-4 text-[0.975rem] leading-relaxed text-white sm:text-base">
-            <Reveal delay={80}>
-              <p>
-                Todo o relacionamento acontece pela plataforma. Briefings, pedidos, aprovações, alterações, arquivos e acompanhamento dos projetos ficam centralizados em um único ambiente.
-              </p>
-            </Reveal>
-            <Reveal delay={140}>
-              <p>
-                Você acompanha cada etapa da campanha em tempo real, sem depender de mensagens, e-mails ou ligações para saber o andamento dos trabalhos.
-              </p>
-            </Reveal>
-          </div>
         </div>
+
+        {/* T · AG · MOB — cards individuais */}
+        <div className="flex flex-col gap-4">
+          {NOME_PARTES.map((parte, i) => (
+            <Reveal key={parte.sigla} delay={140 + i * 80}>
+              <div
+                className="rounded-2xl border p-6"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  borderColor: `${ACCENT_HEX[parte.accent]}40`,
+                }}
+              >
+                <div className="mb-3 flex items-baseline gap-3">
+                  <span
+                    className="font-display text-3xl font-black uppercase leading-none tracking-[-0.05em]"
+                    style={{ color: ACCENT_HEX[parte.accent] }}
+                  >
+                    {parte.sigla}
+                  </span>
+                  <span
+                    className="font-display text-base font-bold uppercase tracking-wide"
+                    style={{ color: "#FFFFFF" }}
+                  >
+                    de {parte.conceito}
+                  </span>
+                </div>
+                <p style={{ color: "rgba(255,255,255,0.85)" }} className="text-[0.9rem] leading-[1.7]">
+                  {parte.texto}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* Fechamento */}
+        <Reveal delay={420}>
+          <p
+            style={{ color: "rgba(255,255,255,0.75)", borderColor: "rgba(255,255,255,0.10)" }}
+            className="border-t pt-6 text-[0.95rem] leading-[1.75] italic"
+          >
+            {NOME_FECHAMENTO}
+          </p>
+        </Reveal>
       </div>
     </DeckSplit>
   );

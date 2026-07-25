@@ -58,15 +58,17 @@ export function Hero() {
           />
         </Reveal>
 
-        <h1 className="flex w-full flex-col items-center justify-center font-display text-[clamp(3rem,10.5vw,7.5rem)] font-black uppercase leading-[0.88] tracking-[-0.05em] text-center">
-          {HERO_WORDS.map((word, i) => (
-            <Reveal key={word.text} as="div" delay={i * 110} className="flex w-full justify-center text-center">
-              <span className="block text-center" style={{ color: TONE_COLOR[word.tone] }}>
-                {word.text}
-              </span>
-            </Reveal>
-          ))}
-        </h1>
+        <div className="flex w-full justify-center">
+          <h1 className="inline-flex flex-col text-left font-display text-[clamp(3.2rem,11.5vw,7.8rem)] font-black uppercase leading-[0.88] tracking-[-0.05em]">
+            {HERO_WORDS.map((word, i) => (
+              <Reveal key={word.text} as="div" delay={i * 110} className="w-full text-left">
+                <span className="block text-left" style={{ color: TONE_COLOR[word.tone] }}>
+                  {word.text}
+                </span>
+              </Reveal>
+            ))}
+          </h1>
+        </div>
 
         <Reveal delay={480} className="flex w-full justify-center">
           <p className="mx-auto mt-9 max-w-2xl text-center text-balance text-base leading-relaxed text-slate-100 font-medium whitespace-pre-line sm:text-lg">

@@ -27,7 +27,7 @@ export function NomeSection() {
             </DeckHeading>
           </Reveal>
           <Reveal delay={80}>
-            <p className="mt-6 text-[0.95rem] leading-relaxed text-slate-100 font-medium text-pretty sm:text-base">
+            <p className="mt-6 text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
               A <Tag /> {NOME_INTRO.replace("A TAGMOB ", "")}
             </p>
           </Reveal>
@@ -54,14 +54,14 @@ export function NomeSection() {
                     de {parte.conceito}
                   </span>
                 </div>
-                <p className="text-[0.9rem] leading-relaxed text-slate-100 font-medium text-pretty">{parte.texto}</p>
+                <p className="text-[0.9rem] leading-relaxed text-white font-normal text-pretty">{parte.texto}</p>
               </div>
             </Reveal>
           ))}
         </ul>
 
         <Reveal delay={340}>
-          <p className="mt-11 max-w-3xl text-[0.95rem] leading-relaxed text-slate-100 font-medium text-pretty sm:text-base">
+          <p className="mt-11 max-w-3xl text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
             Na <Tag />, {NOME_FECHAMENTO.replace("Na TAGMOB, ", "")}
           </p>
         </Reveal>

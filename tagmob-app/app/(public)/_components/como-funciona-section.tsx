@@ -33,7 +33,7 @@ export function ComoFuncionaSection() {
               <p className="font-display text-sm font-bold uppercase tracking-wide text-violet">
                 {pilar.titulo}
               </p>
-              <p className="mt-2 text-[0.875rem] leading-relaxed text-slate-100 font-medium text-pretty">{pilar.texto}</p>
+              <p className="mt-2 text-[0.875rem] leading-relaxed text-white font-normal text-pretty">{pilar.texto}</p>
             </div>
           </Reveal>
         ))}

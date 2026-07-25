@@ -3,14 +3,13 @@ import { TagmobBadge } from "./tagmob-mark";
 
 function gridColor(accent: Accent) {
   return ACCENT_ON[accent] === "#FFFFFF"
-    ? "rgba(255,255,255,0.10)"
-    : "rgba(0,0,0,0.10)";
+    ? "rgba(255,255,255,0.09)"
+    : "rgba(0,0,0,0.09)";
 }
 
 /**
- * Layout assinatura do deck: coluna escura à esquerda (conteúdo),
- * painel sólido à direita e badge "T." na emenda.
- * Ocupa TODA a altura da snap-section pai (h-full).
+ * Layout assinatura do deck — split em duas colunas, ocupa min-h-screen.
+ * Coluna esquerda: conteúdo escuro; coluna direita: painel colorido.
  */
 export function DeckSplit({
   id,
@@ -36,13 +35,19 @@ export function DeckSplit({
   return (
     <div
       id={id}
-      className="grid h-full w-full lg:grid-cols-[1fr_minmax(0,0.72fr)]"
+      className="grid min-h-screen w-full lg:grid-cols-[1fr_minmax(0,0.65fr)]"
       style={{ backgroundColor: "#141425" }}
     >
-      {/* Painel colorido à direita */}
+      {/* Painel colorido — à direita no desktop, faixa no topo no mobile */}
       <div
-        className="relative order-first flex flex-col items-start justify-center px-8 sm:px-12 lg:order-last lg:px-14"
-        style={{ backgroundColor: ACCENT_HEX[accent], color: panelFg, minHeight: "180px" }}
+        className={`relative order-first flex flex-col justify-center px-8 sm:px-10 lg:order-last lg:px-12 ${
+          panelTitle || panelExtra ? "py-10 lg:py-0" : "hidden lg:flex"
+        }`}
+        style={{
+          backgroundColor: ACCENT_HEX[accent],
+          color: panelFg,
+          minHeight: panelTitle || panelExtra ? undefined : "100%",
+        }}
       >
         {/* Grid de linhas */}
         <div
@@ -51,7 +56,7 @@ export function DeckSplit({
           style={
             {
               "--deck-grid-color": gridColor(accent),
-              "--deck-grid-size": "54px",
+              "--deck-grid-size": "48px",
             } as React.CSSProperties
           }
         />
@@ -60,14 +65,14 @@ export function DeckSplit({
         {badgeAccent && (
           <div
             className={`absolute left-0 z-20 hidden -translate-x-1/2 lg:block ${
-              badgePosition === "top" ? "top-14" : "top-1/2 -translate-y-1/2"
+              badgePosition === "top" ? "top-12" : "top-1/2 -translate-y-1/2"
             }`}
           >
             <TagmobBadge
               accent={badgeAccent}
               glyph={badgeGlyph}
-              size={58}
-              className="rounded-[14px] shadow-2xl"
+              size={52}
+              className="rounded-[13px] shadow-2xl"
             />
           </div>
         )}
@@ -75,30 +80,28 @@ export function DeckSplit({
         {panelTitle && (
           <h2
             className="relative z-10 font-display font-black uppercase leading-[0.90] tracking-[-0.04em] whitespace-pre-line"
-            style={{ fontSize: "clamp(2.5rem,4.5vw,4.5rem)" }}
+            style={{ fontSize: "clamp(2.2rem,4vw,3.8rem)" }}
           >
             {panelTitle}
           </h2>
         )}
 
-        {panelExtra && (
-          <div className="relative z-10 py-8 lg:py-0">{panelExtra}</div>
-        )}
+        {panelExtra && <div className="relative z-10">{panelExtra}</div>}
       </div>
 
-      {/* Coluna escura — conteúdo com scroll interno se necessário */}
-      <div className="relative order-last flex flex-col overflow-y-auto px-8 py-16 sm:px-12 lg:order-first lg:px-16 xl:px-20">
-        {/* Badge mobile */}
+      {/* Coluna escura — conteúdo */}
+      <div className="relative order-last flex flex-col overflow-y-auto px-8 py-14 sm:px-10 lg:order-first lg:px-14 lg:py-0 xl:px-16">
+        {/* Badge no topo em mobile */}
         {badgeAccent && (
           <TagmobBadge
             accent={badgeAccent}
             glyph={badgeGlyph}
-            size={44}
-            className="mb-8 rounded-xl lg:hidden"
+            size={40}
+            className="mb-6 rounded-xl lg:hidden"
           />
         )}
         {/* Centraliza verticalmente no desktop */}
-        <div className="my-auto mx-auto w-full max-w-[46rem] lg:mx-0">
+        <div className="mx-auto w-full max-w-[44rem] lg:mx-0 lg:my-auto">
           {children}
         </div>
       </div>
@@ -106,7 +109,7 @@ export function DeckSplit({
   );
 }
 
-/** Título de seção do deck em acento (rosa por padrão). */
+/** Título de seção — tamanho calibrado para caber no enquadramento. */
 export function DeckHeading({
   children,
   accent = "pink",
@@ -118,15 +121,15 @@ export function DeckHeading({
 }) {
   return (
     <h2
-      className={`font-display font-black uppercase leading-[0.94] tracking-[-0.035em] ${className ?? ""}`}
-      style={{ color: ACCENT_HEX[accent], fontSize: "clamp(1.8rem,4.5vw,3rem)" }}
+      className={`font-display font-black uppercase leading-[0.94] tracking-[-0.03em] ${className ?? ""}`}
+      style={{ color: ACCENT_HEX[accent], fontSize: "clamp(1.25rem,2.6vw,1.65rem)" }}
     >
       {children}
     </h2>
   );
 }
 
-/** Parágrafo padrão da coluna escura — branco puro. */
+/** Parágrafo padrão — 14px/0.875rem no mobile, 15px no desktop. */
 export function DeckBody({
   children,
   className,
@@ -137,14 +140,14 @@ export function DeckBody({
   return (
     <p
       style={{ color: "#FFFFFF" }}
-      className={`text-[1rem] leading-[1.75] sm:text-[1.05rem] ${className ?? ""}`}
+      className={`text-[0.875rem] leading-[1.7] sm:text-[0.9375rem] ${className ?? ""}`}
     >
       {children}
     </p>
   );
 }
 
-/** Rótulo de label colorido (ex: "BRIEFINGS E PEDIDOS"). */
+/** Rótulo colorido (ex: "BRIEFINGS E PEDIDOS"). */
 export function DeckLabel({
   children,
   accent = "pink",
@@ -154,7 +157,7 @@ export function DeckLabel({
 }) {
   return (
     <p
-      className="font-display text-[0.7rem] font-black uppercase tracking-[0.12em]"
+      className="font-display text-[0.65rem] font-black uppercase tracking-[0.12em]"
       style={{ color: ACCENT_HEX[accent] }}
     >
       {children}
@@ -162,7 +165,7 @@ export function DeckLabel({
   );
 }
 
-/** "TAGMOB" inline em caixa alta — branco, peso máximo. */
+/** "TAGMOB" inline bold em caixa alta. */
 export function Tag({ children = "TAGMOB" }: { children?: React.ReactNode }) {
   return (
     <strong

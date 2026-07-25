@@ -15,7 +15,7 @@ const TONE_COLOR: Record<(typeof HERO_WORDS)[number]["tone"], string> = {
 export function Hero() {
   return (
     <section
-      className="relative flex h-full flex-col items-center justify-center overflow-hidden px-6 pt-16 pb-10 sm:px-10"
+      className="relative flex h-full flex-col items-center justify-center overflow-hidden px-6 pt-16 pb-6 sm:px-10"
       style={{ backgroundColor: "#0E0E1C" }}
     >
       {/* Grade do deck */}
@@ -24,27 +24,28 @@ export function Hero() {
         className="deck-grid absolute inset-0"
         style={
           {
-            "--deck-grid-color": "rgba(255,255,255,0.055)",
+            "--deck-grid-color": "rgba(255,255,255,0.05)",
             "--deck-grid-size": "56px",
           } as React.CSSProperties
         }
       />
-
-      {/* Brilho central sutil */}
+      {/* Brilho central */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          background: "radial-gradient(ellipse 70% 50% at 50% 40%, rgba(255,0,104,0.06) 0%, transparent 70%)",
+          background:
+            "radial-gradient(ellipse 65% 45% at 50% 38%, rgba(255,0,104,0.07) 0%, transparent 70%)",
         }}
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center">
         {/* Wordmark */}
         <Reveal>
           <TagmobWordmark
             accent="cyan"
-            className="mb-12 text-2xl sm:text-3xl"
+            className="mb-8 text-xl sm:text-2xl"
+            style={{ color: "#FFFFFF" }}
           />
         </Reveal>
 
@@ -53,13 +54,13 @@ export function Hero() {
           <h1
             className="inline-flex flex-col text-left font-display font-black uppercase"
             style={{
-              fontSize: "clamp(3.5rem, 12.5vw, 8.25rem)",
+              fontSize: "clamp(2.8rem,10vw,7rem)",
               lineHeight: 0.88,
               letterSpacing: "-0.05em",
             }}
           >
             {HERO_WORDS.map((word, i) => (
-              <Reveal key={word.text} as="div" delay={i * 100}>
+              <Reveal key={word.text} as="div" delay={i * 90}>
                 <span className="block" style={{ color: TONE_COLOR[word.tone] }}>
                   {word.text}
                 </span>
@@ -69,33 +70,33 @@ export function Hero() {
         </div>
 
         {/* Subtítulo */}
-        <Reveal delay={480}>
+        <Reveal delay={420}>
           <p
-            className="mx-auto mt-12 max-w-xl text-center text-[1.05rem] leading-[1.75]"
-            style={{ color: "rgba(255,255,255,0.75)" }}
+            className="mx-auto mt-8 max-w-lg text-center text-[0.875rem] leading-[1.7] sm:text-[0.9375rem]"
+            style={{ color: "rgba(255,255,255,0.72)" }}
           >
-            A primeira plataforma criativa desenvolvida para o mercado imobiliário.
+            A primeira plataforma criativa do mercado imobiliário.
             <br />
-            Estratégia, branding, criação, conteúdo, mídia e tecnologia em um único ecossistema.
+            Estratégia, branding, criação, conteúdo e mídia em um único ecossistema.
           </p>
         </Reveal>
 
         {/* Botões */}
-        <Reveal delay={600}>
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+        <Reveal delay={540}>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/simulador"
-              className="inline-flex items-center gap-2.5 rounded-xl px-8 py-4 font-display text-sm font-bold uppercase tracking-wider text-white transition-all hover:scale-[1.03]"
-              style={{ backgroundColor: "#FF0068", boxShadow: "0 0 32px rgba(255,0,104,0.30)" }}
+              className="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-display text-[0.8rem] font-bold uppercase tracking-wider text-white transition-all hover:scale-[1.03]"
+              style={{ backgroundColor: "#FF0068", boxShadow: "0 0 28px rgba(255,0,104,0.28)" }}
             >
-              Iniciar Projeto <ArrowRight size={18} />
+              Iniciar Projeto <ArrowRight size={16} />
             </Link>
             <Link
               href="/sign-in"
-              className="inline-flex items-center gap-2 rounded-xl px-7 py-4 font-display text-sm font-bold uppercase tracking-wider transition-all hover:opacity-80"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 font-display text-[0.8rem] font-bold uppercase tracking-wider transition-all hover:opacity-80"
               style={{
-                border: "1px solid rgba(255,255,255,0.20)",
-                backgroundColor: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                backgroundColor: "rgba(255,255,255,0.04)",
                 color: "#FFFFFF",
               }}
             >

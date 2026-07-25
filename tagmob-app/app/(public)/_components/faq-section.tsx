@@ -1,30 +1,29 @@
 import { FAQ } from "../_content";
 import { ACCENT_HEX } from "./accents";
-import { DeckHeading, DeckSplit } from "./deck-split";
+import { DeckSplit } from "./deck-split";
 import { Reveal } from "./reveal";
 
 export function FaqSection() {
   return (
     <DeckSplit
-      id="faq"
       accent="pink"
       badgeAccent="white"
       badgeGlyph="pink"
       panelTitle={"PERGUNTAS\nFREQUENTES"}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2.5">
         {FAQ.map((item, i) => (
-          <Reveal key={item.pergunta} delay={Math.min(i, 8) * 40}>
+          <Reveal key={item.pergunta} delay={Math.min(i, 8) * 35}>
             <div
-              className="rounded-2xl border p-6"
+              className="rounded-xl border p-4"
               style={{
                 backgroundColor: "rgba(255,255,255,0.04)",
-                borderColor: "rgba(255,255,255,0.10)",
+                borderColor: "rgba(255,255,255,0.09)",
               }}
             >
               {/* Pergunta */}
               <h3
-                className="font-display text-[0.95rem] font-black uppercase leading-tight tracking-[-0.01em] sm:text-[1.05rem]"
+                className="font-display text-[0.82rem] font-black uppercase leading-snug tracking-[-0.01em] sm:text-[0.875rem]"
                 style={{ color: "#FF0068" }}
               >
                 {item.pergunta}
@@ -33,7 +32,7 @@ export function FaqSection() {
               {/* Destaque (Sim. / Não.) */}
               {item.destaque && (
                 <p
-                  className="mt-2 font-display text-sm font-black uppercase tracking-wide"
+                  className="mt-1 font-display text-[0.7rem] font-black uppercase tracking-wide"
                   style={{
                     color: item.destaque === "Sim." ? "#3AFF17" : ACCENT_HEX.amber,
                   }}
@@ -43,12 +42,12 @@ export function FaqSection() {
               )}
 
               {/* Resposta */}
-              <div className="mt-3 flex flex-col gap-2">
+              <div className="mt-2 flex flex-col gap-1">
                 {item.resposta.map((paragrafo) => (
                   <p
                     key={paragrafo}
-                    style={{ color: "rgba(255,255,255,0.88)" }}
-                    className="text-[0.9rem] leading-[1.7]"
+                    style={{ color: "rgba(255,255,255,0.85)" }}
+                    className="text-[0.8rem] leading-[1.65]"
                   >
                     {paragrafo}
                   </p>

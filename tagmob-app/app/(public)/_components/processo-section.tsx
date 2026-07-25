@@ -1,102 +1,88 @@
-import { FLUXO_PADRAO, PRIORIDADES, PROCESSO_CRIACAO } from "../_content";
-import { ACCENT_HEX } from "./accents";
-import { DeckHeading, Tag } from "./deck-split";
+import { DeckHeading, DeckSplit } from "./deck-split";
 import { Reveal } from "./reveal";
 
 export function ProcessoSection() {
   return (
-    <section
+    <DeckSplit
       id="processo"
-      className="relative scroll-mt-16 border-t border-white/[0.07] bg-ink px-6 py-20 sm:px-10 lg:py-28"
+      accent="white"
+      badgeAccent="cyan"
+      badgeGlyph="white"
+      badgePosition="center"
     >
-      <div className="mx-auto max-w-[84rem]">
-        <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <Reveal>
-              <DeckHeading>
-                Como funciona
-                <br />
-                o processo
-                <br />
-                de criação?
-              </DeckHeading>
-            </Reveal>
-            <div className="mt-6 flex flex-col gap-4">
-              {PROCESSO_CRIACAO.map((p, i) => (
-                <Reveal key={i} as="p" delay={80 + i * 60}>
-                  <span className="text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
-                    {p}
-                  </span>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <Reveal>
-              <DeckHeading>
-                Como são
-                <br />
-                definidas as
-                <br />
-                prioridades?
-              </DeckHeading>
-            </Reveal>
-            <div className="mt-6 flex flex-col gap-4">
-              <Reveal as="p" delay={80}>
-                <span className="text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
-                  Na <Tag />, {PRIORIDADES[0].replace("Na TAGMOB, ", "")}
-                </span>
-              </Reveal>
-              {PRIORIDADES.slice(1).map((p, i) => (
-                <Reveal key={i} as="p" delay={140 + i * 60}>
-                  <span className="text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
-                    {p}
-                  </span>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-16 lg:mt-20">
+      <div className="flex flex-col gap-10 text-white">
+        {/* COMO FUNCIONA O PROCESSO DE CRIAÇÃO? */}
+        <div>
           <Reveal>
-            <p className="font-display text-xs font-black uppercase tracking-[0.18em] text-white/70">
-              Fluxo padrão
-            </p>
+            <DeckHeading>
+              COMO FUNCIONA
+              <br />
+              O PROCESSO
+              <br />
+              DE CRIAÇÃO?
+            </DeckHeading>
           </Reveal>
 
-          <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {FLUXO_PADRAO.map((etapa, i) => (
-              <Reveal key={etapa.titulo} as="li" delay={i * 80}>
-                <div
-                  className="flex h-full items-center gap-4 rounded-xl border bg-ink-deep p-5"
-                  style={{ borderColor: `${ACCENT_HEX[etapa.accent]}2A` }}
-                >
-                  <span
-                    className="flex size-9 shrink-0 items-center justify-center rounded-md font-display text-[0.7rem] font-black"
-                    style={{
-                      color: ACCENT_HEX[etapa.accent],
-                      backgroundColor: `${ACCENT_HEX[etapa.accent]}18`,
-                    }}
-                  >
-                    {String(i).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <p
-                      className="font-display text-[0.68rem] font-black uppercase tracking-[0.12em]"
-                      style={{ color: ACCENT_HEX[etapa.accent] }}
-                    >
-                      {etapa.codigo}
-                    </p>
-                    <p className="mt-0.5 text-[0.9rem] font-semibold text-white">{etapa.titulo}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </ol>
+          <div className="mt-6 flex flex-col gap-4 text-[0.975rem] leading-relaxed text-white sm:text-base">
+            <Reveal delay={60}>
+              <p>Cada campanha segue um fluxo estruturado.</p>
+            </Reveal>
+            <Reveal delay={120}>
+              <p>
+                Os materiais são desenvolvidos por etapas, garantindo que cada entrega sirva de base para a próxima. Isso mantém a consistência da comunicação e evita retrabalho.
+              </p>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* COMO SÃO DEFINIDAS AS PRIORIDADES? */}
+        <div className="border-t border-white/10 pt-10">
+          <Reveal>
+            <DeckHeading>
+              COMO SÃO
+              <br />
+              DEFINIDAS AS
+              <br />
+              PRIORIDADES?
+            </DeckHeading>
+          </Reveal>
+
+          <div className="mt-6 flex flex-col gap-4 text-[0.975rem] leading-relaxed text-white sm:text-base">
+            <Reveal delay={60}>
+              <p>
+                Na <strong className="font-display font-black uppercase text-white">TAGMOB</strong>, cada campanha segue uma sequência lógica de desenvolvimento.
+              </p>
+            </Reveal>
+            <Reveal delay={120}>
+              <p>
+                Primeiro é construída a estratégia, depois a identidade visual e, somente então, os materiais de comunicação.
+              </p>
+            </Reveal>
+            <Reveal delay={180}>
+              <p>
+                Assim garantimos que todas as peças mantenham unidade e fortalecem a marca do empreendimento.
+              </p>
+            </Reveal>
+          </div>
+
+          {/* FLUXO PADRÃO */}
+          <div className="mt-8">
+            <Reveal>
+              <h4 className="font-display text-sm font-black uppercase tracking-wider text-white">
+                FLUXO PADRÃO
+              </h4>
+            </Reveal>
+            <ul className="mt-3 flex flex-col gap-2 font-display text-[0.95rem] font-semibold text-white">
+              <Reveal delay={200}><li>Apresentação da Campanha</li></Reveal>
+              <Reveal delay={240}><li>Job 001 – Key Visual</li></Reveal>
+              <Reveal delay={280}><li>Job 002 – Brandbook</li></Reveal>
+              <Reveal delay={320}><li>Job 003 – Assets da Campanha</li></Reveal>
+              <Reveal delay={360}><li>Job 004 – Filme Conceito</li></Reveal>
+              <Reveal delay={400}><li>Job 005 – Placa de Terreno</li></Reveal>
+            </ul>
+          </div>
         </div>
       </div>
-    </section>
+    </DeckSplit>
   );
 }

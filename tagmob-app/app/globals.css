@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme {
+  --color-white:        #FFFFFF;
+  --color-black:        #000000;
   /* ── Superfícies ─────────────────────────────── */
   --color-base:         #09090F;
   --color-surface:      #0D0D1A;

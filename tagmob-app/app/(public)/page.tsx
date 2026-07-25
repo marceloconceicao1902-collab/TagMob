@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import { ComoFuncionaSection } from "./_components/como-funciona-section";
 import { ContatoSection } from "./_components/contato-section";
 import { FaqSection } from "./_components/faq-section";
 import { Hero } from "./_components/hero";
@@ -22,7 +21,6 @@ export default function LandingPage() {
         <ManifestoSection />
         <SobreSection />
         <NomeSection />
-        <ComoFuncionaSection />
         <ProcessoSection />
         <ProcessoCriativoSection />
         <FaqSection />

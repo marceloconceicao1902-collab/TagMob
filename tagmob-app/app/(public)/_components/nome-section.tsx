@@ -1,71 +1,83 @@
-import { NOME_FECHAMENTO, NOME_INTRO, NOME_PARTES } from "../_content";
-import { ACCENT_HEX } from "./accents";
-import { DeckHeading, Tag } from "./deck-split";
+import { DeckHeading, DeckSplit } from "./deck-split";
 import { Reveal } from "./reveal";
 
 export function NomeSection() {
   return (
-    <section className="relative overflow-hidden border-t border-white/[0.07] bg-ink-deep px-6 py-20 sm:px-10 lg:py-28">
-      <div
-        aria-hidden
-        className="deck-grid absolute inset-0"
-        style={
-          {
-            "--deck-grid-color": "rgba(255,255,255,0.035)",
-            "--deck-grid-size": "58px",
-          } as React.CSSProperties
-        }
-      />
-
-      <div className="relative z-10 mx-auto max-w-[84rem]">
-        <div className="max-w-2xl">
+    <DeckSplit
+      id="a-tagmob"
+      accent="white"
+      badgeAccent="violet"
+      badgeGlyph="white"
+      badgePosition="center"
+    >
+      <div className="flex flex-col gap-10 text-white">
+        {/* DE ONDE VEM O NOME TAGMOB? */}
+        <div>
           <Reveal>
             <DeckHeading>
-              De onde vem o
+              DE ONDE VEM O
               <br />
-              nome TAGMOB?
+              NOME TAGMOB?
             </DeckHeading>
           </Reveal>
-          <Reveal delay={80}>
-            <p className="mt-6 text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
-              A <Tag /> {NOME_INTRO.replace("A TAGMOB ", "")}
-            </p>
-          </Reveal>
+
+          <div className="mt-6 flex flex-col gap-4 text-[0.975rem] leading-relaxed text-white sm:text-base">
+            <Reveal delay={60}>
+              <p>
+                A <strong className="font-display font-black uppercase text-white">TAGMOB</strong> nasce da união de três conceitos que definem nossa essência.
+              </p>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <p>
+                <strong className="font-display font-black text-white">T de Tetris:</strong> acreditamos que estratégia, branding, criação, mídia e conteúdo são peças que precisam se encaixar com inteligência para gerar resultados.
+              </p>
+            </Reveal>
+
+            <Reveal delay={180}>
+              <p>
+                <strong className="font-display font-black text-white">AG de Agência:</strong> somos especialistas em transformar empreendimentos em marcas fortes, unindo planejamento, criatividade e execução.
+              </p>
+            </Reveal>
+
+            <Reveal delay={240}>
+              <p>
+                <strong className="font-display font-black text-white">MOB de Mobilidade:</strong> atuamos com flexibilidade para montar equipes, processos e soluções sob medida para cada desafio.
+              </p>
+            </Reveal>
+
+            <Reveal delay={300}>
+              <p>
+                Na <strong className="font-display font-black uppercase text-white">TAGMOB</strong>, cada peça tem uma função, cada estratégia tem um propósito e cada projeto é construído para gerar valor e resultados. Porque grandes marcas nascem quando tudo se encaixa.
+              </p>
+            </Reveal>
+          </div>
         </div>
 
-        <ul className="mt-12 grid gap-4 md:grid-cols-3">
-          {NOME_PARTES.map((parte, i) => (
-            <Reveal key={parte.sigla} as="li" delay={i * 100}>
-              <div
-                className="flex h-full flex-col gap-4 rounded-2xl border bg-ink p-7"
-                style={{
-                  borderColor: `${ACCENT_HEX[parte.accent]}2E`,
-                  boxShadow: `inset 0 1px 0 0 ${ACCENT_HEX[parte.accent]}14`,
-                }}
-              >
-                <div className="flex items-baseline gap-3">
-                  <span
-                    className="font-display text-4xl font-black uppercase leading-none tracking-[-0.05em]"
-                    style={{ color: ACCENT_HEX[parte.accent] }}
-                  >
-                    {parte.sigla}
-                  </span>
-                  <span className="font-display text-lg font-bold uppercase tracking-[-0.01em] text-white">
-                    de {parte.conceito}
-                  </span>
-                </div>
-                <p className="text-[0.9rem] leading-relaxed text-white font-normal text-pretty">{parte.texto}</p>
-              </div>
-            </Reveal>
-          ))}
-        </ul>
+        {/* COMO FUNCIONA A TAGMOB? */}
+        <div id="como-funciona" className="scroll-mt-20 border-t border-white/10 pt-10">
+          <Reveal>
+            <DeckHeading>
+              COMO FUNCIONA
+              <br />
+              A TAGMOB?
+            </DeckHeading>
+          </Reveal>
 
-        <Reveal delay={340}>
-          <p className="mt-11 max-w-3xl text-[0.95rem] leading-relaxed text-white font-normal text-pretty sm:text-base">
-            Na <Tag />, {NOME_FECHAMENTO.replace("Na TAGMOB, ", "")}
-          </p>
-        </Reveal>
+          <div className="mt-6 flex flex-col gap-4 text-[0.975rem] leading-relaxed text-white sm:text-base">
+            <Reveal delay={80}>
+              <p>
+                Todo o relacionamento acontece pela plataforma. Briefings, pedidos, aprovações, alterações, arquivos e acompanhamento dos projetos ficam centralizados em um único ambiente.
+              </p>
+            </Reveal>
+            <Reveal delay={140}>
+              <p>
+                Você acompanha cada etapa da campanha em tempo real, sem depender de mensagens, e-mails ou ligações para saber o andamento dos trabalhos.
+              </p>
+            </Reveal>
+          </div>
+        </div>
       </div>
-    </section>
+    </DeckSplit>
   );
 }

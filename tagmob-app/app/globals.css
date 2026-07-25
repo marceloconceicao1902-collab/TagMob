@@ -8,6 +8,15 @@
   --color-card-hover:   #161628;
   --color-overlay:      #0A0A14;
 
+  /* ── Superfícies do deck institucional (LP) ──── */
+  --color-ink:          #141425;
+  --color-ink-deep:     #0E0E1C;
+  --color-violet:       #7B46F8;
+
+  /* ── Tipografia ──────────────────────────────── */
+  --font-sans:          var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display:       var(--font-archivo), var(--font-inter), ui-sans-serif, sans-serif;
+
   /* ── Bordas ──────────────────────────────────── */
   --color-line:         #1A1A30;
   --color-line-hover:   #282840;
@@ -76,6 +85,14 @@ body {
   background-size: 28px 28px;
 }
 
+/* ── Grid de linhas do deck institucional ──────── */
+.deck-grid {
+  background-image:
+    linear-gradient(to right,  var(--deck-grid-color, rgba(255, 255, 255, 0.06)) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--deck-grid-color, rgba(255, 255, 255, 0.06)) 1px, transparent 1px);
+  background-size: var(--deck-grid-size, 64px) var(--deck-grid-size, 64px);
+}
+
 /* ── Blocos Tetris decorativos ─────────────────── */
 .tetris-block {
   position: absolute;
@@ -114,6 +131,29 @@ body {
 .animate-slide-up  { animation: slide-up 0.5s ease forwards; }
 .animate-fade-in   { animation: fade-in 0.4s ease forwards; }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* ── Revelação em scroll (LP institucional) ────── */
+.deck-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.deck-reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 
 /* ── Utilitários de Gradiente de Texto ─────────── */
 .text-gradient-pink {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
@@ -22,16 +22,24 @@ export function SiteNav() {
     return () => container.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Intersection Observer para destacar a seção ativa no nav
+  // Intersection Observer — rootMargin centraliza a zona de detecção na tela
+  // Funciona tanto para seções curtas quanto para seções mais altas que a tela
   useEffect(() => {
+    const container = document.getElementById("snap-main");
     const ids = NAV_LINKS.map((l) => l.href.replace("#", "")).filter(Boolean);
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActiveId(entry.target.id);
-        }
+        // Pega o entry mais visível
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible.length > 0) setActiveId(visible[0].target.id);
       },
-      { threshold: 0.5 }
+      {
+        root: container ?? null,
+        rootMargin: "-35% 0px -35% 0px",
+        threshold: [0, 0.1, 0.25, 0.5],
+      }
     );
     ids.forEach((id) => {
       const el = document.getElementById(id);
@@ -40,14 +48,16 @@ export function SiteNav() {
     return () => observer.disconnect();
   }, []);
 
-  // Fechar menu mobile ao clicar em link
+  // Navegação — rola o snap-container diretamente para a posição do elemento
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setOpen(false);
     const id = href.replace("#", "");
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+    const container = document.getElementById("snap-main");
+    if (el && container) {
+      // offsetTop relativo ao container
+      container.scrollTo({ top: el.offsetTop, behavior: "smooth" });
     }
   };
 

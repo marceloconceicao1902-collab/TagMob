@@ -18,7 +18,7 @@ export function ManifestoSection() {
               className={
                 i === MANIFESTO.length - 1
                   ? "font-display text-lg font-black uppercase tracking-[-0.02em] text-white sm:text-xl"
-                  : "text-[0.95rem] leading-relaxed text-white/70 sm:text-[1rem]"
+                  : "text-[0.95rem] leading-relaxed text-white/90 text-pretty sm:text-[1.025rem]"
               }
             >
               {paragrafo}

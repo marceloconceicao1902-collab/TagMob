@@ -11,7 +11,7 @@ export const HERO_WORDS = [
 ] as const;
 
 export const HERO_SUBTITLE =
-  "A primeira plataforma criativa desenvolvida para o mercado imobiliário. Estratégia, branding, criação, conteúdo, mídia e tecnologia conectados em um único ecossistema.";
+  "A primeira plataforma criativa desenvolvida para o mercado\u00A0imobiliário. Estratégia, branding, criação, conteúdo, mídia\u00A0e\u00A0tecnologia conectados em um único ecossistema.";
 
 export const MANIFESTO = [
   "O mercado imobiliário mudou. A tecnologia evoluiu. As pessoas mudaram. A forma de comunicar também precisava evoluir.",

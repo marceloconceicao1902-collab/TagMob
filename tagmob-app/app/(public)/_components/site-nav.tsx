@@ -44,7 +44,7 @@ export function SiteNav() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-[0.8rem] font-bold text-white/55 transition-colors hover:text-white"
+                className="text-[0.8rem] font-bold text-white/80 transition-colors hover:text-white"
               >
                 {link.label}
               </a>

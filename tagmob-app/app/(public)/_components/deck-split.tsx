@@ -108,7 +108,7 @@ export function DeckHeading({
 }) {
   return (
     <h2
-      className={`font-display text-[clamp(2rem,5.2vw,3.35rem)] font-black uppercase leading-[0.94] tracking-[-0.035em] ${className ?? ""}`}
+      className={`font-display text-[clamp(2rem,5.2vw,3.35rem)] font-black uppercase leading-[0.94] tracking-[-0.035em] text-balance ${className ?? ""}`}
       style={{ color: ACCENT_HEX[accent] }}
     >
       {children}
@@ -125,7 +125,7 @@ export function DeckBody({
   className?: string;
 }) {
   return (
-    <p className={`text-[0.975rem] leading-relaxed text-white/70 sm:text-base ${className ?? ""}`}>
+    <p className={`text-[0.975rem] leading-relaxed text-white/90 text-pretty sm:text-base ${className ?? ""}`}>
       {children}
     </p>
   );

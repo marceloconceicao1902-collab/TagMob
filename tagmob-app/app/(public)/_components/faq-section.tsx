@@ -25,7 +25,7 @@ export function FaqSection() {
             </DeckHeading>
           </Reveal>
           <Reveal delay={80}>
-            <p className="mt-5 max-w-sm text-[0.95rem] leading-relaxed text-white/60">
+            <p className="mt-5 max-w-sm text-[0.95rem] leading-relaxed text-white/85 text-pretty">
               Tudo o que incorporadoras e construtoras costumam perguntar antes de começar uma
               campanha na TAGMOB.
             </p>
@@ -75,7 +75,7 @@ export function FaqSection() {
                     {item.resposta.map((paragrafo) => (
                       <p
                         key={paragrafo}
-                        className="text-[0.925rem] leading-relaxed text-white/65"
+                        className="text-[0.925rem] leading-relaxed text-white/90 text-pretty"
                       >
                         {paragrafo}
                       </p>

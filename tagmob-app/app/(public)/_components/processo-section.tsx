@@ -24,7 +24,7 @@ export function ProcessoSection() {
             <div className="mt-6 flex flex-col gap-4">
               {PROCESSO_CRIACAO.map((p, i) => (
                 <Reveal key={i} as="p" delay={80 + i * 60}>
-                  <span className="text-[0.95rem] leading-relaxed text-white/70 sm:text-base">
+                  <span className="text-[0.95rem] leading-relaxed text-white/90 text-pretty sm:text-base">
                     {p}
                   </span>
                 </Reveal>
@@ -44,13 +44,13 @@ export function ProcessoSection() {
             </Reveal>
             <div className="mt-6 flex flex-col gap-4">
               <Reveal as="p" delay={80}>
-                <span className="text-[0.95rem] leading-relaxed text-white/70 sm:text-base">
+                <span className="text-[0.95rem] leading-relaxed text-white/90 text-pretty sm:text-base">
                   Na <Tag />, {PRIORIDADES[0].replace("Na TAGMOB, ", "")}
                 </span>
               </Reveal>
               {PRIORIDADES.slice(1).map((p, i) => (
                 <Reveal key={i} as="p" delay={140 + i * 60}>
-                  <span className="text-[0.95rem] leading-relaxed text-white/70 sm:text-base">
+                  <span className="text-[0.95rem] leading-relaxed text-white/90 text-pretty sm:text-base">
                     {p}
                   </span>
                 </Reveal>
@@ -61,7 +61,7 @@ export function ProcessoSection() {
 
         <div className="mt-16 lg:mt-20">
           <Reveal>
-            <p className="font-display text-xs font-black uppercase tracking-[0.18em] text-white/45">
+            <p className="font-display text-xs font-black uppercase tracking-[0.18em] text-white/70">
               Fluxo padrão
             </p>
           </Reveal>

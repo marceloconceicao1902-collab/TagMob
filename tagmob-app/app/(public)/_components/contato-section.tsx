@@ -40,7 +40,7 @@ export function ContatoSection() {
             </h2>
             <div className="mt-4 flex flex-col gap-1">
               {bloco.texto.map((linha) => (
-                <p key={linha} className="text-[0.95rem] leading-relaxed text-white/65">
+                <p key={linha} className="text-[0.95rem] leading-relaxed text-white/90 text-pretty">
                   {linha}
                 </p>
               ))}

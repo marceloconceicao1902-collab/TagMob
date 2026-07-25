@@ -17,7 +17,7 @@ export function SobreSection() {
 
       <div className="mt-7 flex flex-col gap-5">
         <Reveal as="p" delay={80}>
-          <span className="text-[0.95rem] leading-relaxed text-white/70 sm:text-base">
+          <span className="text-[0.95rem] leading-relaxed text-white/90 text-pretty sm:text-base">
             A <Tag /> {primeiro.replace("A TAGMOB ", "")}
           </span>
         </Reveal>

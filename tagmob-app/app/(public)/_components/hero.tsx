@@ -58,16 +58,16 @@ export function Hero() {
           />
         </Reveal>
 
-        <h1 className="font-display text-[clamp(2.9rem,10.5vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em]">
+        <h1 className="w-full font-display text-[clamp(2.9rem,10.5vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em] text-center flex flex-col items-center justify-center text-balance">
           {HERO_WORDS.map((word, i) => (
-            <Reveal key={word.text} as="span" delay={i * 110} className="block">
+            <Reveal key={word.text} as="span" delay={i * 110} className="block w-full text-center">
               <span style={{ color: TONE_COLOR[word.tone] }}>{word.text}</span>
             </Reveal>
           ))}
         </h1>
 
         <Reveal delay={480}>
-          <p className="mx-auto mt-9 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
+          <p className="mx-auto mt-9 max-w-2xl text-center text-balance text-base leading-relaxed text-white/90 sm:text-lg">
             {HERO_SUBTITLE}
           </p>
         </Reveal>

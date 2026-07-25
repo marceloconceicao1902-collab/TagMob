@@ -95,6 +95,33 @@ body {
   background-size: var(--deck-grid-size, 64px) var(--deck-grid-size, 64px);
 }
 
+/* ── Fullpage Scroll-Snap ───────────────────────── */
+.snap-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  /* Compensa a altura do nav fixo */
+  scroll-padding-top: 64px;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Seções com muito conteúdo: permitem scroll interno sem quebrar o snap */
+.snap-section-overflow {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100vh;
+  position: relative;
+  overflow-y: auto;
+}
+
 /* ── Blocos Tetris decorativos ─────────────────── */
 .tetris-block {
   position: absolute;

@@ -15,7 +15,7 @@ const TONE_COLOR: Record<(typeof HERO_WORDS)[number]["tone"], string> = {
 export function Hero() {
   return (
     <section
-      className="relative flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 py-20 sm:px-10 lg:py-28"
+      className="relative flex h-full flex-col items-center justify-center overflow-hidden px-6 pt-16 pb-10 sm:px-10"
       style={{ backgroundColor: "#0E0E1C" }}
     >
       {/* Grade do deck */}

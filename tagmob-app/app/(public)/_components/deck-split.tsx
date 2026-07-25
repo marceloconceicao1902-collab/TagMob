@@ -8,8 +8,9 @@ function gridColor(accent: Accent) {
 }
 
 /**
- * Layout assinatura do deck: coluna escura à esquerda,
- * painel sólido à direita e badge "T." pousado na emenda.
+ * Layout assinatura do deck: coluna escura à esquerda (conteúdo),
+ * painel sólido à direita e badge "T." na emenda.
+ * Ocupa TODA a altura da snap-section pai (h-full).
  */
 export function DeckSplit({
   id,
@@ -33,17 +34,15 @@ export function DeckSplit({
   const panelFg = ACCENT_ON[accent];
 
   return (
-    <section
+    <div
       id={id}
-      className="relative grid scroll-mt-20 lg:grid-cols-[1fr_minmax(0,0.75fr)]"
+      className="grid h-full w-full lg:grid-cols-[1fr_minmax(0,0.72fr)]"
       style={{ backgroundColor: "#141425" }}
     >
       {/* Painel colorido à direita */}
       <div
-        className={`relative order-first flex flex-col justify-center px-8 sm:px-12 lg:order-last lg:min-h-[600px] lg:px-14 lg:py-24 ${
-          panelTitle || panelExtra ? "min-h-[180px] py-10" : "min-h-0 py-0"
-        }`}
-        style={{ backgroundColor: ACCENT_HEX[accent], color: panelFg }}
+        className="relative order-first flex flex-col items-start justify-center px-8 sm:px-12 lg:order-last lg:px-14"
+        style={{ backgroundColor: ACCENT_HEX[accent], color: panelFg, minHeight: "180px" }}
       >
         {/* Grid de linhas */}
         <div
@@ -57,7 +56,7 @@ export function DeckSplit({
           }
         />
 
-        {/* Badge na emenda (apenas desktop) */}
+        {/* Badge na emenda (desktop) */}
         {badgeAccent && (
           <div
             className={`absolute left-0 z-20 hidden -translate-x-1/2 lg:block ${
@@ -75,17 +74,20 @@ export function DeckSplit({
 
         {panelTitle && (
           <h2
-            className="relative z-10 font-display text-4xl font-black uppercase leading-[0.92] tracking-[-0.04em] whitespace-pre-line sm:text-5xl lg:text-[clamp(2.8rem,4.5vw,4.5rem)]"
+            className="relative z-10 font-display font-black uppercase leading-[0.90] tracking-[-0.04em] whitespace-pre-line"
+            style={{ fontSize: "clamp(2.5rem,4.5vw,4.5rem)" }}
           >
             {panelTitle}
           </h2>
         )}
 
-        {panelExtra}
+        {panelExtra && (
+          <div className="relative z-10 py-8 lg:py-0">{panelExtra}</div>
+        )}
       </div>
 
-      {/* Coluna escura com o conteúdo */}
-      <div className="relative order-last px-8 py-16 sm:px-12 lg:order-first lg:px-16 lg:py-24 xl:px-20">
+      {/* Coluna escura — conteúdo com scroll interno se necessário */}
+      <div className="relative order-last flex flex-col overflow-y-auto px-8 py-16 sm:px-12 lg:order-first lg:px-16 xl:px-20">
         {/* Badge mobile */}
         {badgeAccent && (
           <TagmobBadge
@@ -95,9 +97,12 @@ export function DeckSplit({
             className="mb-8 rounded-xl lg:hidden"
           />
         )}
-        <div className="mx-auto max-w-[46rem] lg:mx-0">{children}</div>
+        {/* Centraliza verticalmente no desktop */}
+        <div className="my-auto mx-auto w-full max-w-[46rem] lg:mx-0">
+          {children}
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -113,15 +118,15 @@ export function DeckHeading({
 }) {
   return (
     <h2
-      className={`font-display text-[clamp(2rem,5vw,3.25rem)] font-black uppercase leading-[0.94] tracking-[-0.035em] ${className ?? ""}`}
-      style={{ color: ACCENT_HEX[accent] }}
+      className={`font-display font-black uppercase leading-[0.94] tracking-[-0.035em] ${className ?? ""}`}
+      style={{ color: ACCENT_HEX[accent], fontSize: "clamp(1.8rem,4.5vw,3rem)" }}
     >
       {children}
     </h2>
   );
 }
 
-/** Parágrafo padrão da coluna escura — branco puro, tamanho confortável. */
+/** Parágrafo padrão da coluna escura — branco puro. */
 export function DeckBody({
   children,
   className,

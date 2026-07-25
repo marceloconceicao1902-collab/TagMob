@@ -6,7 +6,6 @@ import { Reveal } from "./reveal";
 export function SobreSection() {
   return (
     <DeckSplit
-      id="a-tagmob"
       accent="cyan"
       badgeAccent="pink"
       badgePosition="center"

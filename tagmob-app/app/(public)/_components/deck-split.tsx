@@ -8,8 +8,8 @@ function gridColor(accent: Accent) {
 }
 
 /**
- * Layout assinatura do deck — split em duas colunas, ocupa min-h-screen.
- * Coluna esquerda: conteúdo escuro; coluna direita: painel colorido.
+ * Layout assinatura do deck: coluna escura à esquerda, painel colorido à direita.
+ * O conteúdo fica centralizado vertical e horizontalmente na coluna escura.
  */
 export function DeckSplit({
   id,
@@ -35,19 +35,15 @@ export function DeckSplit({
   return (
     <div
       id={id}
-      className="grid min-h-screen w-full lg:grid-cols-[1fr_minmax(0,0.65fr)]"
+      className="grid min-h-screen w-full lg:grid-cols-[1fr_minmax(0,0.60fr)]"
       style={{ backgroundColor: "#141425" }}
     >
-      {/* Painel colorido — à direita no desktop, faixa no topo no mobile */}
+      {/* ── Painel colorido (direita no desktop, faixa no topo no mobile) ── */}
       <div
-        className={`relative order-first flex flex-col justify-center px-8 sm:px-10 lg:order-last lg:px-12 ${
-          panelTitle || panelExtra ? "py-10 lg:py-0" : "hidden lg:flex"
-        }`}
-        style={{
-          backgroundColor: ACCENT_HEX[accent],
-          color: panelFg,
-          minHeight: panelTitle || panelExtra ? undefined : "100%",
-        }}
+        className={`relative order-first flex flex-col items-start justify-center
+          px-10 sm:px-14 lg:order-last lg:min-h-screen lg:px-14
+          ${panelTitle || panelExtra ? "py-10 lg:py-16" : "hidden lg:flex"}`}
+        style={{ backgroundColor: ACCENT_HEX[accent], color: panelFg }}
       >
         {/* Grid de linhas */}
         <div
@@ -65,14 +61,14 @@ export function DeckSplit({
         {badgeAccent && (
           <div
             className={`absolute left-0 z-20 hidden -translate-x-1/2 lg:block ${
-              badgePosition === "top" ? "top-12" : "top-1/2 -translate-y-1/2"
+              badgePosition === "top" ? "top-14" : "top-1/2 -translate-y-1/2"
             }`}
           >
             <TagmobBadge
               accent={badgeAccent}
               glyph={badgeGlyph}
-              size={52}
-              className="rounded-[13px] shadow-2xl"
+              size={54}
+              className="rounded-[14px] shadow-2xl"
             />
           </div>
         )}
@@ -80,36 +76,39 @@ export function DeckSplit({
         {panelTitle && (
           <h2
             className="relative z-10 font-display font-black uppercase leading-[0.90] tracking-[-0.04em] whitespace-pre-line"
-            style={{ fontSize: "clamp(2.2rem,4vw,3.8rem)" }}
+            style={{ fontSize: "clamp(2.4rem, 4.2vw, 4rem)" }}
           >
             {panelTitle}
           </h2>
         )}
 
-        {panelExtra && <div className="relative z-10">{panelExtra}</div>}
+        {panelExtra && (
+          <div className="relative z-10 py-8 lg:py-0">{panelExtra}</div>
+        )}
       </div>
 
-      {/* Coluna escura — conteúdo */}
-      <div className="relative order-last flex flex-col overflow-y-auto px-8 py-14 sm:px-10 lg:order-first lg:px-14 lg:py-0 xl:px-16">
-        {/* Badge no topo em mobile */}
+      {/* ── Coluna escura — conteúdo centralizado ── */}
+      <div
+        className="relative order-last flex min-h-screen flex-col items-center justify-center
+          overflow-y-auto px-10 py-16 sm:px-14 lg:order-first lg:px-16 xl:px-20"
+      >
+        {/* Badge mobile */}
         {badgeAccent && (
           <TagmobBadge
             accent={badgeAccent}
             glyph={badgeGlyph}
-            size={40}
-            className="mb-6 rounded-xl lg:hidden"
+            size={44}
+            className="mb-8 rounded-xl lg:hidden"
           />
         )}
-        {/* Centraliza verticalmente no desktop */}
-        <div className="mx-auto w-full max-w-[44rem] lg:mx-0 lg:my-auto">
-          {children}
-        </div>
+        {/* Bloco de conteúdo — máximo 520px de largura, centrado */}
+        <div className="w-full max-w-[520px]">{children}</div>
       </div>
     </div>
   );
 }
 
-/** Título de seção — tamanho calibrado para caber no enquadramento. */
+/** Título de seção — tamanho calibrado para boa leitura. */
 export function DeckHeading({
   children,
   accent = "pink",
@@ -122,14 +121,14 @@ export function DeckHeading({
   return (
     <h2
       className={`font-display font-black uppercase leading-[0.94] tracking-[-0.03em] ${className ?? ""}`}
-      style={{ color: ACCENT_HEX[accent], fontSize: "clamp(1.25rem,2.6vw,1.65rem)" }}
+      style={{ color: ACCENT_HEX[accent], fontSize: "clamp(1.5rem, 2.8vw, 2rem)" }}
     >
       {children}
     </h2>
   );
 }
 
-/** Parágrafo padrão — 14px/0.875rem no mobile, 15px no desktop. */
+/** Parágrafo padrão — legível, confortável. */
 export function DeckBody({
   children,
   className,
@@ -140,14 +139,14 @@ export function DeckBody({
   return (
     <p
       style={{ color: "#FFFFFF" }}
-      className={`text-[0.875rem] leading-[1.7] sm:text-[0.9375rem] ${className ?? ""}`}
+      className={`text-[0.9375rem] leading-[1.72] sm:text-[1rem] ${className ?? ""}`}
     >
       {children}
     </p>
   );
 }
 
-/** Rótulo colorido (ex: "BRIEFINGS E PEDIDOS"). */
+/** Rótulo colorido de seção. */
 export function DeckLabel({
   children,
   accent = "pink",
@@ -157,7 +156,7 @@ export function DeckLabel({
 }) {
   return (
     <p
-      className="font-display text-[0.65rem] font-black uppercase tracking-[0.12em]"
+      className="font-display text-[0.68rem] font-black uppercase tracking-[0.12em]"
       style={{ color: ACCENT_HEX[accent] }}
     >
       {children}
@@ -165,7 +164,7 @@ export function DeckLabel({
   );
 }
 
-/** "TAGMOB" inline bold em caixa alta. */
+/** "TAGMOB" inline em caixa alta. */
 export function Tag({ children = "TAGMOB" }: { children?: React.ReactNode }) {
   return (
     <strong

@@ -10,14 +10,14 @@ export function ProcessoCriativoSection() {
       badgeAccent="green"
       panelTitle={"PROCESSO\nCRIATIVO"}
     >
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {PROCESSO_CRIATIVO.map((etapa, i) => (
           <Reveal key={etapa.titulo} delay={i * 65}>
             <div
-              className="flex gap-4 rounded-xl border p-4"
+              className="flex gap-4 rounded-xl border p-5"
               style={{
-                backgroundColor: "rgba(255,255,255,0.04)",
-                borderColor: `${ACCENT_HEX[etapa.accent]}30`,
+                backgroundColor: "rgba(255,255,255,0.05)",
+                borderColor: `${ACCENT_HEX[etapa.accent]}32`,
               }}
             >
               {/* Linha decorativa vertical */}
@@ -27,17 +27,17 @@ export function ProcessoCriativoSection() {
               />
               <div>
                 <p
-                  className="font-display text-[0.75rem] font-black uppercase tracking-[0.06em]"
+                  className="font-display text-[0.78rem] font-black uppercase tracking-[0.07em]"
                   style={{ color: ACCENT_HEX[etapa.accent] }}
                 >
                   {etapa.titulo}
                 </p>
-                <div className="mt-1.5 flex flex-col gap-1">
+                <div className="mt-2 flex flex-col gap-1.5">
                   {etapa.linhas.map((linha) => (
                     <p
                       key={linha}
-                      style={{ color: "rgba(255,255,255,0.85)" }}
-                      className="text-[0.82rem] leading-[1.6]"
+                      style={{ color: "rgba(255,255,255,0.88)" }}
+                      className="text-[0.875rem] leading-[1.68]"
                     >
                       {linha}
                     </p>
@@ -49,26 +49,26 @@ export function ProcessoCriativoSection() {
         ))}
 
         {/* Fechamento */}
-        <Reveal delay={400}>
+        <Reveal delay={420}>
           <div
-            className="rounded-xl border p-4"
+            className="rounded-xl border p-5"
             style={{
               backgroundColor: "rgba(255,255,255,0.04)",
-              borderColor: "rgba(255,255,255,0.08)",
+              borderColor: "rgba(255,255,255,0.09)",
             }}
           >
             {PROCESSO_CRIATIVO_FECHAMENTO.map((linha) => (
               <p
                 key={linha}
                 style={{ color: "#FFFFFF" }}
-                className="font-display text-[0.85rem] font-bold leading-[1.6]"
+                className="font-display text-[0.9rem] font-bold leading-[1.65]"
               >
                 {linha}
               </p>
             ))}
             <p
               style={{ color: "#3AFF17" }}
-              className="mt-2 font-display text-base font-black uppercase tracking-[-0.02em]"
+              className="mt-3 font-display text-[1.05rem] font-black uppercase tracking-[-0.02em]"
             >
               Isso é TAGMOB.
             </p>

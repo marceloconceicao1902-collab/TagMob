@@ -11,12 +11,12 @@ export function SobreSection() {
       badgePosition="center"
       panelTitle={"O QUE É\nA TAGMOB?"}
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {/* Parágrafos */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3.5">
           {O_QUE_E.map((paragrafo, i) => (
-            <Reveal key={i} delay={i * 60}>
-              <p style={{ color: "#FFFFFF" }} className="text-[0.875rem] leading-[1.7] sm:text-[0.9375rem]">
+            <Reveal key={i} delay={i * 65}>
+              <p style={{ color: "#FFFFFF" }} className="text-[0.9375rem] leading-[1.72]">
                 {i === 0 ? <><Tag /> {paragrafo.replace("A TAGMOB ", "")}</> : paragrafo}
               </p>
             </Reveal>
@@ -24,24 +24,24 @@ export function SobreSection() {
         </div>
 
         {/* Grade de pilares 2×2 */}
-        <Reveal delay={240}>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <Reveal delay={260}>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {COMO_FUNCIONA_PILARES.map((pilar) => (
               <div
                 key={pilar.titulo}
                 className="rounded-xl border p-4"
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.03)",
-                  borderColor: "rgba(255,255,255,0.09)",
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  borderColor: "rgba(255,255,255,0.10)",
                 }}
               >
                 <p
-                  className="mb-1.5 font-display text-[0.6rem] font-black uppercase tracking-[0.12em]"
+                  className="mb-2 font-display text-[0.65rem] font-black uppercase tracking-[0.12em]"
                   style={{ color: ACCENT_HEX.pink }}
                 >
                   {pilar.titulo}
                 </p>
-                <p style={{ color: "#FFFFFF" }} className="text-[0.8rem] leading-[1.65]">
+                <p style={{ color: "#FFFFFF" }} className="text-[0.875rem] leading-[1.68]">
                   {pilar.texto}
                 </p>
               </div>

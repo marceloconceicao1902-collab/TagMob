@@ -10,7 +10,7 @@ export function NomeSection() {
       badgeAccent="violet"
       badgePosition="center"
     >
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-7">
         {/* Heading */}
         <div>
           <Reveal>
@@ -20,39 +20,39 @@ export function NomeSection() {
               NOME TAGMOB?
             </DeckHeading>
           </Reveal>
-          <Reveal delay={70}>
-            <p style={{ color: "#FFFFFF" }} className="mt-3 text-[0.875rem] leading-[1.7] sm:text-[0.9375rem]">
+          <Reveal delay={80}>
+            <p style={{ color: "#FFFFFF" }} className="mt-3 text-[0.9375rem] leading-[1.72]">
               <Tag /> {NOME_INTRO.replace("A TAGMOB ", "")}
             </p>
           </Reveal>
         </div>
 
         {/* T · AG · MOB */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {NOME_PARTES.map((parte, i) => (
-            <Reveal key={parte.sigla} delay={130 + i * 65}>
+            <Reveal key={parte.sigla} delay={140 + i * 70}>
               <div
                 className="flex gap-4 rounded-xl border p-4"
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.04)",
-                  borderColor: `${ACCENT_HEX[parte.accent]}38`,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  borderColor: `${ACCENT_HEX[parte.accent]}40`,
                 }}
               >
-                <div className="shrink-0 pt-0.5">
+                <div className="shrink-0 w-14 pt-0.5">
                   <span
-                    className="font-display text-2xl font-black uppercase leading-none"
+                    className="block font-display text-2xl font-black uppercase leading-none"
                     style={{ color: ACCENT_HEX[parte.accent] }}
                   >
                     {parte.sigla}
                   </span>
-                  <p
-                    className="mt-0.5 font-display text-[0.6rem] font-bold uppercase tracking-wide"
-                    style={{ color: "rgba(255,255,255,0.50)" }}
+                  <span
+                    className="block mt-1 font-display text-[0.6rem] font-bold uppercase tracking-wide"
+                    style={{ color: "rgba(255,255,255,0.45)" }}
                   >
                     de {parte.conceito}
-                  </p>
+                  </span>
                 </div>
-                <p style={{ color: "rgba(255,255,255,0.88)" }} className="text-[0.82rem] leading-[1.65]">
+                <p style={{ color: "rgba(255,255,255,0.90)" }} className="text-[0.875rem] leading-[1.68]">
                   {parte.texto}
                 </p>
               </div>
@@ -61,10 +61,10 @@ export function NomeSection() {
         </div>
 
         {/* Fechamento */}
-        <Reveal delay={380}>
+        <Reveal delay={400}>
           <p
-            style={{ color: "rgba(255,255,255,0.55)", borderColor: "rgba(255,255,255,0.09)" }}
-            className="border-t pt-4 text-[0.82rem] leading-[1.65] italic"
+            style={{ color: "rgba(255,255,255,0.55)", borderColor: "rgba(255,255,255,0.10)" }}
+            className="border-t pt-5 text-[0.875rem] leading-[1.68] italic"
           >
             {NOME_FECHAMENTO}
           </p>

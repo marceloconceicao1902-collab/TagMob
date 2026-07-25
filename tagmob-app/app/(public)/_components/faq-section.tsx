@@ -11,7 +11,7 @@ export function FaqSection() {
       badgeGlyph="pink"
       panelTitle={"PERGUNTAS\nFREQUENTES"}
     >
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {FAQ.map((item, i) => (
           <Reveal key={item.pergunta} delay={Math.min(i, 8) * 35}>
             <div
@@ -23,7 +23,7 @@ export function FaqSection() {
             >
               {/* Pergunta */}
               <h3
-                className="font-display text-[0.82rem] font-black uppercase leading-snug tracking-[-0.01em] sm:text-[0.875rem]"
+                className="font-display text-[0.875rem] font-black uppercase leading-snug tracking-[-0.01em]"
                 style={{ color: "#FF0068" }}
               >
                 {item.pergunta}
@@ -32,7 +32,7 @@ export function FaqSection() {
               {/* Destaque (Sim. / Não.) */}
               {item.destaque && (
                 <p
-                  className="mt-1 font-display text-[0.7rem] font-black uppercase tracking-wide"
+                  className="mt-1.5 font-display text-[0.72rem] font-black uppercase tracking-wide"
                   style={{
                     color: item.destaque === "Sim." ? "#3AFF17" : ACCENT_HEX.amber,
                   }}
@@ -42,12 +42,12 @@ export function FaqSection() {
               )}
 
               {/* Resposta */}
-              <div className="mt-2 flex flex-col gap-1">
+              <div className="mt-2 flex flex-col gap-1.5">
                 {item.resposta.map((paragrafo) => (
                   <p
                     key={paragrafo}
-                    style={{ color: "rgba(255,255,255,0.85)" }}
-                    className="text-[0.8rem] leading-[1.65]"
+                    style={{ color: "rgba(255,255,255,0.87)" }}
+                    className="text-[0.875rem] leading-[1.68]"
                   >
                     {paragrafo}
                   </p>

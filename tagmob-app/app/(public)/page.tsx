@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { ComoFuncionaSection } from "./_components/como-funciona-section";
 import { ContatoSection } from "./_components/contato-section";
 import { FaqSection } from "./_components/faq-section";
@@ -12,7 +15,7 @@ import { SobreSection } from "./_components/sobre-section";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-ink text-white">
+    <div className="min-h-screen overflow-x-hidden bg-[#0E0E1C] text-white">
       <SiteNav />
       <main>
         <Hero />

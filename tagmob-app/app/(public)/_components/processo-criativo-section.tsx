@@ -35,7 +35,7 @@ export function ProcessoCriativoSection() {
                 </p>
                 <div className="mt-1.5 flex flex-col gap-0.5">
                   {etapa.linhas.map((linha) => (
-                    <p key={linha} className="text-[0.925rem] leading-relaxed text-white/90 text-pretty">
+                    <p key={linha} className="text-[0.925rem] leading-relaxed text-slate-100 font-medium text-pretty">
                       {linha}
                     </p>
                   ))}
@@ -49,7 +49,7 @@ export function ProcessoCriativoSection() {
       <Reveal delay={480}>
         <div className="mt-2 border-t border-white/10 pt-7">
           {PROCESSO_CRIATIVO_FECHAMENTO.map((linha) => (
-            <p key={linha} className="text-[0.95rem] leading-relaxed text-white/90 text-pretty">
+            <p key={linha} className="text-[0.95rem] leading-relaxed text-slate-100 font-medium text-pretty">
               {linha}
             </p>
           ))}

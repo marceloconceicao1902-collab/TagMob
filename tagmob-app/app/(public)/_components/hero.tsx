@@ -23,13 +23,13 @@ const PIECES: Array<{ accent: Accent; w: number; h: number; style: React.CSSProp
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-ink px-6 pb-24 pt-20 sm:px-10 lg:pb-32 lg:pt-28">
+    <section className="relative flex min-h-[82vh] flex-col items-center justify-center overflow-hidden bg-ink px-6 py-20 sm:px-10 lg:py-28">
       <div
         aria-hidden
         className="deck-grid absolute inset-0"
         style={
           {
-            "--deck-grid-color": "rgba(255,255,255,0.045)",
+            "--deck-grid-color": "rgba(255,255,255,0.05)",
             "--deck-grid-size": "62px",
           } as React.CSSProperties
         }
@@ -44,45 +44,47 @@ export function Hero() {
             width: piece.w,
             height: piece.h,
             backgroundColor: ACCENT_HEX[piece.accent],
-            opacity: 0.1,
+            opacity: 0.12,
             ...piece.style,
           }}
         />
       ))}
 
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center text-center">
         <Reveal>
           <TagmobWordmark
             accent="cyan"
-            className="mb-10 text-2xl text-white sm:text-3xl"
+            className="mb-8 text-2xl text-white sm:text-3xl"
           />
         </Reveal>
 
-        <h1 className="w-full font-display text-[clamp(2.9rem,10.5vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em] text-center flex flex-col items-center justify-center text-balance">
+        <h1 className="flex w-full flex-col items-center justify-center font-display text-[clamp(3rem,10.5vw,7.5rem)] font-black uppercase leading-[0.88] tracking-[-0.05em] text-center">
           {HERO_WORDS.map((word, i) => (
-            <Reveal key={word.text} as="span" delay={i * 110} className="block w-full text-center">
-              <span style={{ color: TONE_COLOR[word.tone] }}>{word.text}</span>
+            <Reveal key={word.text} as="div" delay={i * 110} className="flex w-full justify-center text-center">
+              <span className="block text-center" style={{ color: TONE_COLOR[word.tone] }}>
+                {word.text}
+              </span>
             </Reveal>
           ))}
         </h1>
 
-        <Reveal delay={480}>
-          <p className="mx-auto mt-9 max-w-2xl text-center text-balance text-base leading-relaxed text-white/90 sm:text-lg">
+        <Reveal delay={480} className="flex w-full justify-center">
+          <p className="mx-auto mt-9 max-w-2xl text-center text-balance text-base leading-relaxed text-slate-100 font-medium whitespace-pre-line sm:text-lg">
             {HERO_SUBTITLE}
           </p>
         </Reveal>
 
-        <Reveal delay={580}>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <Reveal delay={580} className="flex w-full justify-center">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3.5">
             <Link
               href="/simulador"
-              className="inline-flex items-center gap-2.5 rounded-xl bg-pink px-7 py-3.5 text-[0.95rem] font-bold text-white transition-transform hover:scale-[1.03]"
+              className="inline-flex items-center gap-2.5 rounded-xl bg-pink px-8 py-3.5 text-[0.95rem] font-bold text-white transition-all hover:scale-[1.03] shadow-lg shadow-pink/20"
             >
               Montar meu projeto <ArrowRight size={17} />
             </Link>
             <a
               href="#manifesto"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-6 py-3.5 text-[0.95rem] font-semibold text-white/75 transition-colors hover:border-white/45 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/5 px-6 py-3.5 text-[0.95rem] font-semibold text-white transition-all hover:border-white/60 hover:bg-white/10"
             >
               Ler o manifesto
             </a>

@@ -11,13 +11,14 @@ export const HERO_WORDS = [
 ] as const;
 
 export const HERO_SUBTITLE =
-  "A primeira plataforma criativa desenvolvida para o mercado\u00A0imobiliário. Estratégia, branding, criação, conteúdo, mídia\u00A0e\u00A0tecnologia conectados em um único ecossistema.";
+  "A primeira plataforma criativa desenvolvida para o mercado imobiliário.\nEstratégia, branding, criação, conteúdo, mídia e tecnologia conectados em um único ecossistema.";
 
 export const MANIFESTO = [
-  "O mercado imobiliário mudou. A tecnologia evoluiu. As pessoas mudaram. A forma de comunicar também precisava evoluir.",
+  "O mercado imobiliário mudou. A tecnologia evoluiu. As pessoas mudaram.\nA forma de comunicar também precisava evoluir.",
   "Foi por isso que nasceu a TAGMOB.",
   "Não somos apenas uma agência, nem apenas uma plataforma. Somos uma nova forma de criar, conectar e transformar a comunicação do mercado imobiliário, reunindo estratégia, criatividade, tecnologia e especialistas em um único ecossistema.",
-  "Aqui, cada campanha nasce de uma estratégia sólida. Cada peça faz parte de um sistema. Cada entrega contribui para um resultado maior. Como no Tetris, acreditamos que grandes resultados acontecem quando cada peça encontra o lugar certo. Estratégia, branding, criação, conteúdo, mídia e tecnologia trabalham conectados para construir marcas fortes e campanhas que geram valor.",
+  "Aqui, cada campanha nasce de uma estratégia sólida. Cada peça faz parte de um sistema. Cada entrega contribui para um resultado maior.",
+  "Como no Tetris, acreditamos que grandes resultados acontecem quando cada peça encontra o lugar certo. Estratégia, branding, criação, conteúdo, mídia e tecnologia trabalham conectados para construir marcas fortes e campanhas que geram valor.",
   "A tecnologia acelera processos. A inteligência artificial potencializa a produtividade. Mas as grandes ideias continuam nascendo das pessoas. Por isso reunimos profissionais especializados no mercado imobiliário para desenvolver soluções criativas, inteligentes e alinhadas aos objetivos de cada empreendimento.",
   "A TAGMOB não nasceu para digitalizar uma agência. Nasceu para reinventar a forma como incorporadoras, construtoras e equipes criativas trabalham juntas, com mais transparência, colaboração, eficiência e resultado.",
   "Porque o futuro da comunicação imobiliária já começou.",

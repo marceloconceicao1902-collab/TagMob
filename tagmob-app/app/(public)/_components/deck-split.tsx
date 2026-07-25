@@ -125,7 +125,7 @@ export function DeckBody({
   className?: string;
 }) {
   return (
-    <p className={`text-[0.975rem] leading-relaxed text-white/90 text-pretty sm:text-base ${className ?? ""}`}>
+    <p className={`text-[0.975rem] leading-relaxed text-slate-100 font-medium text-pretty sm:text-base ${className ?? ""}`}>
       {children}
     </p>
   );

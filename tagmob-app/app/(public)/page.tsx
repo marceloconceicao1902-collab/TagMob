@@ -433,7 +433,7 @@ export default function LandingPage() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        shrink: 0,
+                        flexShrink: 0,
                         boxShadow: `0 0 16px ${color}40`,
                       }}
                     >
@@ -557,7 +557,7 @@ export default function LandingPage() {
                   gap: 12,
                 }}
               >
-                <div style={{ width: 6, height: 6, backgroundColor: "#FF0068", borderRadius: 1, shrink: 0 }} />
+                <div style={{ width: 6, height: 6, backgroundColor: "#FF0068", borderRadius: 1, flexShrink: 0 }} />
                 <span style={{ fontSize: 14, fontWeight: 800, color: "#EEEEFF" }}>
                   {modulo}
                 </span>
@@ -578,7 +578,7 @@ export default function LandingPage() {
               gap: 20,
             }}
           >
-            <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: "rgba(0,229,255,0.15)", border: "1px solid #00E5FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#00E5FF", shrink: 0 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: "rgba(0,229,255,0.15)", border: "1px solid #00E5FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#00E5FF", flexShrink: 0 }}>
               <Sparkles size={22} />
             </div>
             <div>
@@ -623,11 +623,11 @@ export default function LandingPage() {
             {DIFERENCIAIS_TABELA.map((row, idx) => (
               <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div style={{ background: "#111120", border: "1px solid #1A1A30", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 12 }}>
-                  <X size={16} color="#EF4444" style={{ shrink: 0 }} />
+                  <X size={16} color="#EF4444" style={{ flexShrink: 0 }} />
                   <span style={{ fontSize: 14, color: "#7878A0" }}>{row.tradicional}</span>
                 </div>
                 <div style={{ background: "#111120", border: "1px solid rgba(57, 255, 20, 0.2)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 12 }}>
-                  <Check size={16} color="#39FF14" style={{ shrink: 0 }} />
+                  <Check size={16} color="#39FF14" style={{ flexShrink: 0 }} />
                   <span style={{ fontSize: 14, color: "#EEEEFF", fontWeight: 600 }}>{row.tagmob}</span>
                 </div>
               </div>
@@ -764,7 +764,7 @@ export default function LandingPage() {
                     <h3 style={{ fontSize: 16, fontWeight: 800, color: isOpen ? "#FF0068" : "#EEEEFF" }}>
                       {item.pergunta}
                     </h3>
-                    <div style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: isOpen ? "#FF0068" : "#7878A0", shrink: 0 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: isOpen ? "#FF0068" : "#7878A0", flexShrink: 0 }}>
                       {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                     </div>
                   </div>

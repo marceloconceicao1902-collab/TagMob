@@ -19,22 +19,19 @@ export function FaqSection() {
         </DeckHeading>
       </Reveal>
 
-      <div className="mt-8 flex flex-col gap-8 text-white">
+      <div className="mt-8 flex flex-col gap-6 text-white">
         {FAQ.map((item, i) => (
           <Reveal key={item.pergunta} delay={i * 30}>
-            <div className="border-b border-white/10 pb-6">
-              <h3 className="font-display text-[1.05rem] font-black uppercase leading-tight tracking-tight text-[#FF0068] sm:text-xl">
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm transition-colors hover:border-pink/30 hover:bg-white/[0.06]">
+              <h3 className="font-display text-base font-black uppercase leading-snug tracking-tight text-pink sm:text-lg">
                 {item.pergunta}
               </h3>
-              {item.destaque && (
-                <p className="mt-2 font-display text-sm font-black uppercase text-white">
-                  {item.destaque}
-                </p>
-              )}
-              <div className="mt-2 flex flex-col gap-1 text-[0.95rem] leading-relaxed text-white font-normal sm:text-base">
-                {item.resposta.map((paragrafo) => (
-                  <p key={paragrafo}>{paragrafo}</p>
-                ))}
+              <div className="mt-2 text-[0.925rem] leading-relaxed text-white/80 font-normal sm:text-base">
+                {Array.isArray(item.resposta) ? (
+                  item.resposta.map((paragrafo) => <p key={paragrafo}>{paragrafo}</p>)
+                ) : (
+                  <p>{item.resposta}</p>
+                )}
               </div>
             </div>
           </Reveal>

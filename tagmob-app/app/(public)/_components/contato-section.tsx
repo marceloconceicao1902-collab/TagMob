@@ -5,7 +5,6 @@ import { CONTATO } from "../_content";
 import { DeckSplit } from "./deck-split";
 import { Reveal } from "./reveal";
 
-/** Wordmark "TAG / MOB" empilhado, como no fechamento do deck. */
 function StackedWordmark() {
   return (
     <div
@@ -19,11 +18,6 @@ function StackedWordmark() {
 }
 
 export function ContatoSection() {
-  const blocos = [
-    { ...CONTATO.whatsapp, external: true },
-    { ...CONTATO.suporte, external: false },
-  ];
-
   return (
     <DeckSplit
       id="contato"
@@ -32,55 +26,87 @@ export function ContatoSection() {
       badgePosition="center"
       panelExtra={<StackedWordmark />}
     >
-      <div className="flex flex-col gap-12">
-        {blocos.map((bloco, i) => (
-          <Reveal key={bloco.titulo} as="div" delay={i * 110}>
-            <h2 className="font-display text-[clamp(2rem,5vw,3rem)] font-black uppercase leading-none tracking-[-0.04em] text-white">
-              {bloco.titulo}
-            </h2>
-            <div className="mt-4 flex flex-col gap-1">
-              {bloco.texto.map((linha) => (
-                <p key={linha} className="text-[0.95rem] leading-relaxed text-white font-normal text-pretty">
-                  {linha}
-                </p>
-              ))}
-            </div>
-            {bloco.external ? (
+      <div className="flex flex-col gap-10">
+        {/* MANIFESTO FINAL */}
+        <Reveal>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+            <p className="font-display text-lg font-black uppercase tracking-tight text-pink sm:text-xl">
+              O futuro do marketing imobiliário não é contratar uma agência.
+            </p>
+            <p className="mt-3 text-base font-bold text-white">
+              É conectar estratégia, criatividade, tecnologia e pessoas em um único ecossistema.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/80">
+              A TAGMOB transforma processos dispersos em uma operação integrada, inteligente e transparente.
+            </p>
+            <p className="mt-4 border-t border-white/10 pt-4 font-display text-sm font-black uppercase tracking-wide text-green">
+              Porque o futuro não está apenas em criar campanhas. Está em conectar estratégia, pessoas, tecnologia e resultados.
+            </p>
+          </div>
+        </Reveal>
+
+        {/* CANAIS DE CONTATO */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <Reveal delay={120}>
+            <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <div>
+                <h3 className="font-display text-base font-black uppercase text-white">
+                  {CONTATO.whatsapp.titulo}
+                </h3>
+                {CONTATO.whatsapp.texto.map((linha) => (
+                  <p key={linha} className="mt-1 text-xs text-white/70">
+                    {linha}
+                  </p>
+                ))}
+              </div>
               <a
-                href={bloco.href}
+                href={CONTATO.whatsapp.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-green transition-opacity hover:opacity-75"
+                className="mt-4 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wider text-green transition-opacity hover:opacity-75"
               >
-                {bloco.label} <ArrowUpRight size={16} />
+                {CONTATO.whatsapp.label} <ArrowUpRight size={14} />
               </a>
-            ) : (
-              <Link
-                href={bloco.href}
-                className="mt-5 inline-flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-cyan transition-opacity hover:opacity-75"
-              >
-                {bloco.label} <ArrowRight size={16} />
-              </Link>
-            )}
+            </div>
           </Reveal>
-        ))}
 
+          <Reveal delay={180}>
+            <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <div>
+                <h3 className="font-display text-base font-black uppercase text-white">
+                  {CONTATO.suporte.titulo}
+                </h3>
+                {CONTATO.suporte.texto.map((linha) => (
+                  <p key={linha} className="mt-1 text-xs text-white/70">
+                    {linha}
+                  </p>
+                ))}
+              </div>
+              <Link
+                href={CONTATO.suporte.href}
+                className="mt-4 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wider text-cyan transition-opacity hover:opacity-75"
+              >
+                {CONTATO.suporte.label} <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* BOTAO FINAL SIMULADOR */}
         <Reveal delay={240}>
-          <div className="border-t border-white/10 pt-8">
+          <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <a
               href={CONTATO.siteHref}
-              className="font-display text-sm font-black uppercase tracking-[0.14em] text-white/70 transition-colors hover:text-white"
+              className="font-display text-xs font-black uppercase tracking-[0.14em] text-white/50 transition-colors hover:text-white"
             >
               {CONTATO.site}
             </a>
-            <div className="mt-6">
-              <Link
-                href="/simulador"
-                className="inline-flex items-center gap-2.5 rounded-xl bg-pink px-7 py-3.5 text-[0.95rem] font-bold text-white transition-transform hover:scale-[1.03]"
-              >
-                Montar meu projeto <ArrowRight size={17} />
-              </Link>
-            </div>
+            <Link
+              href="/simulador"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-pink px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-[1.03]"
+            >
+              Montar meu projeto <ArrowRight size={16} />
+            </Link>
           </div>
         </Reveal>
       </div>

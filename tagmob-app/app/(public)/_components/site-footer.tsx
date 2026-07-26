@@ -84,7 +84,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} TAGMOB. Todos os direitos reservados.
           </p>
           <p className="font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-white/30">
-            Pensar · Criar · Construir · Conectar
+            Pensar · Criar · Conectar
           </p>
         </div>
       </div>

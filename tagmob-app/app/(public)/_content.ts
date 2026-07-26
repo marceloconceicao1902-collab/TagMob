@@ -277,4 +277,5 @@ export const NAV_LINKS = [
   { href: "#diferenciais", label: "Diferenciais" },
   { href: "#modelo", label: "Modelo" },
   { href: "#faq", label: "FAQ" },
+  { href: "#simulador", label: "Simulador" },
 ];

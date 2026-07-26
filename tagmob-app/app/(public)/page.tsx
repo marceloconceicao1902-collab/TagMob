@@ -8,6 +8,8 @@ import {
   Lock, X, Check, Bot, LayoutGrid, ArrowUpRight, Layers
 } from "lucide-react";
 
+import { SimuladorSection } from "./_components/simulador-section";
+
 import {
   COMO_FUNCIONA_ETAPAS,
   CONTATO,
@@ -98,7 +100,7 @@ export default function LandingPage() {
           </Link>
 
           {/* Menu de Navegação por Tópicos Clicáveis */}
-          <nav style={{ display: "none" }} className="lg:flex items-center gap-7">
+          <nav className="hidden md:flex items-center gap-6">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -783,6 +785,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ══ 12. SIMULADOR DE ESCOPO E INVESTIMENTO ═══════════════════════════ */}
+      <SimuladorSection />
 
       {/* ══ 12. FECHAMENTO & FOOTER ══════════════════════════════════════════ */}
       <footer id="contato" style={{ position: "relative", padding: "80px 24px 40px", borderTop: "1px solid #111120", backgroundColor: "#09090F" }}>

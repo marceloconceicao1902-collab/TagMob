@@ -5,6 +5,7 @@ import { Reveal } from "./reveal";
 export function ManifestoSection() {
   return (
     <DeckSplit
+      id="manifesto"
       accent="pink"
       badgeAccent="white"
       badgeGlyph="pink"
@@ -12,17 +13,16 @@ export function ManifestoSection() {
     >
       <div className="flex flex-col gap-5">
         {MANIFESTO.map((paragrafo, i) => (
-          <Reveal key={i} delay={i * 45}>
-            <p
-              style={{ color: "#FFFFFF" }}
+          <Reveal key={i} as="p" delay={i * 60}>
+            <span
               className={
                 i === MANIFESTO.length - 1
-                  ? "font-display text-[1.05rem] font-black uppercase tracking-[-0.02em]"
-                  : "text-[0.9375rem] leading-[1.72]"
+                  ? "font-display text-lg font-black uppercase tracking-[-0.02em] text-white sm:text-xl"
+                  : "text-[0.95rem] leading-relaxed text-white font-normal whitespace-pre-line sm:text-[1.05rem]"
               }
             >
               {paragrafo}
-            </p>
+            </span>
           </Reveal>
         ))}
       </div>

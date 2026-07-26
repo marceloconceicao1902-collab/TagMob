@@ -2,118 +2,85 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { CONTATO } from "../_content";
-import { ACCENT_HEX } from "./accents";
 import { DeckSplit } from "./deck-split";
 import { Reveal } from "./reveal";
 
+/** Wordmark "TAG / MOB" empilhado, como no fechamento do deck. */
 function StackedWordmark() {
   return (
     <div
       aria-hidden
-      className="font-display font-black uppercase leading-[0.82] tracking-[-0.06em]"
-      style={{ fontSize: "clamp(2.8rem, 10vw, 5.5rem)", color: "#0E0E1C" }}
+      className="relative z-10 font-display text-[clamp(3.25rem,14vw,7rem)] font-black uppercase leading-[0.82] tracking-[-0.06em]"
     >
-      <span style={{ color: "#3AFF17" }} className="block">TAG</span>
-      <span className="block">MOB</span>
+      <span className="block text-green">TAG</span>
+      <span className="block text-ink-deep">MOB</span>
     </div>
   );
 }
 
 export function ContatoSection() {
+  const blocos = [
+    { ...CONTATO.whatsapp, external: true },
+    { ...CONTATO.suporte, external: false },
+  ];
+
   return (
     <DeckSplit
+      id="contato"
       accent="white"
       badgeAccent="violet"
       badgePosition="center"
       panelExtra={<StackedWordmark />}
     >
-      <div className="flex flex-col gap-5">
-        {/* WHATSAPP */}
-        <Reveal>
-          <div
-            className="rounded-xl border p-6"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.05)",
-              borderColor: `${ACCENT_HEX.green}35`,
-            }}
-          >
-            <p className="mb-1 font-display text-[0.65rem] font-black uppercase tracking-[0.14em]" style={{ color: ACCENT_HEX.green }}>
-              Contato direto
-            </p>
-            <h2 className="font-display text-[1.5rem] font-black uppercase tracking-[-0.04em]" style={{ color: "#FFFFFF" }}>
-              {CONTATO.whatsapp.titulo}
+      <div className="flex flex-col gap-12">
+        {blocos.map((bloco, i) => (
+          <Reveal key={bloco.titulo} as="div" delay={i * 110}>
+            <h2 className="font-display text-[clamp(2rem,5vw,3rem)] font-black uppercase leading-none tracking-[-0.04em] text-white">
+              {bloco.titulo}
             </h2>
-            <div className="mt-2.5 flex flex-col gap-1">
-              {CONTATO.whatsapp.texto.map((linha) => (
-                <p key={linha} style={{ color: "rgba(255,255,255,0.78)" }} className="text-[0.875rem] leading-[1.68]">
+            <div className="mt-4 flex flex-col gap-1">
+              {bloco.texto.map((linha) => (
+                <p key={linha} className="text-[0.95rem] leading-relaxed text-white font-normal text-pretty">
                   {linha}
                 </p>
               ))}
             </div>
-            <a
-              href={CONTATO.whatsapp.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 font-display text-[0.78rem] font-bold uppercase tracking-wide transition-opacity hover:opacity-70"
-              style={{ color: ACCENT_HEX.green }}
-            >
-              {CONTATO.whatsapp.label} <ArrowUpRight size={15} />
-            </a>
-          </div>
-        </Reveal>
+            {bloco.external ? (
+              <a
+                href={bloco.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-green transition-opacity hover:opacity-75"
+              >
+                {bloco.label} <ArrowUpRight size={16} />
+              </a>
+            ) : (
+              <Link
+                href={bloco.href}
+                className="mt-5 inline-flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-cyan transition-opacity hover:opacity-75"
+              >
+                {bloco.label} <ArrowRight size={16} />
+              </Link>
+            )}
+          </Reveal>
+        ))}
 
-        {/* SUPORTE */}
-        <Reveal delay={90}>
-          <div
-            className="rounded-xl border p-6"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.05)",
-              borderColor: `${ACCENT_HEX.cyan}35`,
-            }}
-          >
-            <p className="mb-1 font-display text-[0.65rem] font-black uppercase tracking-[0.14em]" style={{ color: ACCENT_HEX.cyan }}>
-              Plataforma
-            </p>
-            <h2 className="font-display text-[1.5rem] font-black uppercase tracking-[-0.04em]" style={{ color: "#FFFFFF" }}>
-              {CONTATO.suporte.titulo}
-            </h2>
-            <div className="mt-2.5 flex flex-col gap-1">
-              {CONTATO.suporte.texto.map((linha) => (
-                <p key={linha} style={{ color: "rgba(255,255,255,0.78)" }} className="text-[0.875rem] leading-[1.68]">
-                  {linha}
-                </p>
-              ))}
-            </div>
-            <Link
-              href={CONTATO.suporte.href}
-              className="mt-4 inline-flex items-center gap-2 font-display text-[0.78rem] font-bold uppercase tracking-wide transition-opacity hover:opacity-70"
-              style={{ color: ACCENT_HEX.cyan }}
-            >
-              {CONTATO.suporte.label} <ArrowRight size={15} />
-            </Link>
-          </div>
-        </Reveal>
-
-        {/* CTA final */}
-        <Reveal delay={180}>
-          <div
-            className="flex items-center justify-between rounded-xl border px-5 py-4"
-            style={{ backgroundColor: "rgba(255,0,104,0.07)", borderColor: "rgba(255,0,104,0.22)" }}
-          >
+        <Reveal delay={240}>
+          <div className="border-t border-white/10 pt-8">
             <a
               href={CONTATO.siteHref}
-              className="font-display text-[0.68rem] font-black uppercase tracking-[0.12em] transition-opacity hover:opacity-70"
-              style={{ color: "rgba(255,255,255,0.50)" }}
+              className="font-display text-sm font-black uppercase tracking-[0.14em] text-white/70 transition-colors hover:text-white"
             >
               {CONTATO.site}
             </a>
-            <Link
-              href="/simulador"
-              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-display text-[0.78rem] font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.03]"
-              style={{ backgroundColor: "#FF0068" }}
-            >
-              Iniciar Projeto <ArrowRight size={15} />
-            </Link>
+            <div className="mt-6">
+              <Link
+                href="/simulador"
+                className="inline-flex items-center gap-2.5 rounded-xl bg-pink px-7 py-3.5 text-[0.95rem] font-bold text-white transition-transform hover:scale-[1.03]"
+              >
+                Montar meu projeto <ArrowRight size={17} />
+              </Link>
+            </div>
           </div>
         </Reveal>
       </div>

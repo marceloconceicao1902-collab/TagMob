@@ -266,7 +266,7 @@ export const CONTATO = {
 export const NAV_LINKS = [
   { href: "#manifesto", label: "Manifesto" },
   { href: "#a-tagmob", label: "A TAGMOB" },
-  { href: "#nome", label: "Nome" },
+  { href: "#como-funciona", label: "Como Funciona" },
   { href: "#processo", label: "Processo" },
   { href: "#faq", label: "FAQ" },
   { href: "#contato", label: "Contato" },

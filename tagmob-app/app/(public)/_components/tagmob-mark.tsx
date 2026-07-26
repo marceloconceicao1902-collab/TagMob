@@ -44,16 +44,13 @@ export function TagmobBadge({
 export function TagmobWordmark({
   accent = "cyan",
   className,
-  style,
 }: {
   accent?: Accent;
   className?: string;
-  style?: React.CSSProperties;
 }) {
   return (
     <span
       className={`font-display font-black uppercase leading-none tracking-[-0.045em] ${className ?? ""}`}
-      style={style}
     >
       <span style={{ color: ACCENT_HEX[accent] }}>T.</span>
       <span>AGMOB</span>

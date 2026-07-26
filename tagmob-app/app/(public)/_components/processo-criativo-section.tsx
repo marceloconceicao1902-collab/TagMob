@@ -10,35 +10,32 @@ export function ProcessoCriativoSection() {
       badgeAccent="green"
       panelTitle={"PROCESSO\nCRIATIVO"}
     >
-      <div className="flex flex-col gap-3">
+      <ol className="flex flex-col">
         {PROCESSO_CRIATIVO.map((etapa, i) => (
-          <Reveal key={etapa.titulo} delay={i * 65}>
-            <div
-              className="flex gap-4 rounded-xl border p-5"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.05)",
-                borderColor: `${ACCENT_HEX[etapa.accent]}32`,
-              }}
-            >
-              {/* Linha decorativa vertical */}
-              <div
-                className="mt-1 w-0.5 shrink-0 self-stretch rounded-full"
-                style={{ backgroundColor: ACCENT_HEX[etapa.accent] }}
-              />
+          <Reveal key={etapa.titulo} as="li" delay={i * 90}>
+            <div className="flex gap-5 pb-7">
+              <div className="flex flex-col items-center pt-1.5">
+                <span
+                  className="size-2.5 shrink-0 rounded-[2px]"
+                  style={{ backgroundColor: ACCENT_HEX[etapa.accent] }}
+                />
+                {i < PROCESSO_CRIATIVO.length - 1 && (
+                  <span
+                    className="mt-1 w-px flex-1"
+                    style={{ backgroundColor: `${ACCENT_HEX[etapa.accent]}33` }}
+                  />
+                )}
+              </div>
               <div>
                 <p
-                  className="font-display text-[0.78rem] font-black uppercase tracking-[0.07em]"
+                  className="font-display text-sm font-black uppercase tracking-[0.06em]"
                   style={{ color: ACCENT_HEX[etapa.accent] }}
                 >
                   {etapa.titulo}
                 </p>
-                <div className="mt-2 flex flex-col gap-1.5">
+                <div className="mt-1.5 flex flex-col gap-0.5">
                   {etapa.linhas.map((linha) => (
-                    <p
-                      key={linha}
-                      style={{ color: "rgba(255,255,255,0.88)" }}
-                      className="text-[0.875rem] leading-[1.68]"
-                    >
+                    <p key={linha} className="text-[0.925rem] leading-relaxed text-white font-normal text-pretty">
                       {linha}
                     </p>
                   ))}
@@ -47,34 +44,20 @@ export function ProcessoCriativoSection() {
             </div>
           </Reveal>
         ))}
+      </ol>
 
-        {/* Fechamento */}
-        <Reveal delay={420}>
-          <div
-            className="rounded-xl border p-5"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.04)",
-              borderColor: "rgba(255,255,255,0.09)",
-            }}
-          >
-            {PROCESSO_CRIATIVO_FECHAMENTO.map((linha) => (
-              <p
-                key={linha}
-                style={{ color: "#FFFFFF" }}
-                className="font-display text-[0.9rem] font-bold leading-[1.65]"
-              >
-                {linha}
-              </p>
-            ))}
-            <p
-              style={{ color: "#3AFF17" }}
-              className="mt-3 font-display text-[1.05rem] font-black uppercase tracking-[-0.02em]"
-            >
-              Isso é TAGMOB.
+      <Reveal delay={480}>
+        <div className="mt-2 border-t border-white/10 pt-7">
+          {PROCESSO_CRIATIVO_FECHAMENTO.map((linha) => (
+            <p key={linha} className="text-[0.95rem] leading-relaxed text-white font-normal text-pretty">
+              {linha}
             </p>
-          </div>
-        </Reveal>
-      </div>
+          ))}
+          <p className="mt-5 font-display text-xl font-black uppercase tracking-[-0.02em] text-white sm:text-2xl">
+            Isso é TAGMOB.
+          </p>
+        </div>
+      </Reveal>
     </DeckSplit>
   );
 }

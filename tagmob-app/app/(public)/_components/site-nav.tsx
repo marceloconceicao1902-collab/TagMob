@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Lock, Menu, X } from "lucide-react";
 
 import { NAV_LINKS } from "../_content";
 import { TagmobBadge, TagmobWordmark } from "./tagmob-mark";
@@ -55,15 +55,10 @@ export function SiteNav() {
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
           <Link
             href="/sign-in"
-            className="hidden text-[0.8rem] font-bold text-white transition-opacity hover:opacity-70 sm:block"
+            className="inline-flex items-center gap-2 rounded-lg bg-pink px-4 py-2 text-[0.8rem] font-bold text-white shadow-lg transition-transform hover:scale-[1.03]"
           >
-            Entrar
-          </Link>
-          <Link
-            href="/simulador"
-            className="rounded-lg bg-pink px-4 py-2 text-[0.8rem] font-bold text-white transition-transform hover:scale-[1.03]"
-          >
-            Iniciar Projeto
+            <Lock size={14} />
+            Acesso Restrito
           </Link>
           <button
             type="button"
@@ -95,9 +90,10 @@ export function SiteNav() {
               <Link
                 href="/sign-in"
                 onClick={() => setOpen(false)}
-                className="block py-3.5 font-display text-sm font-bold uppercase tracking-wide text-cyan"
+                className="flex items-center gap-2 py-3.5 font-display text-sm font-bold uppercase tracking-wide text-pink"
               >
-                Entrar na plataforma
+                <Lock size={15} />
+                Acesso Restrito
               </Link>
             </li>
           </ul>

@@ -114,21 +114,14 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          {/* Botões de Ação */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Botão de Acesso Restrito */}
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Link
               href="/sign-in"
-              style={{ fontSize: 13, fontWeight: 700, color: "#EEEEFF", textDecoration: "none", padding: "8px 14px" }}
-              className="hidden sm:inline-block"
-            >
-              Entrar
-            </Link>
-            <a
-              href="#manifesto"
               style={{
                 backgroundColor: "#FF0068",
                 color: "#FFFFFF",
-                padding: "10px 20px",
+                padding: "10px 22px",
                 borderRadius: 10,
                 fontSize: 13,
                 fontWeight: 800,
@@ -136,12 +129,13 @@ export default function LandingPage() {
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 6,
+                gap: 8,
                 boxShadow: "0 0 20px rgba(255,0,104,0.35)",
               }}
             >
-              Conheça a Plataforma
-            </a>
+              <Lock size={15} />
+              Acesso Restrito
+            </Link>
           </div>
         </div>
       </header>
@@ -194,7 +188,7 @@ export default function LandingPage() {
           {/* Hero Buttons */}
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <a
-              href="#manifesto"
+              href="#simulador"
               style={{
                 backgroundColor: "#FF0068",
                 color: "#FFFFFF",
@@ -209,11 +203,11 @@ export default function LandingPage() {
                 boxShadow: "0 0 30px rgba(255,0,104,0.4)",
               }}
             >
-              Conheça a Plataforma
+              Simular Lançamento Agora
               <ArrowRight size={18} />
             </a>
             <Link
-              href="/simulador"
+              href="/sign-in"
               style={{
                 backgroundColor: "rgba(255,255,255,0.05)",
                 border: "1px solid #1A1A30",
@@ -228,7 +222,8 @@ export default function LandingPage() {
                 gap: 8,
               }}
             >
-              Simulador de Escopo
+              <Lock size={16} />
+              Acesso Restrito
             </Link>
           </div>
         </div>

@@ -2,16 +2,14 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { Check, ChevronDown, Lock, X, Percent, Clock, AlertTriangle, Building2, MapPin, FileText, Info, ShoppingCart, ArrowUp } from "lucide-react";
+import { Check, ChevronDown, Lock, X, Percent, Clock, AlertTriangle, Building2, MapPin, FileText, Info, ShoppingCart } from "lucide-react";
 
 import {
   SINAPRO_DELIVERABLES,
   SINAPRO_HOURLY_RATES,
   calculateSinaproBudget,
 } from "@/lib/sinapro-pricing";
-import { COMPARATIVE_ROWS, SINAPRO_DISCLAIMER_TEXT } from "../_simulador-content";
-import { DeckHeading } from "../_components/deck-split";
-import { Reveal } from "../_components/reveal";
+import { COMPARATIVE_ROWS } from "../_simulador-content";
 
 const brl = (v: number) =>
   v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -50,7 +48,7 @@ export function SimuladorClient() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolledPastHero(window.scrollY > 300);
+      setIsScrolledPastHero(window.scrollY > 350);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -202,11 +200,11 @@ export function SimuladorClient() {
 
   return (
     <>
-      {/* Cabeçalho */}
-      <section className="relative overflow-hidden px-6 pb-14 pt-16 sm:px-10 lg:pb-20 lg:pt-24">
+      {/* Cabeçalho com Layout Limpo sem Sobreposição */}
+      <section className="relative overflow-hidden px-6 pb-12 pt-16 sm:px-10 lg:pb-16 lg:pt-20">
         <div
           aria-hidden
-          className="deck-grid absolute inset-0"
+          className="deck-grid absolute inset-0 opacity-40"
           style={
             {
               "--deck-grid-color": "rgba(255,255,255,0.04)",
@@ -214,40 +212,32 @@ export function SimuladorClient() {
             } as React.CSSProperties
           }
         />
-        <div className="relative z-10 mx-auto max-w-[84rem]">
-          <Reveal>
-            <div className="inline-flex items-center gap-2 rounded-full border border-green/30 bg-green/10 px-3 py-1 text-[0.7rem] font-black uppercase tracking-[0.18em] text-green">
-              <span>Tabela Oficial de Preços · Sinapro-SP</span>
-            </div>
-          </Reveal>
-          <Reveal delay={70}>
-            <DeckHeading className="mt-4">
-              Preços &amp; Tabela
-              <br />Referencial de Serviços
-            </DeckHeading>
-          </Reveal>
+        <div className="relative z-10 mx-auto flex max-w-[84rem] flex-col items-start gap-5">
+          <div className="inline-flex items-center gap-2 rounded-full border border-green/30 bg-green/10 px-3.5 py-1 text-[0.7rem] font-black uppercase tracking-[0.18em] text-green">
+            <span>Tabela Oficial de Preços · Sinapro-SP</span>
+          </div>
+
+          <h1 className="font-display text-[clamp(2.25rem,4.8vw,3.5rem)] font-black uppercase leading-[1.1] tracking-[-0.03em] text-pink">
+            Preços &amp; Tabela<br />Referencial de Serviços
+          </h1>
           
           {/* Informação Oficial Sinapro-SP */}
-          <Reveal delay={120}>
-            <div className="mt-6 flex max-w-3xl items-center gap-3 rounded-xl border border-cyan/30 bg-cyan/[0.06] p-4 backdrop-blur-md">
-              <Info className="shrink-0 text-cyan" size={20} />
-              <p className="text-[0.825rem] font-semibold leading-relaxed text-cyan/90 sm:text-[0.875rem]">
-                Os valores seguem rigorosamente a tabela <strong>&ldquo;Valores Referenciais de Serviços Internos&rdquo;</strong>, publicada pelo <strong>Sinapro-SP</strong>.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={180}>
-            <p className="mt-4 max-w-3xl text-[0.95rem] leading-relaxed text-white/65 sm:text-base">
-              Consulte a matriz completa de custos para o seu lançamento imobiliário. Selecione os entregáveis e acompanhe a evolução do investimento em tempo real conforme rola a página.
+          <div className="flex max-w-3xl items-center gap-3 rounded-xl border border-cyan/30 bg-cyan/[0.06] p-4 backdrop-blur-md">
+            <Info className="shrink-0 text-cyan" size={20} />
+            <p className="text-[0.825rem] font-semibold leading-relaxed text-cyan/90 sm:text-[0.875rem]">
+              Os valores seguem rigorosamente a tabela <strong>&ldquo;Valores Referenciais de Serviços Internos&rdquo;</strong>, publicada pelo <strong>Sinapro-SP</strong>.
             </p>
-          </Reveal>
+          </div>
+
+          <p className="max-w-3xl text-[0.95rem] leading-relaxed text-white/65 sm:text-base">
+            Consulte a matriz completa de custos para o seu lançamento imobiliário. Selecione os entregáveis e acompanhe a evolução do investimento em tempo real conforme rola a página.
+          </p>
         </div>
       </section>
 
-      {/* Barra Flutuante de Totalização que Acompanha a Rolagem */}
+      {/* Barra Flutuante de Totalização no Scroll */}
       {isScrolledPastHero && (
-        <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 rounded-2xl border border-green/40 bg-[#0C0C1A]/95 p-3.5 px-6 shadow-2xl backdrop-blur-xl transition-all">
+        <div className="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-4 rounded-2xl border border-green/40 bg-[#0C0C1A]/95 p-3.5 px-6 shadow-2xl backdrop-blur-xl transition-all">
           <div className="flex flex-col">
             <span className="text-[0.65rem] font-extrabold uppercase tracking-wider text-white/50">
               Total Atual ({calcResult.detalhesDeliverables.length} itens)
@@ -271,32 +261,36 @@ export function SimuladorClient() {
       {/* Tabela de Preços e Configurador */}
       <section className="px-6 pb-20 sm:px-10 lg:pb-28">
         <div className="mx-auto grid max-w-[84rem] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
+          
+          {/* Coluna Esquerda: Lista de Blocos e Produtos */}
           <div className="flex flex-col gap-6">
             
             {/* Filtros por Macro Etapa (UPPERCASE) */}
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-ink-deep p-3.5">
-              <span className="mr-2 text-[0.7rem] font-extrabold uppercase tracking-wider text-white/40">
-                Blocos Sinapro-SP:
+            <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-ink-deep p-4">
+              <span className="text-[0.725rem] font-extrabold uppercase tracking-wider text-white/40">
+                Filtrar por Blocos Sinapro-SP:
               </span>
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  className={`rounded-lg px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-wide transition-all ${
-                    activeCategory === cat
-                      ? "bg-pink text-white shadow-md"
-                      : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  {cat === "TODAS" ? "Todos os 10 Blocos" : cat}
-                </button>
-              ))}
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setActiveCategory(cat)}
+                    className={`rounded-lg px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-wide transition-all ${
+                      activeCategory === cat
+                        ? "bg-pink text-white shadow-md"
+                        : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    {cat === "TODAS" ? "Todos os 10 Blocos" : cat}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Checklist de Entregáveis Detalhados */}
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-display text-[0.725rem] font-black uppercase tracking-[0.18em] text-white/40">
                   Matriz de Entregáveis Referenciais ({filteredDeliverables.length} itens)
                 </p>
@@ -314,9 +308,9 @@ export function SimuladorClient() {
                   return (
                     <div
                       key={d.id}
-                      className="rounded-2xl border border-pink/40 bg-pink/[0.06] p-5 shadow-sm"
+                      className="flex flex-col gap-3 rounded-2xl border border-pink/40 bg-pink/[0.06] p-5 shadow-sm"
                     >
-                      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="font-display text-[0.7rem] font-black uppercase tracking-[0.12em] text-pink">
                           BLOCO 01 · {d.macroEtapaLabel.toUpperCase()}
                         </span>
@@ -324,7 +318,8 @@ export function SimuladorClient() {
                           <Lock size={10} /> MANDATÓRIO DA CAMPANHA
                         </span>
                       </div>
-                      <div className="flex items-start justify-between gap-4">
+
+                      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                         <div className="flex-1">
                           <p className="text-[0.925rem] font-extrabold uppercase tracking-wide text-white">
                             {d.nome}
@@ -333,7 +328,7 @@ export function SimuladorClient() {
                             {d.descricao}
                           </p>
                         </div>
-                        <div className="flex shrink-0 items-center gap-2">
+                        <div className="flex shrink-0 items-center">
                           <span className="text-[0.95rem] font-black text-pink">
                             R$ {brl(d.precoBase)}
                           </span>
@@ -342,7 +337,7 @@ export function SimuladorClient() {
 
                       {/* Entregáveis Inclusos Detalhados */}
                       {d.detalhes && d.detalhes.length > 0 && (
-                        <div className="mt-4 border-t border-pink/20 pt-3">
+                        <div className="mt-2 border-t border-pink/20 pt-3">
                           <button
                             type="button"
                             onClick={(e) => togglePackageExpanded(d.id, e)}
@@ -373,7 +368,7 @@ export function SimuladorClient() {
                 return (
                   <div
                     key={d.id}
-                    className={`rounded-2xl border p-5 transition-all ${
+                    className={`flex flex-col gap-3 rounded-2xl border p-5 transition-all ${
                       isSelected
                         ? "border-green/40 bg-green/[0.04]"
                         : "border-white/10 bg-ink-deep hover:border-white/20"
@@ -443,7 +438,7 @@ export function SimuladorClient() {
 
                     {/* Entregáveis Inclusos Detalhados (Opcionais) */}
                     {d.detalhes && d.detalhes.length > 0 && (
-                      <div className="mt-3 border-t border-white/10 pt-3">
+                      <div className="mt-2 border-t border-white/10 pt-3">
                         <button
                           type="button"
                           onClick={(e) => togglePackageExpanded(d.id, e)}
@@ -473,7 +468,7 @@ export function SimuladorClient() {
             </div>
 
             {/* Calculadora de Horas Adicionais por Especialidade */}
-            <div className="rounded-2xl border border-white/10 bg-ink-deep p-6">
+            <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-ink-deep p-6">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2">
                   <Clock className="text-cyan" size={18} />
@@ -491,13 +486,13 @@ export function SimuladorClient() {
               </div>
 
               {showHourlyRates && (
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2">
                   {SINAPRO_HOURLY_RATES.map((rate) => {
                     const h = extraHours[rate.id] || 0;
                     return (
                       <div
                         key={rate.id}
-                        className="flex flex-col justify-between rounded-xl border border-white/10 bg-ink p-3.5"
+                        className="flex flex-col justify-between gap-2 rounded-xl border border-white/10 bg-ink p-3.5"
                       >
                         <div>
                           <div className="flex justify-between text-[0.8rem] font-bold text-white">
@@ -506,7 +501,7 @@ export function SimuladorClient() {
                           </div>
                           <p className="mt-1 text-[0.7rem] text-white/45">{rate.descricao}</p>
                         </div>
-                        <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2">
+                        <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2">
                           <span className="text-[0.725rem] text-white/60">Horas extras:</span>
                           <div className="flex items-center gap-2">
                             <input
@@ -532,11 +527,11 @@ export function SimuladorClient() {
             </div>
 
             {/* Comparativo de Modelo */}
-            <div className="rounded-2xl border border-white/10 bg-ink-deep p-6">
+            <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-ink-deep p-6">
               <h3 className="text-[0.95rem] font-extrabold uppercase tracking-wide text-white">
                 Comparativo: Modelo Tradicional (% VGV) vs TAGMOB OS (Sinapro-SP)
               </h3>
-              <div className="mt-4 overflow-x-auto">
+              <div className="overflow-x-auto">
                 <table className="w-full text-left text-[0.8rem]">
                   <thead>
                     <tr className="border-b border-white/10 text-white/40">
@@ -560,25 +555,25 @@ export function SimuladorClient() {
 
           </div>
 
-          {/* Painel do Orçamento & Formulário — STICKY PERFEITO NO SCROLL */}
+          {/* Painel do Orçamento & Formulário — PERFEITAMENTE FIXADO E SEM SOBREPOSIÇÃO */}
           <div
             id="resumo-orcamento-panel"
-            className="flex flex-col gap-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+            className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start"
           >
             {/* Resumo do Cálculo */}
-            <div className="rounded-2xl border border-white/15 bg-ink-deep p-6 shadow-xl">
+            <div className="flex flex-col gap-4 rounded-2xl border border-white/15 bg-ink-deep p-6 shadow-xl">
               <p className="font-display text-[0.7rem] font-black uppercase tracking-[0.16em] text-white/40">
                 Resumo de Preços (Sinapro-SP)
               </p>
 
               {/* Informação Técnica Sinapro-SP */}
-              <div className="mt-3 flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 p-3 text-[0.725rem] text-white/70">
-                <Info size={14} className="mt-0.5 shrink-0 text-cyan" />
+              <div className="flex items-start gap-2.5 rounded-xl border border-cyan/30 bg-cyan/[0.06] p-3 text-[0.725rem] leading-relaxed text-cyan/90">
+                <Info size={16} className="mt-0.5 shrink-0 text-cyan" />
                 <span>Valores Referenciais de Serviços Internos, publicado pelo Sinapro-SP.</span>
               </div>
 
               {/* Regras Comerciais: Desconto Interior + Refação */}
-              <div className="mt-4 flex flex-col gap-3 rounded-xl border border-white/10 bg-ink p-4">
+              <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-ink p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[0.775rem] font-bold text-white">
                     <MapPin size={14} className="text-green" />
@@ -595,19 +590,19 @@ export function SimuladorClient() {
                   step="0.05"
                   value={descontoInteriorPct}
                   onChange={(e) => setDescontoInteriorPct(parseFloat(e.target.value))}
-                  className="w-full accent-green cursor-pointer"
+                  className="w-full cursor-pointer accent-green"
                 />
                 <p className="text-[0.675rem] text-white/40">
                   Desconto comercial configurável para campanhas de incorporadoras do interior.
                 </p>
 
-                <div className="mt-2 border-t border-white/10 pt-3">
+                <div className="border-t border-white/10 pt-3">
                   <label className="flex cursor-pointer items-start gap-2">
                     <input
                       type="checkbox"
                       checked={aplicaRefacao}
                       onChange={(e) => setAplicaRefacao(e.target.checked)}
-                      className="mt-0.5 accent-pink cursor-pointer"
+                      className="mt-0.5 cursor-pointer accent-pink"
                     />
                     <div>
                       <span className="text-[0.775rem] font-bold uppercase text-pink">
@@ -622,37 +617,37 @@ export function SimuladorClient() {
               </div>
 
               {/* Decomposição do Valor */}
-              <div className="mt-5 flex flex-col gap-2.5 border-b border-white/10 pb-4 text-[0.825rem]">
+              <div className="flex flex-col gap-2 border-b border-t border-white/10 py-4 text-[0.825rem]">
                 <div className="flex justify-between">
-                  <span className="text-white/60 uppercase text-[0.75rem]">Criação de Campanha (Bloco 01)</span>
+                  <span className="text-[0.75rem] uppercase text-white/60">Criação de Campanha (Bloco 01)</span>
                   <span className="font-bold text-pink">R$ {brl(calcResult.valorEtapa1Fixo)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-white/60 uppercase text-[0.75rem]">Peças Opcionais</span>
+                  <span className="text-[0.75rem] uppercase text-white/60">Peças Opcionais</span>
                   <span className="font-bold text-white">R$ {brl(calcResult.valorPecasOpcionais)}</span>
                 </div>
                 {calcResult.valorHorasAdicionais > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-white/60 uppercase text-[0.75rem]">Horas Adicionais</span>
+                    <span className="text-[0.75rem] uppercase text-white/60">Horas Adicionais</span>
                     <span className="font-bold text-cyan">R$ {brl(calcResult.valorHorasAdicionais)}</span>
                   </div>
                 )}
                 {calcResult.valorDescontoInterior > 0 && (
                   <div className="flex justify-between text-green">
-                    <span className="uppercase text-[0.75rem]">Desconto Interior ({(descontoInteriorPct * 100).toFixed(0)}%)</span>
+                    <span className="text-[0.75rem] uppercase">Desconto Interior ({(descontoInteriorPct * 100).toFixed(0)}%)</span>
                     <span className="font-bold">- R$ {brl(calcResult.valorDescontoInterior)}</span>
                   </div>
                 )}
                 {calcResult.valorTaxaRefacao > 0 && (
                   <div className="flex justify-between text-pink">
-                    <span className="uppercase text-[0.75rem]">Taxa de Refação (+40%)</span>
+                    <span className="text-[0.75rem] uppercase">Taxa de Refação (+40%)</span>
                     <span className="font-bold">+ R$ {brl(calcResult.valorTaxaRefacao)}</span>
                   </div>
                 )}
               </div>
 
               {/* Total Final */}
-              <div className="mt-4 flex items-baseline justify-between">
+              <div className="flex items-baseline justify-between py-1">
                 <span className="font-display text-[0.8rem] font-black uppercase tracking-wide text-white">
                   Investimento Total
                 </span>
@@ -665,7 +660,7 @@ export function SimuladorClient() {
                 type="button"
                 onClick={() => setShowDetails(!showDetails)}
                 aria-expanded={showDetails}
-                className="mt-3 flex items-center gap-1.5 text-[0.75rem] font-bold text-cyan"
+                className="flex items-center gap-1.5 text-[0.75rem] font-bold text-cyan"
               >
                 {showDetails ? "Ocultar detalhamento de peças" : "Ver detalhamento de peças selecionadas"}
                 <ChevronDown
@@ -675,7 +670,7 @@ export function SimuladorClient() {
               </button>
 
               {showDetails && (
-                <div className="mt-4 flex max-h-52 flex-col gap-2 overflow-y-auto rounded-xl border border-white/10 bg-ink p-3.5">
+                <div className="flex max-h-48 flex-col gap-2 overflow-y-auto rounded-xl border border-white/10 bg-ink p-3">
                   {calcResult.detalhesDeliverables.map((item) => (
                     <div key={item.deliverable.id} className="flex justify-between gap-2 text-[0.75rem]">
                       <span className="truncate text-white/60">
@@ -695,32 +690,32 @@ export function SimuladorClient() {
 
               {/* Form de Proposta */}
               {successProposal ? (
-                <div className="mt-6 rounded-xl border border-green/30 bg-green/10 p-5 text-center">
+                <div className="flex flex-col gap-3 rounded-xl border border-green/30 bg-green/10 p-5 text-center">
                   <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-green/20 text-green">
                     <Check size={20} strokeWidth={3} />
                   </div>
-                  <h4 className="mt-3 font-display text-[0.95rem] font-bold text-white uppercase">
+                  <h4 className="font-display text-[0.95rem] font-bold uppercase text-white">
                     Cotação Gerada com Sucesso!
                   </h4>
-                  <p className="mt-1 text-[0.775rem] text-white/70">
+                  <p className="text-[0.775rem] text-white/70">
                     Protocolo: <strong>{successProposal.id}</strong>
                   </p>
-                  <p className="mt-2 text-[0.8rem] font-extrabold text-green">
+                  <p className="text-[0.8rem] font-extrabold text-green">
                     Valor Orçado: R$ {brl(successProposal.total)}
                   </p>
-                  <p className="mt-3 text-[0.725rem] text-white/50">
+                  <p className="text-[0.725rem] text-white/50">
                     Nossa equipe comercial entrará em contato para formalizar o contrato.
                   </p>
                   <button
                     type="button"
                     onClick={() => setSuccessProposal(null)}
-                    className="mt-4 w-full rounded-lg bg-white/10 py-2 text-[0.775rem] font-bold text-white hover:bg-white/20"
+                    className="mt-2 rounded-lg bg-white/10 py-2 text-[0.775rem] font-bold text-white hover:bg-white/20"
                   >
                     Simular Novos Preços
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3 pt-2">
                   <input
                     type="text"
                     placeholder="Seu nome completo *"

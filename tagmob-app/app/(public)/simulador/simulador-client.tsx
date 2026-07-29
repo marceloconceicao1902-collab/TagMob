@@ -17,20 +17,16 @@ const brl = (v: number) =>
   v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function SimuladorClient() {
-  // Entregáveis selecionados
+  // Apenas o item de BLOCO 01 é obrigatório e selecionado por padrão
   const [selectedItems, setSelectedItems] = useState<string[]>(
     SINAPRO_DELIVERABLES.filter((d) => d.isObrigatorio).map((d) => d.id),
   );
 
-  // Quantidade por entregável
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-
-  // Horas adicionais por especialidade
   const [extraHours, setExtraHours] = useState<Record<string, number>>({});
 
-  // Modificadores de cálculo
-  const [descontoInteriorPct, setDescontoInteriorPct] = useState<number>(0); // 0 a 0.40
-  const [aplicaRefacao, setAplicaRefacao] = useState<boolean>(false); // +40% refação
+  const [descontoInteriorPct, setDescontoInteriorPct] = useState<number>(0);
+  const [aplicaRefacao, setAplicaRefacao] = useState<boolean>(false);
 
   // Formulário de Lead
   const [nome, setNome] = useState("");
@@ -51,15 +47,8 @@ export function SimuladorClient() {
   const [expandedPackages, setExpandedPackages] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("TODAS");
 
-  const togglePackageExpanded = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpandedPackages((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  };
-
   const toggleItem = (id: string, isObrigatorio?: boolean) => {
-    if (isObrigatorio) return;
+    if (isObrigatorio) return; // Trava obrigatória ativa para o primeiro produto do Bloco 01
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
@@ -93,15 +82,15 @@ export function SimuladorClient() {
     });
   }, [selectedItems, quantities, extraHours, descontoInteriorPct, aplicaRefacao]);
 
-  // Categorias únicas
+  // Lista única de blocos/categorias em UPPERCASE
   const categories = useMemo(() => {
-    const cats = Array.from(new Set(SINAPRO_DELIVERABLES.map((d) => d.macroEtapaLabel)));
+    const cats = Array.from(new Set(SINAPRO_DELIVERABLES.map((d) => d.macroEtapaLabel.toUpperCase())));
     return ["TODAS", ...cats];
   }, []);
 
   const filteredDeliverables = useMemo(() => {
     if (activeCategory === "TODAS") return SINAPRO_DELIVERABLES;
-    return SINAPRO_DELIVERABLES.filter((d) => d.macroEtapaLabel === activeCategory);
+    return SINAPRO_DELIVERABLES.filter((d) => d.macroEtapaLabel.toUpperCase() === activeCategory);
   }, [activeCategory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -155,7 +144,7 @@ export function SimuladorClient() {
           ]),
         );
       } catch {
-        // Armazenamento local fallback
+        // Fallback local
       }
     }
 
@@ -217,7 +206,7 @@ export function SimuladorClient() {
           <Reveal delay={140}>
             <p className="mt-6 max-w-3xl text-[0.95rem] leading-relaxed text-white/65 sm:text-base">
               A precificação oficial do <strong>TAGMOB OS</strong> é totalmente ancorada na{" "}
-              <strong>Tabela de Valores Referenciais Sinapro-SP</strong>. Monte o escopo do seu lançamento imobiliário com custos transparentes, descontos de interior parametrizáveis e regras de refação previsíveis.
+              <strong>Tabela de Valores Referenciais Sinapro-SP</strong>. Estrutura oficial padronizada em 10 blocos de entregáveis.
             </p>
           </Reveal>
         </div>
@@ -228,61 +217,67 @@ export function SimuladorClient() {
         <div className="mx-auto grid max-w-[84rem] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div className="flex flex-col gap-6">
             
-            {/* Filtros por Macro Etapa */}
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-ink-deep p-3">
-              <span className="mr-2 text-[0.7rem] font-bold uppercase tracking-wider text-white/40">
-                Filtrar Etapas:
+            {/* Filtros por Macro Etapa (UPPERCASE) */}
+            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-ink-deep p-3.5">
+              <span className="mr-2 text-[0.7rem] font-extrabold uppercase tracking-wider text-white/40">
+                Blocos Sinapro-SP:
               </span>
               {categories.map((cat) => (
                 <button
                   key={cat}
                   type="button"
                   onClick={() => setActiveCategory(cat)}
-                  className={`rounded-lg px-3 py-1.5 text-[0.725rem] font-bold transition-colors ${
+                  className={`rounded-lg px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-wide transition-all ${
                     activeCategory === cat
-                      ? "bg-pink text-white"
+                      ? "bg-pink text-white shadow-md"
                       : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
                   }`}
                 >
-                  {cat === "TODAS" ? "Todas as Peças" : cat}
+                  {cat === "TODAS" ? "Todos os 10 Blocos" : cat}
                 </button>
               ))}
             </div>
 
             {/* Checklist de Entregáveis */}
-            <div className="flex flex-col gap-3">
-              <p className="font-display text-[0.7rem] font-black uppercase tracking-[0.16em] text-white/40">
-                Peças &amp; Entregáveis por Escopo ({filteredDeliverables.length} itens)
-              </p>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <p className="font-display text-[0.725rem] font-black uppercase tracking-[0.18em] text-white/40">
+                  Entregáveis Referenciais ({filteredDeliverables.length} itens)
+                </p>
+                <span className="text-[0.675rem] uppercase font-bold text-pink">
+                  * 1º Item do Bloco 01 Fixo Mandatório
+                </span>
+              </div>
 
               {filteredDeliverables.map((d) => {
                 const isSelected = selectedItems.includes(d.id);
-                const isExpanded = expandedPackages.includes(d.id);
                 const qtd = quantities[d.id] || 1;
 
                 if (d.isObrigatorio) {
                   return (
                     <div
                       key={d.id}
-                      className="rounded-2xl border border-pink/40 bg-pink/[0.05] p-5 shadow-sm"
+                      className="rounded-2xl border border-pink/40 bg-pink/[0.06] p-5 shadow-sm"
                     >
                       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-display text-[0.68rem] font-black uppercase tracking-[0.1em] text-pink">
-                          Etapa 1 · Core Fixo Mandatório
+                        <span className="font-display text-[0.7rem] font-black uppercase tracking-[0.12em] text-pink">
+                          BLOCO 01 · {d.macroEtapaLabel.toUpperCase()}
                         </span>
-                        <span className="flex items-center gap-1 rounded border border-pink/50 bg-pink/10 px-2 py-0.5 text-[0.625rem] font-bold text-pink">
-                          <Lock size={10} /> OBRIGATÓRIO DA CAMPANHA
+                        <span className="flex items-center gap-1 rounded border border-pink/50 bg-pink/10 px-2 py-0.5 text-[0.625rem] font-bold uppercase text-pink">
+                          <Lock size={10} /> MANDATÓRIO DA CAMPANHA
                         </span>
                       </div>
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="text-[0.9rem] font-extrabold text-white">{d.nome}</p>
+                          <p className="text-[0.925rem] font-extrabold uppercase tracking-wide text-white">
+                            {d.nome}
+                          </p>
                           <p className="mt-1 text-[0.775rem] leading-relaxed text-white/60">
                             {d.descricao}
                           </p>
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
-                          <span className="text-[0.9rem] font-black text-pink">
+                          <span className="text-[0.95rem] font-black text-pink">
                             R$ {brl(d.precoBase)}
                           </span>
                         </div>
@@ -315,8 +310,8 @@ export function SimuladorClient() {
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="text-[0.875rem] font-bold text-white">{d.nome}</span>
-                            <span className="rounded bg-white/10 px-2 py-0.5 text-[0.625rem] font-bold text-white/60">
-                              {d.macroEtapaLabel}
+                            <span className="rounded bg-white/10 px-2 py-0.5 text-[0.625rem] font-extrabold uppercase tracking-wider text-white/60">
+                              {d.macroEtapaLabel.toUpperCase()}
                             </span>
                             {d.unidadeMedida && (
                               <span className="rounded bg-cyan/10 px-2 py-0.5 text-[0.625rem] font-bold text-cyan">
@@ -371,7 +366,7 @@ export function SimuladorClient() {
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2">
                   <Clock className="text-cyan" size={18} />
-                  <h3 className="text-[0.95rem] font-bold text-white">
+                  <h3 className="text-[0.95rem] font-extrabold uppercase tracking-wide text-white">
                     Demandas Extras · Calculadora Hora-Homem
                   </h3>
                 </div>
@@ -395,7 +390,7 @@ export function SimuladorClient() {
                       >
                         <div>
                           <div className="flex justify-between text-[0.8rem] font-bold text-white">
-                            <span>{rate.area}</span>
+                            <span className="uppercase">{rate.area}</span>
                             <span className="text-cyan">R$ {brl(rate.taxaPorHora)}/h</span>
                           </div>
                           <p className="mt-1 text-[0.7rem] text-white/45">{rate.descricao}</p>
@@ -427,7 +422,7 @@ export function SimuladorClient() {
 
             {/* Comparativo de Modelo */}
             <div className="rounded-2xl border border-white/10 bg-ink-deep p-6">
-              <h3 className="text-[0.95rem] font-bold text-white">
+              <h3 className="text-[0.95rem] font-extrabold uppercase tracking-wide text-white">
                 Comparativo: Modelo Tradicional (% VGV) vs TAGMOB OS (Sinapro-SP)
               </h3>
               <div className="mt-4 overflow-x-auto">
@@ -468,7 +463,7 @@ export function SimuladorClient() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-[0.775rem] font-bold text-white">
                     <MapPin size={14} className="text-green" />
-                    <span>Desconto Interior (Até 40%)</span>
+                    <span className="uppercase">Desconto Interior (Até 40%)</span>
                   </div>
                   <span className="text-[0.8rem] font-black text-green">
                     {(descontoInteriorPct * 100).toFixed(0)}%
@@ -484,7 +479,7 @@ export function SimuladorClient() {
                   className="w-full accent-green cursor-pointer"
                 />
                 <p className="text-[0.675rem] text-white/40">
-                  Desconto comercial para campanhas de incorporadoras no interior de SP.
+                  Desconto comercial configurável para campanhas de incorporadoras do interior.
                 </p>
 
                 <div className="mt-2 border-t border-white/10 pt-3">
@@ -496,7 +491,7 @@ export function SimuladorClient() {
                       className="mt-0.5 accent-pink cursor-pointer"
                     />
                     <div>
-                      <span className="text-[0.775rem] font-bold text-pink">
+                      <span className="text-[0.775rem] font-bold uppercase text-pink">
                         Taxa de Refação Adicional (+40%)
                       </span>
                       <p className="text-[0.675rem] text-white/40">
@@ -510,28 +505,28 @@ export function SimuladorClient() {
               {/* Decomposição do Valor */}
               <div className="mt-5 flex flex-col gap-2.5 border-b border-white/10 pb-4 text-[0.825rem]">
                 <div className="flex justify-between">
-                  <span className="text-white/60">Core Fixo (Etapa 1)</span>
+                  <span className="text-white/60 uppercase text-[0.75rem]">Criação de Campanha (Bloco 01)</span>
                   <span className="font-bold text-pink">R$ {brl(calcResult.valorEtapa1Fixo)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-white/60">Peças Opcionais</span>
+                  <span className="text-white/60 uppercase text-[0.75rem]">Peças Opcionais</span>
                   <span className="font-bold text-white">R$ {brl(calcResult.valorPecasOpcionais)}</span>
                 </div>
                 {calcResult.valorHorasAdicionais > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-white/60">Horas Adicionais</span>
+                    <span className="text-white/60 uppercase text-[0.75rem]">Horas Adicionais</span>
                     <span className="font-bold text-cyan">R$ {brl(calcResult.valorHorasAdicionais)}</span>
                   </div>
                 )}
                 {calcResult.valorDescontoInterior > 0 && (
                   <div className="flex justify-between text-green">
-                    <span>Desconto Interior ({(descontoInteriorPct * 100).toFixed(0)}%)</span>
+                    <span className="uppercase text-[0.75rem]">Desconto Interior ({(descontoInteriorPct * 100).toFixed(0)}%)</span>
                     <span className="font-bold">- R$ {brl(calcResult.valorDescontoInterior)}</span>
                   </div>
                 )}
                 {calcResult.valorTaxaRefacao > 0 && (
                   <div className="flex justify-between text-pink">
-                    <span>Taxa de Refação (+40%)</span>
+                    <span className="uppercase text-[0.75rem]">Taxa de Refação (+40%)</span>
                     <span className="font-bold">+ R$ {brl(calcResult.valorTaxaRefacao)}</span>
                   </div>
                 )}
@@ -585,7 +580,7 @@ export function SimuladorClient() {
                   <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-green/20 text-green">
                     <Check size={20} strokeWidth={3} />
                   </div>
-                  <h4 className="mt-3 font-display text-[0.95rem] font-bold text-white">
+                  <h4 className="mt-3 font-display text-[0.95rem] font-bold text-white uppercase">
                     Proposta Gerada com Sucesso!
                   </h4>
                   <p className="mt-1 text-[0.775rem] text-white/70">
@@ -648,7 +643,7 @@ export function SimuladorClient() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="mt-1 rounded-xl bg-pink py-3.5 text-[0.85rem] font-extrabold text-white transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
+                    className="mt-1 rounded-xl bg-pink py-3.5 text-[0.85rem] font-extrabold uppercase tracking-wider text-white transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
                   >
                     {loading ? "Gerando proposta..." : "Solicitar Proposta Comercial (Sinapro-SP)"}
                   </button>

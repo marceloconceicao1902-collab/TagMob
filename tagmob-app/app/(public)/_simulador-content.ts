@@ -19,24 +19,27 @@ export const DELIVERABLES: Deliverable[] = SINAPRO_DELIVERABLES.map((item: Sinap
   desc: item.descricao,
   isObrigatorio: item.isObrigatorio,
   unidadeMedida: item.unidadeMedida,
-  detalhes: [item.nome],
+  detalhes: item.detalhes || [item.nome],
 }));
+
+export const SINAPRO_DISCLAIMER_TEXT =
+  "Os valores seguem rigorosamente a tabela 'Valores Referenciais de Serviços Internos', publicada pelo Sinapro-SP.";
 
 export const COMPARATIVE_ROWS = [
   {
     criterio: "Base de Precificação",
     trad: "% sobre VGV (2%–4% do valor das vendas)",
-    tag: "Tabela Oficial Sinapro-SP + Escopo Transparente",
+    tag: "Valores Referenciais de Serviços Internos (Sinapro-SP)",
   },
   {
     criterio: "Transparência de Custos",
     trad: "Opaco — cresce com o sucesso do cliente",
-    tag: "Valores referenciais fixos por produto/entregável",
+    tag: "Tabela de preços fixa por produto/entregável",
   },
   {
-    criterio: "Setup Inicial (Core Fixo - Etapa 1)",
+    criterio: "Setup Inicial (Bloco 01 Mandatório)",
     trad: "Embutido no VGV — invisível e variável",
-    tag: "Combo fixo mandatório (KV, Logo, Manual, Slogan, Roteiro VT)",
+    tag: "Criação de tema/conceito de Campanha (key visual) Fixo",
   },
   {
     criterio: "Personalização & Descontos",

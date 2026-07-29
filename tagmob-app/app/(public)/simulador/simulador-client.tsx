@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { Check, ChevronDown, Lock, X, Percent, Clock, AlertTriangle, Building2, MapPin } from "lucide-react";
+import { Check, ChevronDown, Lock, X, Percent, Clock, AlertTriangle, Building2, MapPin, FileText, Info, ShoppingCart, ArrowUp } from "lucide-react";
 
 import {
   SINAPRO_DELIVERABLES,
   SINAPRO_HOURLY_RATES,
   calculateSinaproBudget,
 } from "@/lib/sinapro-pricing";
-import { COMPARATIVE_ROWS } from "../_simulador-content";
+import { COMPARATIVE_ROWS, SINAPRO_DISCLAIMER_TEXT } from "../_simulador-content";
 import { DeckHeading } from "../_components/deck-split";
 import { Reveal } from "../_components/reveal";
 
@@ -46,9 +46,25 @@ export function SimuladorClient() {
   const [showHourlyRates, setShowHourlyRates] = useState(false);
   const [expandedPackages, setExpandedPackages] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("TODAS");
+  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolledPastHero(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const togglePackageExpanded = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedPackages((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
 
   const toggleItem = (id: string, isObrigatorio?: boolean) => {
-    if (isObrigatorio) return; // Trava obrigatória ativa para o primeiro produto do Bloco 01
+    if (isObrigatorio) return; // Trava obrigatória no 1º item do Bloco 01
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
@@ -93,6 +109,13 @@ export function SimuladorClient() {
     return SINAPRO_DELIVERABLES.filter((d) => d.macroEtapaLabel.toUpperCase() === activeCategory);
   }, [activeCategory]);
 
+  const scrollToSummary = () => {
+    const el = document.getElementById("resumo-orcamento-panel");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !email) {
@@ -113,7 +136,7 @@ export function SimuladorClient() {
     const descStr = descontoInteriorPct > 0 ? `\nDesconto Interior: ${(descontoInteriorPct * 100).toFixed(0)}% (-R$ ${brl(calcResult.valorDescontoInterior)})` : "";
     const refacaoStr = aplicaRefacao ? `\nTaxa de Refação Fora Briefing (+40%): +R$ ${brl(calcResult.valorTaxaRefacao)}` : "";
 
-    const mensagemFinal = `Simulação de Escopo Tabela Sinapro-SP:\n\nSetup Fixo Core: R$ ${brl(calcResult.valorEtapa1Fixo)}\nOpcionais: R$ ${brl(calcResult.valorPecasOpcionais)}${horasStr}${descStr}${refacaoStr}\n\nItens Selecionados:\n- ${itemsSelecionadosStr}\n\nObservações: ${mensagem || "Nenhuma"}`;
+    const mensagemFinal = `Cotação de Preços (Sinapro-SP):\n\nCriação de Campanha: R$ ${brl(calcResult.valorEtapa1Fixo)}\nOpcionais: R$ ${brl(calcResult.valorPecasOpcionais)}${horasStr}${descStr}${refacaoStr}\n\nItens Selecionados:\n- ${itemsSelecionadosStr}\n\nObservações: ${mensagem || "Nenhuma"}`;
 
     const leadData = {
       nome,
@@ -124,7 +147,7 @@ export function SimuladorClient() {
       orcamentoEstimado: calcResult.valorTotal,
     };
 
-    const fallbackId = "LEAD-SINAPRO-" + Math.random().toString(36).substring(2, 9).toUpperCase();
+    const fallbackId = "COTACAO-SINAPRO-" + Math.random().toString(36).substring(2, 9).toUpperCase();
 
     if (typeof window !== "undefined") {
       try {
@@ -194,27 +217,60 @@ export function SimuladorClient() {
         <div className="relative z-10 mx-auto max-w-[84rem]">
           <Reveal>
             <div className="inline-flex items-center gap-2 rounded-full border border-green/30 bg-green/10 px-3 py-1 text-[0.7rem] font-black uppercase tracking-[0.18em] text-green">
-              <span>Matriz Oficial de Precificação · Tabela Sinapro-SP</span>
+              <span>Tabela Oficial de Preços · Sinapro-SP</span>
             </div>
           </Reveal>
           <Reveal delay={70}>
             <DeckHeading className="mt-4">
-              Simulador de Escopo
-              <br />&amp; Tabela Referencial
+              Preços &amp; Tabela
+              <br />Referencial de Serviços
             </DeckHeading>
           </Reveal>
-          <Reveal delay={140}>
-            <p className="mt-6 max-w-3xl text-[0.95rem] leading-relaxed text-white/65 sm:text-base">
-              A precificação oficial do <strong>TAGMOB OS</strong> é totalmente ancorada na{" "}
-              <strong>Tabela de Valores Referenciais Sinapro-SP</strong>. Estrutura oficial padronizada em 10 blocos de entregáveis.
+          
+          {/* Informação Oficial Sinapro-SP */}
+          <Reveal delay={120}>
+            <div className="mt-6 flex max-w-3xl items-center gap-3 rounded-xl border border-cyan/30 bg-cyan/[0.06] p-4 backdrop-blur-md">
+              <Info className="shrink-0 text-cyan" size={20} />
+              <p className="text-[0.825rem] font-semibold leading-relaxed text-cyan/90 sm:text-[0.875rem]">
+                Os valores seguem rigorosamente a tabela <strong>&ldquo;Valores Referenciais de Serviços Internos&rdquo;</strong>, publicada pelo <strong>Sinapro-SP</strong>.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={180}>
+            <p className="mt-4 max-w-3xl text-[0.95rem] leading-relaxed text-white/65 sm:text-base">
+              Consulte a matriz completa de custos para o seu lançamento imobiliário. Selecione os entregáveis e acompanhe a evolução do investimento em tempo real conforme rola a página.
             </p>
           </Reveal>
         </div>
       </section>
 
-      {/* Simulador */}
+      {/* Barra Flutuante de Totalização que Acompanha a Rolagem */}
+      {isScrolledPastHero && (
+        <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 rounded-2xl border border-green/40 bg-[#0C0C1A]/95 p-3.5 px-6 shadow-2xl backdrop-blur-xl transition-all">
+          <div className="flex flex-col">
+            <span className="text-[0.65rem] font-extrabold uppercase tracking-wider text-white/50">
+              Total Atual ({calcResult.detalhesDeliverables.length} itens)
+            </span>
+            <span className="font-display text-lg font-black text-green sm:text-xl">
+              R$ {brl(calcResult.valorTotal)}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={scrollToSummary}
+            className="flex items-center gap-2 rounded-xl bg-pink px-4 py-2.5 text-[0.775rem] font-black uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-[1.03]"
+          >
+            <ShoppingCart size={15} />
+            <span>Ver Resumo / Cotar</span>
+          </button>
+        </div>
+      )}
+
+      {/* Tabela de Preços e Configurador */}
       <section className="px-6 pb-20 sm:px-10 lg:pb-28">
-        <div className="mx-auto grid max-w-[84rem] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="mx-auto grid max-w-[84rem] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
           <div className="flex flex-col gap-6">
             
             {/* Filtros por Macro Etapa (UPPERCASE) */}
@@ -238,11 +294,11 @@ export function SimuladorClient() {
               ))}
             </div>
 
-            {/* Checklist de Entregáveis */}
+            {/* Checklist de Entregáveis Detalhados */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <p className="font-display text-[0.725rem] font-black uppercase tracking-[0.18em] text-white/40">
-                  Entregáveis Referenciais ({filteredDeliverables.length} itens)
+                  Matriz de Entregáveis Referenciais ({filteredDeliverables.length} itens)
                 </p>
                 <span className="text-[0.675rem] uppercase font-bold text-pink">
                   * 1º Item do Bloco 01 Fixo Mandatório
@@ -251,6 +307,7 @@ export function SimuladorClient() {
 
               {filteredDeliverables.map((d) => {
                 const isSelected = selectedItems.includes(d.id);
+                const isExpanded = expandedPackages.includes(d.id);
                 const qtd = quantities[d.id] || 1;
 
                 if (d.isObrigatorio) {
@@ -268,11 +325,11 @@ export function SimuladorClient() {
                         </span>
                       </div>
                       <div className="flex items-start justify-between gap-4">
-                        <div>
+                        <div className="flex-1">
                           <p className="text-[0.925rem] font-extrabold uppercase tracking-wide text-white">
                             {d.nome}
                           </p>
-                          <p className="mt-1 text-[0.775rem] leading-relaxed text-white/60">
+                          <p className="mt-1.5 text-[0.8rem] leading-relaxed text-white/70">
                             {d.descricao}
                           </p>
                         </div>
@@ -282,6 +339,33 @@ export function SimuladorClient() {
                           </span>
                         </div>
                       </div>
+
+                      {/* Entregáveis Inclusos Detalhados */}
+                      {d.detalhes && d.detalhes.length > 0 && (
+                        <div className="mt-4 border-t border-pink/20 pt-3">
+                          <button
+                            type="button"
+                            onClick={(e) => togglePackageExpanded(d.id, e)}
+                            className="flex items-center gap-1.5 text-[0.75rem] font-black uppercase tracking-wider text-pink"
+                          >
+                            {isExpanded ? "Ocultar especificações técnicas" : "Ver entregáveis inclusos no escopo"}
+                            <ChevronDown
+                              size={14}
+                              className={`transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                            />
+                          </button>
+                          {isExpanded && (
+                            <ul className="mt-3 grid gap-2 sm:grid-cols-2 rounded-xl border border-pink/20 bg-pink/10 p-3.5">
+                              {d.detalhes.map((item) => (
+                                <li key={item} className="flex items-start gap-2 text-[0.75rem] text-white/80">
+                                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-pink" />
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 }
@@ -319,7 +403,7 @@ export function SimuladorClient() {
                               </span>
                             )}
                           </div>
-                          <p className="mt-1 text-[0.775rem] text-white/55">{d.descricao}</p>
+                          <p className="mt-1.5 text-[0.8rem] leading-relaxed text-white/65">{d.descricao}</p>
                         </div>
                       </div>
 
@@ -356,6 +440,33 @@ export function SimuladorClient() {
                         </span>
                       </div>
                     </div>
+
+                    {/* Entregáveis Inclusos Detalhados (Opcionais) */}
+                    {d.detalhes && d.detalhes.length > 0 && (
+                      <div className="mt-3 border-t border-white/10 pt-3">
+                        <button
+                          type="button"
+                          onClick={(e) => togglePackageExpanded(d.id, e)}
+                          className="flex items-center gap-1.5 text-[0.725rem] font-extrabold uppercase tracking-wider text-cyan"
+                        >
+                          {isExpanded ? "Ocultar especificações técnicas" : "Ver entregáveis inclusos no escopo"}
+                          <ChevronDown
+                            size={14}
+                            className={`transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                        {isExpanded && (
+                          <ul className="mt-2.5 grid gap-2 sm:grid-cols-2 rounded-xl border border-white/10 bg-ink p-3.5">
+                            {d.detalhes.map((item) => (
+                              <li key={item} className="flex items-start gap-2 text-[0.75rem] text-white/75">
+                                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-cyan" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -367,7 +478,7 @@ export function SimuladorClient() {
                 <div className="flex items-center gap-2">
                   <Clock className="text-cyan" size={18} />
                   <h3 className="text-[0.95rem] font-extrabold uppercase tracking-wide text-white">
-                    Demandas Extras · Calculadora Hora-Homem
+                    Demandas Extras · Tabela de Hora-Homem
                   </h3>
                 </div>
                 <button
@@ -449,14 +560,22 @@ export function SimuladorClient() {
 
           </div>
 
-          {/* Painel do Orçamento & Formulário */}
-          <div className="flex flex-col gap-6 lg:sticky lg:top-24">
-            
+          {/* Painel do Orçamento & Formulário — STICKY PERFEITO NO SCROLL */}
+          <div
+            id="resumo-orcamento-panel"
+            className="flex flex-col gap-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+          >
             {/* Resumo do Cálculo */}
             <div className="rounded-2xl border border-white/15 bg-ink-deep p-6 shadow-xl">
               <p className="font-display text-[0.7rem] font-black uppercase tracking-[0.16em] text-white/40">
-                Resumo Financeiro (Sinapro-SP)
+                Resumo de Preços (Sinapro-SP)
               </p>
+
+              {/* Informação Técnica Sinapro-SP */}
+              <div className="mt-3 flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 p-3 text-[0.725rem] text-white/70">
+                <Info size={14} className="mt-0.5 shrink-0 text-cyan" />
+                <span>Valores Referenciais de Serviços Internos, publicado pelo Sinapro-SP.</span>
+              </div>
 
               {/* Regras Comerciais: Desconto Interior + Refação */}
               <div className="mt-4 flex flex-col gap-3 rounded-xl border border-white/10 bg-ink p-4">
@@ -581,7 +700,7 @@ export function SimuladorClient() {
                     <Check size={20} strokeWidth={3} />
                   </div>
                   <h4 className="mt-3 font-display text-[0.95rem] font-bold text-white uppercase">
-                    Proposta Gerada com Sucesso!
+                    Cotação Gerada com Sucesso!
                   </h4>
                   <p className="mt-1 text-[0.775rem] text-white/70">
                     Protocolo: <strong>{successProposal.id}</strong>
@@ -590,14 +709,14 @@ export function SimuladorClient() {
                     Valor Orçado: R$ {brl(successProposal.total)}
                   </p>
                   <p className="mt-3 text-[0.725rem] text-white/50">
-                    Nossa equipe comercial entrará em contato para formalizar o contrato de lançamento.
+                    Nossa equipe comercial entrará em contato para formalizar o contrato.
                   </p>
                   <button
                     type="button"
                     onClick={() => setSuccessProposal(null)}
                     className="mt-4 w-full rounded-lg bg-white/10 py-2 text-[0.775rem] font-bold text-white hover:bg-white/20"
                   >
-                    Simular Novo Escopo
+                    Simular Novos Preços
                   </button>
                 </div>
               ) : (
@@ -645,7 +764,7 @@ export function SimuladorClient() {
                     disabled={loading}
                     className="mt-1 rounded-xl bg-pink py-3.5 text-[0.85rem] font-extrabold uppercase tracking-wider text-white transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
                   >
-                    {loading ? "Gerando proposta..." : "Solicitar Proposta Comercial (Sinapro-SP)"}
+                    {loading ? "Gerando cotação..." : "Solicitar Proposta de Preços (Sinapro-SP)"}
                   </button>
                 </form>
               )}

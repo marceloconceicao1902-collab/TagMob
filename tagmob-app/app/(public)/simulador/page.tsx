@@ -5,9 +5,9 @@ import { SiteNav } from "../_components/site-nav";
 import { SimuladorClient } from "./simulador-client";
 
 export const metadata: Metadata = {
-  title: "Simulador de Escopo — TAGMOB",
+  title: "Tabela de Preços — TAGMOB OS",
   description:
-    "Monte o escopo do seu lançamento e veja o investimento em tempo real. Valores fixos, sem cobrança sobre o VGV.",
+    "Valores Referenciais de Serviços Internos, publicado pelo Sinapro-SP. Monte a precificação do seu lançamento com transparência total.",
 };
 
 export default function SimuladorPage() {

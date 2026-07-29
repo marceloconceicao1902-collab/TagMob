@@ -148,7 +148,7 @@ export function SimuladorSection() {
             }}
           >
             <Calculator size={14} />
-            SIMULADOR DE ESCOPO E INVESTIMENTO
+            TABELA DE PREÇOS E INVESTIMENTO
           </div>
           <h2
             style={{
@@ -157,11 +157,14 @@ export function SimuladorSection() {
               letterSpacing: "-0.04em",
               color: "#EEEEFF",
               lineHeight: 1.1,
-              marginBottom: 16,
+              marginBottom: 12,
             }}
           >
-            Monte o escopo do seu lançamento
+            Preços &amp; Tabela de Lançamento
           </h2>
+          <p style={{ fontSize: 13, fontWeight: 700, color: "#00E5FF", marginBottom: 16 }}>
+            Os valores seguem a tabela &ldquo;Valores Referenciais de Serviços Internos&rdquo;, publicada pelo Sinapro-SP.
+          </p>
           <p style={{ fontSize: 16, color: "#7878A0", maxWidth: 640, margin: "0 auto", lineHeight: 1.6 }}>
             Selecione as entregas necessárias para o seu empreendimento e acompanhe a estimativa com valores fixos e transparência total.
           </p>
@@ -310,6 +313,7 @@ export function SimuladorSection() {
             style={{
               position: "sticky",
               top: 90,
+              alignSelf: "start",
               background: "#111120",
               border: "1px solid #1A1A30",
               borderRadius: 20,

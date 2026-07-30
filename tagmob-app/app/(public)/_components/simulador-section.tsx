@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Check, ChevronDown, Lock, X, Calculator, Info, Clock, MapPin, ShoppingCart } from "lucide-react";
+import { Check, ChevronDown, Lock, Calculator, Info, Clock, ShoppingCart, Filter } from "lucide-react";
 
 import {
   SINAPRO_DELIVERABLES,
   SINAPRO_HOURLY_RATES,
   calculateSinaproBudget,
-  SinaproDeliverable,
 } from "@/lib/sinapro-pricing";
 import { COMPARATIVE_ROWS } from "../_simulador-content";
 
@@ -22,8 +21,6 @@ export function SimuladorSection() {
 
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [extraHours, setExtraHours] = useState<Record<string, number>>({});
-  const [descontoInteriorPct, setDescontoInteriorPct] = useState<number>(0);
-  const [aplicaRefacao, setAplicaRefacao] = useState<boolean>(false);
 
   // Formulário de Lead
   const [nome, setNome] = useState("");
@@ -84,17 +81,16 @@ export function SimuladorSection() {
     }));
   };
 
-  // Cálculo reativo usando a engine Sinapro-SP
+  // Cálculo reativo público: Sem descontos e refações na área pública
   const calcResult = useMemo(() => {
     return calculateSinaproBudget({
       selectedDeliverableIds: selectedItems,
       deliverableQuantities: quantities,
       extraHoursByArea: extraHours,
-      descontoInteriorPct,
-      aplicaRefacao,
-      taxaRefacaoPct: 0.40,
+      descontoInteriorPct: 0, // Desconto restrito à área administrativa
+      aplicaRefacao: false,   // Refação restrita à área administrativa
     });
-  }, [selectedItems, quantities, extraHours, descontoInteriorPct, aplicaRefacao]);
+  }, [selectedItems, quantities, extraHours]);
 
   // Lista de 10 blocos em UPPERCASE
   const categories = useMemo(() => {
@@ -131,10 +127,7 @@ export function SimuladorSection() {
       ? "\nHoras Adicionais:\n- " + calcResult.detalhesHoras.map((h) => `${h.area.area}: ${h.horas}h (R$ ${brl(h.subtotal)})`).join("\n- ")
       : "";
 
-    const descStr = descontoInteriorPct > 0 ? `\nDesconto Interior: ${(descontoInteriorPct * 100).toFixed(0)}% (-R$ ${brl(calcResult.valorDescontoInterior)})` : "";
-    const refacaoStr = aplicaRefacao ? `\nTaxa de Refação Fora Briefing (+40%): +R$ ${brl(calcResult.valorTaxaRefacao)}` : "";
-
-    const mensagemFinal = `Cotação de Preços (Sinapro-SP):\n\nCriação de Campanha: R$ ${brl(calcResult.valorEtapa1Fixo)}\nOpcionais: R$ ${brl(calcResult.valorPecasOpcionais)}${horasStr}${descStr}${refacaoStr}\n\nItens Selecionados:\n- ${itemsSelecionadosStr}\n\nObservações: ${mensagem || "Nenhuma"}`;
+    const mensagemFinal = `Cotação de Preços (Sinapro-SP):\n\nCriação de Campanha: R$ ${brl(calcResult.valorEtapa1Fixo)}\nOpcionais: R$ ${brl(calcResult.valorPecasOpcionais)}${horasStr}\n\nItens Selecionados:\n- ${itemsSelecionadosStr}\n\nObservações: ${mensagem || "Nenhuma"}`;
 
     const leadData = {
       nome,
@@ -251,7 +244,7 @@ export function SimuladorSection() {
 
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
         {/* Cabeçalho Limpo */}
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
+        <div style={{ textAlign: "center", marginBottom: 44 }}>
           <div
             style={{
               display: "inline-flex",
@@ -322,36 +315,50 @@ export function SimuladorSection() {
             alignItems: "start",
           }}
         >
-          {/* Coluna Esquerda: Filtros + Produtos */}
+          {/* Coluna Esquerda: Filtro Lista Selecionável + Produtos */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             
-            {/* Filtros de Blocos em Caixa Alta */}
+            {/* Filtros em Lista Selecionável (Dropdown Select) */}
             <div style={{ background: "#111120", border: "1px solid #1A1A30", borderRadius: 16, padding: 18 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: "#7878A0", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>
-                FILTRAR POR BLOCOS SINAPRO-SP:
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setActiveCategory(cat)}
-                    style={{
-                      background: activeCategory === cat ? "#FF0068" : "rgba(255,255,255,0.05)",
-                      color: activeCategory === cat ? "#FFFFFF" : "rgba(255,255,255,0.6)",
-                      border: "none",
-                      borderRadius: 8,
-                      padding: "6px 12px",
-                      fontSize: 10,
-                      fontWeight: 800,
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    {cat === "TODAS" ? "Todos os 10 Blocos" : cat}
-                  </button>
-                ))}
+              <label
+                htmlFor="sinapro-category-select"
+                style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 800, color: "#00E5FF", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}
+              >
+                <Filter size={14} />
+                FILTRAR POR BLOCO / CATEGORIA SINAPRO-SP:
+              </label>
+              
+              <div style={{ position: "relative" }}>
+                <select
+                  id="sinapro-category-select"
+                  value={activeCategory}
+                  onChange={(e) => setActiveCategory(e.target.value)}
+                  style={{
+                    width: "100%",
+                    background: "#0D0D1A",
+                    border: "1px solid #2E2E4A",
+                    borderRadius: 10,
+                    padding: "12px 16px",
+                    color: "#EEEEFF",
+                    fontSize: 13,
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                    outline: "none",
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundImage: "url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300E5FF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 16px top 50%",
+                    backgroundSize: "12px auto",
+                  }}
+                >
+                  <option value="TODAS">TODOS OS 10 BLOCOS REFERENCIAIS</option>
+                  {categories.filter((cat) => cat !== "TODAS").map((cat, idx) => (
+                    <option key={cat} value={cat}>
+                      BLOCO {String(idx + 1).padStart(2, "0")} · {cat}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -602,7 +609,7 @@ export function SimuladorSection() {
 
           </div>
 
-          {/* Coluna Direita: PAINEL STICKY PERFEITO */}
+          {/* Coluna Direita: PAINEL STICKY DE RESUMO PÚBLICO (Sem Desconto / Refação) */}
           <div
             id="resumo-orcamento-card"
             style={{
@@ -634,39 +641,22 @@ export function SimuladorSection() {
               <span>Valores Referenciais de Serviços Internos, publicado pelo Sinapro-SP.</span>
             </div>
 
-            {/* Desconto Interior + Refação */}
-            <div style={{ background: "#0D0D1A", border: "1px solid #1A1A30", borderRadius: 12, padding: 14, marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, fontSize: 12, fontWeight: 700, color: "#EEEEFF" }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 6, textTransform: "uppercase" }}>
-                  <MapPin size={14} color="#39FF14" /> Desconto Interior
-                </span>
-                <span style={{ color: "#39FF14", fontWeight: 900 }}>{(descontoInteriorPct * 100).toFixed(0)}%</span>
+            {/* Decomposição de Valores do Orçamento */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, borderTop: "1px solid #1A1A30", borderBottom: "1px solid #1A1A30", padding: "12px 0", marginBottom: 16, fontSize: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#7878A0", textTransform: "uppercase", fontSize: 11 }}>Criação de Campanha (Bloco 01)</span>
+                <span style={{ fontWeight: 800, color: "#FF0068" }}>R$ {brl(calcResult.valorEtapa1Fixo)}</span>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="0.40"
-                step="0.05"
-                value={descontoInteriorPct}
-                onChange={(e) => setDescontoInteriorPct(parseFloat(e.target.value))}
-                style={{ width: "100%", accentColor: "#39FF14", cursor: "pointer" }}
-              />
-              <p style={{ fontSize: 10, color: "#7878A0", marginTop: 4 }}>Desconto para campanhas do interior de SP.</p>
-
-              <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #1A1A30" }}>
-                <label style={{ display: "flex", alignItems: "flex-start", gap: 8, cursor: "pointer" }}>
-                  <input
-                    type="checkbox"
-                    checked={aplicaRefacao}
-                    onChange={(e) => setAplicaRefacao(e.target.checked)}
-                    style={{ marginTop: 2, accentColor: "#FF0068" }}
-                  />
-                  <div>
-                    <span style={{ fontSize: 12, fontWeight: 800, color: "#FF0068", textTransform: "uppercase" }}>Taxa de Refação Adicional (+40%)</span>
-                    <p style={{ fontSize: 10, color: "#7878A0" }}>Para alterações fora do briefing aprovado.</p>
-                  </div>
-                </label>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#7878A0", textTransform: "uppercase", fontSize: 11 }}>Peças Opcionais</span>
+                <span style={{ fontWeight: 800, color: "#EEEEFF" }}>R$ {brl(calcResult.valorPecasOpcionais)}</span>
               </div>
+              {calcResult.valorHorasAdicionais > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: "#7878A0", textTransform: "uppercase", fontSize: 11 }}>Horas Adicionais</span>
+                  <span style={{ fontWeight: 800, color: "#00E5FF" }}>R$ {brl(calcResult.valorHorasAdicionais)}</span>
+                </div>
+              )}
             </div>
 
             {/* Form de Lead */}

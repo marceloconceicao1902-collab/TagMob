@@ -81,12 +81,12 @@ export function Hero() {
           >
             Conheça a Plataforma <ArrowRight size={18} />
           </a>
-          <Link
-            href="/simulador"
+          <a
+            href="#simulador"
             className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/5 px-7 py-4 font-display text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-white/50 hover:bg-white/10"
           >
             Tabela de Preços
-          </Link>
+          </a>
         </Reveal>
       </div>
     </section>
